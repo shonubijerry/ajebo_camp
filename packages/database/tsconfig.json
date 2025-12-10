@@ -14,7 +14,7 @@
 		/* Specify how TypeScript looks up a file from a given module specifier. */
 		"moduleResolution": "Bundler",
 		/* Specify type package names to be included without being referenced in a source file. */
-		"types": ["@cloudflare/workers-types"],
+		"types": [],
 		/* Enable importing .json files */
 		"resolveJsonModule": true,
 
@@ -40,5 +40,5 @@
 		"skipLibCheck": true
 	},
 	"exclude": ["test"],
-	"include": ["src/**/*.ts", "src/prisma.d.ts"]
+	"include": ["src/**/*.ts", "src/prisma.d.ts", "worker-configuration.d.ts"]
 }

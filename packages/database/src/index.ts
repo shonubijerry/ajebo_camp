@@ -7,21 +7,26 @@ export interface Env {
 }
 
 export default class extends WorkerEntrypoint<Env> {
+  private prismaInstance: PrismaClient | null = null
+
   fetch() {
     return new Response('ok')
   }
 
   prisma() {
-    const adapter = new PrismaD1(this.env.DB)
+    if (!this.prismaInstance) {
+      const adapter = new PrismaD1(this.env.DB)
 
-    return new PrismaClient({
-      adapter,
-      log: ['info', 'warn', 'error'],
-    })
+      this.prismaInstance = new PrismaClient({
+        adapter,
+        log: ['info', 'warn', 'error'],
+      })
+    }
+
+    return this.prismaInstance
   }
 }
 
 export * from './db_schema'
 export * from './generated/prisma'
-export type * from './prisma'
 export * from './raw_query'

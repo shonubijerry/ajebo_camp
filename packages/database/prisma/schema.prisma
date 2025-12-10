@@ -58,7 +58,7 @@ model Camp_Allocation {
   id              String             @id @default(uuid())
   camp_id         String
   name            String
-  /// [string[]]
+  /// ![string[]]
   items           Json               @default("[]")
   allocation_type CampAllocationType @default(random)
   created_at      DateTime           @default(now())
