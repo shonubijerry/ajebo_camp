@@ -1,0 +1,80 @@
+import { z } from "zod";
+import { DefaultSchema } from "./DefaultSchema";
+
+export const CampAllocationTypeSchema = z.enum(['random', 'definite']);
+
+export const UserRoleSchema = z.enum(['user', 'staff', 'admin']);
+
+export const CampiteTypeSchema = z.enum(['regular', 'premium']);
+
+export const DistrictSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+    ...DefaultSchema.shape,
+});
+
+export const EntitySchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  ...DefaultSchema.shape,
+});
+
+export const CampSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  theme: z.string().nullable(),
+  verse: z.string().nullable(),
+  entity_id: z.string().uuid(),
+  banner: z.string().nullable(),
+  year: z.number().int(),
+  fee: z.number().int(),
+  start_date: z.coerce.date(),
+  end_date: z.coerce.date(),
+  ...DefaultSchema.shape,
+});
+
+export const CampAllocationSchema = z.object({
+  id: z.string().uuid(),
+  camp_id: z.string().uuid(),
+  name: z.string(),
+  items: z.array(z.string()), // For the Prisma Json type with string[] content
+  allocation_type: CampAllocationTypeSchema.default('random'),
+  ...DefaultSchema.shape,
+});
+
+export const CampiteSchema = z.object({
+  id: z.number().int(),
+  firstname: z.string(),
+  lastname: z.string(),
+  email: z.string().email().nullable(),
+  phone: z.string(),
+  age_group: z.string(),
+  gender: z.string(),
+  camp_id: z.string().uuid(),
+  user_id: z.string().uuid(),
+  payment_ref: z.string().nullable(),
+  type: CampiteTypeSchema.default('regular'),
+  amount: z.number().int().nullable(), // premium only
+  allocated_items: z.string(), // comma separated list
+  checkin_at: z.coerce.date().nullable(),
+  ...DefaultSchema.shape,
+});
+
+export const PaymentSchema = z.object({
+  id: z.string().uuid(),
+  reference: z.string(),
+  amount: z.number().int(),
+  user_id: z.string().uuid(),
+  camp_id: z.string().uuid(),
+  ...DefaultSchema.shape,
+});
+
+export const UserSchema = z.object({
+  id: z.string().uuid(),
+  firstname: z.string(),
+  lastname: z.string(),
+  email: z.string().email(),
+  phone: z.string().nullable(),
+  role: UserRoleSchema.default('user'),
+  ...DefaultSchema.shape,
+});

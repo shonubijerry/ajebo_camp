@@ -1,0 +1,136 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["relationJoins"]
+}
+
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Entity {
+  id         String   @id @default(uuid())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Camps      Camp[]
+}
+
+model District {
+  id         String   @id @default(uuid())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Camp {
+  id         String   @id @default(uuid())
+  title      String
+  theme      String?
+  verse      String?
+  entity_id  String
+  banner     String?
+  year       Int
+  fee        Int
+  start_date DateTime
+  end_date   DateTime
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  entity      Entity            @relation(fields: [entity_id], references: [id])
+  allocations Camp_Allocation[]
+  campites    Campite[]
+  payments    Payment[]
+
+  @@index([entity_id])
+}
+
+enum CampAllocationType {
+  random
+  definite
+}
+
+model Camp_Allocation {
+  id              String             @id @default(uuid())
+  camp_id         String
+  name            String
+  /// [string[]]
+  items           Json               @default("[]")
+  allocation_type CampAllocationType @default(random)
+  created_at      DateTime           @default(now())
+  updated_at      DateTime           @updatedAt
+
+  camp Camp @relation(fields: [camp_id], references: [id])
+
+  @@index([camp_id])
+}
+
+enum UserRole {
+  user
+  staff
+  admin
+}
+
+model User {
+  id         String   @id @default(uuid())
+  firstname  String
+  lastname   String
+  email      String   @unique
+  phone      String?
+  role       UserRole @default(user)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  campites Campite[]
+  payments Payment[]
+
+  @@index([email])
+  @@index([role])
+}
+
+enum CampiteType {
+  regular
+  premium
+}
+
+model Campite {
+  id              Int         @id @default(autoincrement())
+  firstname       String
+  lastname        String
+  email           String?
+  phone           String
+  age_group       String
+  gender          String
+  camp_id         String
+  user_id         String
+  payment_ref     String?
+  type            CampiteType @default(regular)
+  amount          Int? // premium only
+  allocated_items String // comma separated list
+  checkin_at      DateTime?
+  created_at      DateTime    @default(now())
+  updated_at      DateTime    @updatedAt
+
+  camp Camp @relation(fields: [camp_id], references: [id])
+  user User @relation(fields: [user_id], references: [id])
+
+  @@index([camp_id])
+  @@index([user_id])
+}
+
+model Payment {
+  id         String   @id @default(uuid())
+  reference  String   @unique
+  amount     Int
+  user_id    String
+  camp_id    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id])
+  camp Camp @relation(fields: [camp_id], references: [id])
+}

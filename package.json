@@ -1,0 +1,26 @@
+{
+  "name": "ajebo_camp",
+  "version": "1.0.0",
+  "description": "Fullstack application for Ajebo Camp",
+  "main": "index.js",
+  "author": "shonubijerry <shonubijerry@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "format": "prettier  --config .prettierrc --write '*.{json,js}' 'src/**/*.{js,ts}'",
+    "lint": "eslint . --max-warnings 0 --fix",
+    "dev": "concurrently -n 'DB,API,ADMIN' -c 'yellow,blue,green' 'cd packages/database && npm run dev' 'cd api && npm run dev' 'cd admin && npm run dev'"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.5.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "^8.49.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "api/*"
+  ]
+}
