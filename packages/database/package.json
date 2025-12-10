@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "deploy": "wrangler deploy",
-    "dev": "npm run migration:apply && npm run prisma:generate && wrangler dev --persist-to .local_db",
+    "dev": "npm run migration:apply && wrangler dev --port 6002 --persist-to .local_db",
     "start": "wrangler dev --persist-to .local_db",
     "prisma:generate": "prisma generate",
     "migration:create": "wrangler d1 migrations create ajebo-camp-dev-db $NAME",

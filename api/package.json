@@ -14,12 +14,12 @@
 	},
 	"private": true,
 	"scripts": {
+    "build": "wrangler deploy --dry-run --outdir dist --env staging",
+    "dev": "wrangler dev --port 6001 --test-scheduled",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --max-warnings 0 --fix --ext .js,.jsx,.ts,.tsx",
+    "migration": "cd ../packages/database && npm run migration:apply",
 		"cf-typegen": "wrangler types",
-		"deploy": "wrangler deploy",
-		"dev": "pnpm seedLocalDb && wrangler dev",
-		"predeploy": "wrangler d1 migrations apply DB --remote",
-		"schema": "npx chanfana",
-		"seedLocalDb": "wrangler d1 migrations apply DB --local",
-		"test": "wrangler deploy --dry-run && npx vitest run --config tests/vitest.config.mts"
+		"schema": "npx chanfana"
 	}
 }

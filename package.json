@@ -9,7 +9,7 @@
   "scripts": {
     "format": "prettier  --config .prettierrc --write '*.{json,js}' 'src/**/*.{js,ts}'",
     "lint": "eslint . --max-warnings 0 --fix",
-    "dev": "concurrently -n 'DB,API,ADMIN' -c 'yellow,blue,green' 'cd packages/database && npm run dev' 'cd api && npm run dev' 'cd admin && npm run dev'"
+    "dev": "concurrently -n 'DB,API' -c 'yellow,blue,green' 'cd packages/database && npm run dev' 'cd api && npm run dev'"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
