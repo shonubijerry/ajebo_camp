@@ -5,11 +5,36 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"compatibility_date": "2025-10-08",
+  "compatibility_flags": ["nodejs_compat"],
   "account_id": "e5d5d460d5114f727f30dc01a4b9e363",
 	"main": "src/index.ts",
 	"name": "ajebo_camp_api",
 	"upload_source_maps": true,
 	"observability": {
 		"enabled": true
-	}
+	},
+  "vars": {
+    "ENVIRONMENT": "development"
+  },
+  "services": [
+    {
+      "binding": "DATABASE",
+      "service": "database"
+    }
+  ],
+  "env": {
+    "staging": {
+      "name": "ajebo_camp_api_staging",
+      "route": "https://staging-api.ajebo.camp/*",
+      "vars": {
+        "ENVIRONMENT": "staging"
+      },
+      "services": [
+        {
+          "binding": "DATABASE",
+          "service": "database-staging"
+        }
+      ]
+    }
+  }
 }

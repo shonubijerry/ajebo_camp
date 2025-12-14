@@ -12,12 +12,8 @@
     "dev": "concurrently -n 'DB,API' -c 'yellow,blue,green' 'cd packages/database && npm run dev' 'cd api && npm run dev'"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
-    "eslint": "^9.39.1",
-    "eslint-plugin-react": "^7.37.5",
     "globals": "^16.5.0",
-    "typescript": "5.9.3",
-    "typescript-eslint": "^8.49.0"
+    "typescript": "5.9.3"
   },
   "workspaces": [
     "packages/*",

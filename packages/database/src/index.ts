@@ -1,32 +1,27 @@
-import { PrismaD1 } from '@prisma/adapter-d1'
-import { WorkerEntrypoint } from 'cloudflare:workers'
-import { PrismaClient } from './generated/prisma'
+import { PrismaD1 } from "@prisma/adapter-d1";
+import { WorkerEntrypoint } from "cloudflare:workers";
+import { PrismaClient } from "./generated/prisma";
 
 export interface Env {
-  DB: D1Database
+  DB: D1Database;
 }
 
 export default class extends WorkerEntrypoint<Env> {
-  private prismaInstance: PrismaClient | null = null
-
   fetch() {
-    return new Response('ok')
+    return new Response("ok");
   }
 
   prisma() {
-    if (!this.prismaInstance) {
-      const adapter = new PrismaD1(this.env.DB)
+    const adapter = new PrismaD1(this.env.DB);
 
-      this.prismaInstance = new PrismaClient({
-        adapter,
-        log: ['info', 'warn', 'error'],
-      })
-    }
-
-    return this.prismaInstance
+    return new PrismaClient({
+      adapter,
+      log: ["info", "warn", "error"],
+    });
   }
 }
 
-export * from './db_schema'
-export * from './generated/prisma'
-export * from './raw_query'
+export * from "./db_schema";
+export * from "../../../api/src/routes/generic/create";
+export * from "./generated/prisma";
+export * from "./raw_query";
