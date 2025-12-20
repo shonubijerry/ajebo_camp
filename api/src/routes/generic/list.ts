@@ -1,137 +1,164 @@
 import { OpenAPIRoute, OpenAPIRouteSchema, contentJson } from 'chanfana'
 import { z } from '@hono/zod-openapi'
-import { AnyZodObject } from 'zod'
-
 import { AppContext } from '../..'
 import { Env } from '../../env'
+import { queryStringToPrismaWhere } from './query'
 
-export type Prisma = Env['PRISMA']
-
-export type PrismaWhere<T> = Prisma.Args<T, 'findMany'>['where']
-export type PrismaOrderBy<T> = Prisma.Args<T, 'findMany'>['orderBy']
-
-const operatorSchema: z.ZodTypeAny = z.lazy(() =>
-  z.object({
-    equals: z.string().optional(),
-    in: z.array(z.any()).optional(),
-    notIn: z.array(z.any()).optional(),
-    lt: z.number().optional(),
-    lte: z.number().optional(),
-    gt: z.number().optional(),
-    gte: z.number().optional(),
-    contains: z.string().optional(),
-    startsWith: z.string().optional(),
-    endsWith: z.string().optional(),
-    mode: z.enum(['default', 'insensitive']).optional(),
-    // not: z.union([z.any(), z.lazy(() => operatorSchema)]).optional(),
-    some: z.any().optional(),
-    none: z.any().optional(),
-    every: z.any().optional(),
-  }),
-)
+/* ---------------------------------------------
+ * List request query schema
+ * --------------------------------------------- */
 
 export const listRequestQuerySchema = z.object({
-  page: z.number().int().min(1).optional().default(1),
-  per_page: z.number().int().min(1).max(100).optional().default(20),
-  skip: z.number().int().min(0).optional(),
-  take: z.number().int().min(1).optional(),
-  orderBy: z.array(z.record(z.any())).optional(),
-  filter: z
-    .record(z.union([z.any(), operatorSchema]))
-    .optional()
-    .default({}),
+  page: z.number().int().min(1).default(1),
+  per_page: z.number().int().min(1).max(100).default(20),
+  orderBy: z.array(z.record(z.enum(['asc', 'desc']))).optional(),
+  filter: z.string().optional().openapi({
+    example: '[firstname][contains]=string',
+    description: 'Filter criteria in Prisma-like format',
+  }),
 })
 
-interface ValidatedData {
-  body: {
-    filter?: Record<string, unknown>
-    page: number
-    per_page: number
-    skip?: number
-    take?: number
-    orderBy?: Array<Record<string, unknown>>
-  }
-}
+/* ---------------------------------------------
+ * Generic list endpoint
+ * --------------------------------------------- */
 
 /**
- * Generic list endpoint supporting pagination and Prisma-like filters.
- * Subclasses must provide `collection` and `responseSchema`.
+ * Generic ListEndpoint for streamlined resource listing.
+ *
+ * @template TQuerySchema    Zod schema for query parameters
+ * @template TWhereInput     Prisma where input type
+ * @template TOrderByInput   Prisma orderBy input type
  */
-export abstract class ListEndpoint extends OpenAPIRoute {
-  abstract requestBodySchema: AnyZodObject
-  abstract responseSchema: AnyZodObject
-  abstract collection: Env['PRISMA']['user']
+export abstract class ListEndpoint<
+  TWhereInput = any,
+  TOrderByInput = any,
+> extends OpenAPIRoute {
+  /** Zod schema for query parameters */
+  querySchema = listRequestQuerySchema
 
+  /** Zod schema for individual item response */
+  abstract responseSchema: z.ZodTypeAny
+
+  /** Prisma collection name (e.g. 'user', 'campaign') */
+  abstract collection: keyof Env['PRISMA']
+
+  /** Default page size */
+  protected pageSize = 25
+
+  /** Maximum page size */
+  protected maxPageSize = 100
+
+  /**
+   * Optional hook to mutate or replace where input before query
+   */
+  async preAction(params: {
+    where: TWhereInput
+    skip: number
+    take: number
+    orderBy?: TOrderByInput
+  }) {
+    return params
+  }
+
+  /**
+   * Prisma list action - queries the database
+   */
+  async action(
+    c: AppContext,
+    params: Awaited<ReturnType<typeof this.preAction>>,
+  ): Promise<{ data: unknown[]; total: number }> {
+    throw new Error('action not implemented for ' + this.constructor.name)
+  }
+
+  /**
+   * Optional hook to transform database results before responding
+   */
+  async afterAction(data: Awaited<ReturnType<typeof this.action>>['data']) {
+    return data
+  }
+
+  /**
+   * OpenAPI schema (resolved lazily)
+   */
   getSchema(): OpenAPIRouteSchema {
     return {
       tags: [String(this.collection)],
       summary: `List ${String(this.collection)}`,
       description: `List ${String(this.collection)} with pagination and filters`,
       request: {
-        query: this.requestBodySchema,
+        query: this.querySchema,
       },
       responses: {
         '200': {
           description: 'List response',
           ...contentJson(
             z.object({
-              success: z.boolean(),
+              success: z.literal(true),
               data: z.array(this.responseSchema),
               meta: z.object({
                 total: z.number().int(),
                 page: z.number().int(),
                 per_page: z.number().int(),
+                total_pages: z.number().int(),
               }),
             }),
           ),
         },
+        '400': {
+          description: 'Validation error',
+          ...contentJson(
+            z.object({
+              success: z.literal(false),
+              errors: z.array(
+                z.object({
+                  code: z.string(),
+                  message: z.string(),
+                }),
+              ),
+            }),
+          ),
+        },
       },
-      ...super.getSchema(),
     }
   }
 
-  /**
-   * Convert incoming filter (a user-supplied JSON object) into a Prisma `where` object.
-   * We accept a Prisma-like shape and pass it through after minimal validation.
-   */
-  protected buildWhere(
-    filter: Record<string, unknown>,
-  ): Record<string, unknown> {
-    // For now assume the incoming shape is already Prisma-compatible.
-    return filter
-  }
+  async handle(c: AppContext) {
+    const validated = await this.getValidatedData()
+    const { query } = validated
 
-  async handle(c: AppContext): Promise<{
-    success: boolean
-    data: unknown[]
-    meta: { total: number; page: number; per_page: number }
-  }> {
-    const body = (await this.getValidatedData()) as ValidatedData
-    const { filter, page, per_page, skip, take, orderBy } = body.body
+    const page = Math.max(1, Number(query.page ?? 1))
+    const per_page = Math.min(
+      Number(query.per_page ?? this.pageSize),
+      this.maxPageSize,
+    )
 
-    const prismaWhere = this.buildWhere(filter || {})
+    const skip = (page - 1) * per_page
+    const take = per_page
 
-    const effectiveSkip =
-      typeof skip === 'number' ? skip : (page - 1) * per_page
-    const effectiveTake = typeof take === 'number' ? take : per_page
+    const where = queryStringToPrismaWhere<TWhereInput>(query.filter)
+    const params = await this.preAction({
+      where,
+      skip,
+      take,
+      orderBy: query.orderBy as TOrderByInput,
+    })
 
-    // @ts-expect-error dynamic model access
-    const [data, total] = await Promise.all([
-      // @ts-expect-error dynamic model access
-      c.env.PRISMA[this.collection].findMany({
-        where: prismaWhere,
-        skip: effectiveSkip,
-        take: effectiveTake,
-        orderBy,
-      }),
-      // @ts-expect-error dynamic model access
-      c.env.PRISMA[this.collection].count({ where: prismaWhere }),
-    ])
+    const { data, total } = await this.action(c, params)
 
-    return {
-      success: true,
-      data,
-      meta: { total, page: page ?? 1, per_page: effectiveTake },
-    }
+    const transformedData = await this.afterAction(data)
+
+    return c.json(
+      {
+        success: true,
+        data: transformedData,
+        meta: {
+          page,
+          per_page,
+          total,
+          total_pages: Math.ceil(total / per_page),
+        },
+      },
+      200,
+    )
   }
 }

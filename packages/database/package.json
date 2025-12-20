@@ -12,7 +12,8 @@
     "migration:create": "wrangler d1 migrations create ajebo-camp-dev-db $NAME",
     "migration:list": "wrangler d1 migrations list ajebo-camp-dev-db --local",
     "migration:apply": "echo y | wrangler d1 migrations apply ajebo-camp-dev-db --persist-to .local_db --local",
-    "migrate:prisma": "npx prisma migrate diff --from-empty --to-schema ./prisma/schema.prisma --script --output",
+    "migrate:prisma-first": "npx prisma migrate diff --from-empty --to-schema ./prisma/schema.prisma --script --output",
+    "migrate:prisma-afterwards": "npx prisma migrate diff --from-config-datasource --to-schema ./prisma/schema.prisma --script --output",
     "test": "vitest",
     "cf-typegen": "wrangler types"
   },
@@ -21,15 +22,15 @@
     "@cloudflare/vitest-pool-workers": "^0.7.5",
     "@cloudflare/workers-types": "^4.20250421.0",
     "dotenv": "^17.2.3",
-    "prisma": "^7.1.0",
+    "prisma": "^7.2.0",
     "prisma-json-types-generator": "^4.0.0-beta.2",
     "typescript": "^5.5.2",
     "vitest": "~3.0.7",
     "wrangler": "^4.12.0"
   },
   "dependencies": {
-    "@prisma/adapter-d1": "^7.1.0",
-    "@prisma/client": "^7.1.0",
+    "@prisma/adapter-d1": "^7.2.0",
+    "@prisma/client": "^7.2.0",
     "zod": "^3.22.3"
   }
 }

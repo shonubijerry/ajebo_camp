@@ -17,6 +17,7 @@ model Entity {
   name       String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  deleted_at DateTime?
   Camps      Camp[]
 }
 
@@ -25,6 +26,7 @@ model District {
   name       String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  deleted_at DateTime?
 }
 
 model Camp {
@@ -40,6 +42,7 @@ model Camp {
   end_date   DateTime
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  deleted_at DateTime?
 
   entity      Entity            @relation(fields: [entity_id], references: [id])
   allocations Camp_Allocation[]
@@ -63,6 +66,7 @@ model Camp_Allocation {
   allocation_type CampAllocationType @default(random)
   created_at      DateTime           @default(now())
   updated_at      DateTime           @updatedAt
+  deleted_at      DateTime?
 
   camp Camp @relation(fields: [camp_id], references: [id])
 
@@ -81,9 +85,11 @@ model User {
   lastname   String
   email      String   @unique
   phone      String?
+  password   String?
   role       UserRole @default(user)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  deleted_at DateTime?
 
   campites Campite[]
   payments Payment[]
@@ -114,6 +120,7 @@ model Campite {
   checkin_at      DateTime?
   created_at      DateTime    @default(now())
   updated_at      DateTime    @updatedAt
+  deleted_at      DateTime?
 
   camp Camp @relation(fields: [camp_id], references: [id])
   user User @relation(fields: [user_id], references: [id])
@@ -130,6 +137,7 @@ model Payment {
   camp_id    String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  deleted_at DateTime?
 
   user User @relation(fields: [user_id], references: [id])
   camp Camp @relation(fields: [camp_id], references: [id])

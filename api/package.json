@@ -13,7 +13,7 @@
 	},
 	"dependencies": {
 		"@ajebo_camp/database": "*",
-		"@hono/zod-openapi": "^1.1.5",
+		"@hono/zod-openapi": "^0.9.10",
 		"chanfana": "2.8.3",
 		"hono": "4.10.7",
 		"prettier-plugin-organize-imports": "^4.3.0",

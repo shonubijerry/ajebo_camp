@@ -77,17 +77,17 @@ app.use('*', async (c, next) => {
 
 // Register endpoints
 app.post('/users', CreateUserEndpoint)
-app.post('/users/list', ListUsersEndpoint)
-app.post('/users/get', GetUserEndpoint)
-app.post('/users/update', UpdateUserEndpoint)
-app.post('/users/delete', DeleteUserEndpoint)
+app.get('/users/list', ListUsersEndpoint)
+// app.post('/users/get', GetUserEndpoint)
+app.patch('/users/:id', UpdateUserEndpoint)
+app.delete('/users/:id', DeleteUserEndpoint)
 
 // Create endpoints for other collections
-app.post('/camps', CreateCampEndpoint)
-app.post('/camp_allocations', CreateCampAllocationEndpoint)
-app.post('/campites', CreateCampiteEndpoint)
-app.post('/payments', CreatePaymentEndpoint)
-app.post('/entities', CreateEntityEndpoint)
-app.post('/districts', CreateDistrictEndpoint)
+// app.post('/camps', CreateCampEndpoint)
+// app.post('/camp_allocations', CreateCampAllocationEndpoint)
+// app.post('/campites', CreateCampiteEndpoint)
+// app.post('/payments', CreatePaymentEndpoint)
+// app.post('/entities', CreateEntityEndpoint)
+// app.post('/districts', CreateDistrictEndpoint)
 
 export default app

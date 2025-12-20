@@ -12,11 +12,10 @@
     "dev": "concurrently -n 'DB,API' -c 'yellow,blue,green' 'cd packages/database && npm run dev' 'cd api && npm run dev'"
   },
   "devDependencies": {
-    "globals": "^16.5.0",
     "typescript": "5.9.3"
   },
   "workspaces": [
     "packages/*",
-    "api/*"
+    "api"
   ]
 }

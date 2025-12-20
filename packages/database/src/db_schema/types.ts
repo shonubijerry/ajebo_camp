@@ -6,7 +6,7 @@ const defaultDate = new Date().toISOString().slice(0, 10)
 
 export const dateSchema = z
   .string()
-  .date()
+  .datetime()
   .default(defaultDate)
   .describe('Defaults to today')
 

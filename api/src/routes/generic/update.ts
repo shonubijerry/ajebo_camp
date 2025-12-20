@@ -2,39 +2,109 @@ import { OpenAPIRoute, OpenAPIRouteSchema, contentJson } from 'chanfana'
 import { z } from 'zod'
 import { AppContext } from '../..'
 import { Env } from '../../env'
+import { AwaitedReturnType } from './types'
 
-export const updateRequestSchema = z.object({ id: z.string(), data: z.record(z.any()) })
+/**
+ * Generic UpdateEndpoint for streamlined resource updates.
+ *
+ * @template TRequestSchema Zod schema for request body
+ * @template TUpdateInput   Type passed to Prisma (usually z.input<TRequestSchema>)
+ */
+export abstract class UpdateEndpoint<
+  TUpdateInput = z.AnyZodObject,
+> extends OpenAPIRoute {
+  /** Zod schema for request body validation */
+  abstract requestBodySchema: typeof this.schema.request
 
-export abstract class UpdateEndpoint<T, U> extends OpenAPIRoute {
-  abstract requestBodySchema: z.ZodTypeAny
-  abstract responseSchema: z.ZodTypeAny
+  /** Zod schema for success response */
+  abstract responseSchema: z.AnyZodObject
+
+  /** Prisma collection name (e.g. 'user', 'campaign') */
   abstract collection: keyof Env['PRISMA']
 
+  /**
+   * Optional hook to mutate or replace input before persistence
+   */
+  async preAction(data: {
+    query?: any
+    params?: { id: string } & Record<string, string>
+    headers: any
+    body?: TUpdateInput
+  }) {
+    return data
+  }
+
+  /**
+   * Prisma update action
+   */
+  async action(
+    c: AppContext,
+    id?: string,
+    data?: AwaitedReturnType<typeof this.preAction>['body'],
+  ): Promise<unknown> {
+    throw new Error('action not implemented for ' + this.constructor.name)
+  }
+
+  /**
+   * Optional hook to transform database result before responding
+   */
+  async afterAction(data: AwaitedReturnType<typeof this.action>) {
+    return data
+  }
+
+  /**
+   * OpenAPI schema (resolved lazily)
+   */
   getSchema(): OpenAPIRouteSchema {
     return {
       tags: [String(this.collection)],
       summary: `Update ${String(this.collection)}`,
-      request: { body: contentJson(this.requestBodySchema) },
+      description: `Updates an existing ${String(this.collection)} in the system.`,
+      request: this.requestBodySchema,
       responses: {
-        '200': { description: 'Update success', ...contentJson(this.responseSchema) },
-        '400': { description: 'Validation error' },
+        '200': {
+          description: `${String(this.collection)} updated successfully`,
+          ...contentJson(this.responseSchema),
+        },
+        '400': {
+          description: 'Validation error',
+          ...contentJson(
+            z.object({
+              success: z.literal(false),
+              errors: z.array(
+                z.object({
+                  code: z.string(),
+                  message: z.string(),
+                }),
+              ),
+            }),
+          ),
+        },
+        '404': {
+          description: 'Resource not found',
+          ...contentJson(
+            z.object({
+              success: z.literal(false),
+              error: z.string(),
+            }),
+          ),
+        },
       },
     }
   }
 
-  protected async transformData(data: any) {
-    return data
-  }
-
   async handle(c: AppContext) {
-    const body = await this.getValidatedData()
-    const { id, data } = body.body as { id: string; data: Record<string, unknown> }
+    const validated = await this.getValidatedData()
+    const input = await this.preAction(validated)
 
-    const toSave = await this.transformData(data)
+    const dbResult = await this.action(c, input.params?.id, input.body)
 
-    // @ts-ignore dynamic model access
-    const updated = await c.env.PRISMA[this.collection].update({ where: { id }, data: toSave })
-
-    return { success: true, data: updated }
+    return c.json(
+      {
+        success: true,
+        data: await this.afterAction(dbResult),
+      },
+      200,
+    )
   }
 }
