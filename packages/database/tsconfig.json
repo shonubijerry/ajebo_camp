@@ -40,5 +40,5 @@
 		"skipLibCheck": true
 	},
 	"exclude": ["test"],
-	"include": ["src/**/*.ts", "src/prisma.d.ts", "worker-configuration.d.ts", "../../api/src/routes/generic/create.ts"]
+	"include": ["src/**/*.ts", "worker-configuration.d.ts"]
 }

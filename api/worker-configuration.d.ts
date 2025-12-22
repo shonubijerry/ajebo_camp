@@ -1,5 +1,5 @@
 /* eslint-disable */
-// Runtime types generated with workerd@1.20251202.0 2025-10-08 nodejs_compat
+// Runtime types generated with workerd@1.20251210.0 2025-10-08 nodejs_compat
 // Begin runtime types
 /*! *****************************************************************************
 Copyright (c) Cloudflare. All rights reserved.
@@ -3267,7 +3267,7 @@ interface WorkerStubEntrypointOptions {
     props?: any;
 }
 interface WorkerLoader {
-    get(name: string, getCode: () => WorkerLoaderWorkerCode | Promise<WorkerLoaderWorkerCode>): WorkerStub;
+    get(name: string | null, getCode: () => WorkerLoaderWorkerCode | Promise<WorkerLoaderWorkerCode>): WorkerStub;
 }
 interface WorkerLoaderModule {
     js?: string;
@@ -8449,7 +8449,7 @@ type AiOptions = {
      * Maximum 5 tags are allowed each request.
      * Duplicate tags will removed.
      */
-    tags: string[];
+    tags?: string[];
     gateway?: GatewayOptions;
     returnRawResponse?: boolean;
     prefix?: string;

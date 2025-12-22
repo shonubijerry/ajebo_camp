@@ -1,16 +1,20 @@
 import { z } from "zod";
-import { DefaultSchema } from "./DefaultSchema";
 
-export const CampAllocationTypeSchema = z.enum(['random', 'definite']);
+export const DefaultSchema = z.object({
+  created_at: z.coerce.date(), // Use z.coerce.date() to handle both Date objects and date strings
+  updated_at: z.coerce.date(),
+});
 
-export const UserRoleSchema = z.enum(['user', 'staff', 'admin']);
+export const CampAllocationTypeSchema = z.enum(["random", "definite"]);
 
-export const CampiteTypeSchema = z.enum(['regular', 'premium']);
+export const UserRoleSchema = z.enum(["user", "staff", "admin"]);
+
+export const CampiteTypeSchema = z.enum(["regular", "premium"]);
 
 export const DistrictSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
-    ...DefaultSchema.shape,
+  ...DefaultSchema.shape,
 });
 
 export const EntitySchema = z.object({
@@ -38,7 +42,7 @@ export const CampAllocationSchema = z.object({
   camp_id: z.string().uuid(),
   name: z.string(),
   items: z.array(z.string()), // For the Prisma Json type with string[] content
-  allocation_type: CampAllocationTypeSchema.default('random'),
+  allocation_type: CampAllocationTypeSchema.default("random"),
   ...DefaultSchema.shape,
 });
 
@@ -53,7 +57,7 @@ export const CampiteSchema = z.object({
   camp_id: z.string().uuid(),
   user_id: z.string().uuid(),
   payment_ref: z.string().nullable(),
-  type: CampiteTypeSchema.default('regular'),
+  type: CampiteTypeSchema.default("regular"),
   amount: z.number().int().nullable(), // premium only
   allocated_items: z.string(), // comma separated list
   checkin_at: z.coerce.date().nullable(),
@@ -75,6 +79,11 @@ export const UserSchema = z.object({
   lastname: z.string(),
   email: z.string().email(),
   phone: z.string().nullable(),
-  role: UserRoleSchema.default('user'),
+  role: UserRoleSchema.default("user"),
+  meta: z
+    .object({
+      forgot_token: z.string(),
+    })
+    .partial(),
   ...DefaultSchema.shape,
 });

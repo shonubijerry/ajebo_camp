@@ -1,81 +1,60 @@
-import { OpenAPIRoute, OpenAPIRouteSchema } from 'chanfana'
+import { contentJson, OpenAPIRoute, OpenAPIRouteSchema } from 'chanfana'
+import { GenericError } from './query'
 import { z } from 'zod'
+import { OpenAPIEndpoint, Prisma } from '@ajebo_camp/database'
 import { AppContext } from '../..'
-import { Env } from '../../env'
 import { AwaitedReturnType } from './types'
+import { successRes } from '../../lib/response'
 
-export abstract class DeleteEndpoint extends OpenAPIRoute {
-  abstract collection: keyof Env['PRISMA']
-
+export abstract class DeleteEndpoint extends OpenAPIEndpoint {
   /**
-   * Optional hook to mutate or replace input before persistence
+   * OpenAPI schema (resolved lazily)
    */
-  async preAction(data: {
-    query?: any
-    params?: { id: string } & Record<string, string>
-    headers: any
-  }) {
-    const res = {
-      where: { id: data.params?.id },
-      data: data.query.soft
-        ? { deleted_at: new Date().toISOString() }
-        : undefined,
-    }
+  async preAction() {
+    const input = await this.getValidatedData()
 
-    return res
+    return {
+      where: { id: input.params.id },
+      ...(input.query.soft && {
+        data: { deleted_at: new Date().toISOString() },
+      }),
+    }
   }
 
-  /**
-   * Prisma update action
-   */
   async action(
     c: AppContext,
-    dbQuery: AwaitedReturnType<typeof this.preAction>,
-  ): Promise<unknown> {
-    throw new Error('action not implemented for ' + this.constructor.name)
-  }
-
-  /**
-   * Optional hook to transform database result before responding
-   */
-  async afterAction(data: AwaitedReturnType<typeof this.action>) {
-    return data
+    data: AwaitedReturnType<typeof this.preAction>,
+  ): Promise<Response | unknown> {
+    throw new Error('action implemented for ' + this.constructor.name)
   }
 
   getSchema(): OpenAPIRouteSchema {
     return {
-      tags: [String(this.collection)],
-      summary: `Delete ${String(this.collection)}`,
-      request: {
-        params: z.object({
-          id: z.string(),
-        }),
-        query: z.object({
-          soft: z.boolean().optional().default(false),
-        }),
-      },
+      request: this.meta.requestSchema.shape,
+      tags: this.meta.tag ? [this.meta.tag] : [String(this.meta.collection)],
+      summary:
+        this.meta.summary ?? `Delete ${this.meta.collection?.toLowerCase()}`,
+      description:
+        this.meta.description ??
+        `Endpoint to delete ${this.meta.collection?.toLowerCase()}`,
       responses: {
         '200': {
-          description: 'Delete success',
+          description: `Operation successfully`,
+          ...contentJson(this.meta.responseSchema),
         },
-        '400': { description: 'Bad request' },
+        '400': {
+          description: 'Validation error',
+          ...contentJson(GenericError),
+        },
+        '401': {
+          description: 'Validation error',
+          ...contentJson(GenericError),
+        },
+        '500': {
+          description: 'Server error',
+          ...contentJson(GenericError),
+        },
       },
     }
-  }
-
-  /**
-   * Soft delete strategy: attempt to update a `deleted_at` timestamp if present.
-   * If the model does not have that field, the update will fail — in that case the
-   * implementation falls back to hard delete.
-   */
-  async handle(c: AppContext) {
-    const validated = await this.getValidatedData()
-    const input = await this.preAction(validated)
-
-    await this.action(c, input)
-
-    return c.json({
-      success: true,
-    })
   }
 }

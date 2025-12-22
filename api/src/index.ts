@@ -1,9 +1,7 @@
 import { PrismaClient } from '@ajebo_camp/database'
-import { ApiException, fromHono } from 'chanfana'
+import { ApiException, fromHono, MultiException } from 'chanfana'
 import { Context, Hono } from 'hono'
-import { ContentfulStatusCode } from 'hono/utils/http-status'
 import { Env } from './env'
-import { WorkerEntrypoint } from 'cloudflare:workers'
 import {
   CreateUserEndpoint,
   ListUsersEndpoint,
@@ -11,19 +9,53 @@ import {
   UpdateUserEndpoint,
   DeleteUserEndpoint,
 } from './routes/users'
-import { CreateCampEndpoint } from './routes/camps'
-import { CreateCampAllocationEndpoint } from './routes/camp_allocations'
-import { CreateCampiteEndpoint } from './routes/campites'
-import { CreatePaymentEndpoint } from './routes/payments'
-import { CreateEntityEndpoint } from './routes/entities'
-import { CreateDistrictEndpoint } from './routes/districts'
+import LoginEndpoint from './routes/auth/login'
+import {
+  CreateCampEndpoint,
+  DeleteCampEndpoint,
+  GetCampEndpoint,
+  ListCampsEndpoint,
+  UpdateCampEndpoint,
+} from './routes/camps'
+import {
+  CreateCampAllocationEndpoint,
+  DeleteCampAllocationEndpoint,
+  GetCampAllocationEndpoint,
+  ListCampAllocationsEndpoint,
+  UpdateCampAllocationEndpoint,
+} from './routes/camp_allocations'
+import {
+  CreateCampiteEndpoint,
+  DeleteCampiteEndpoint,
+  GetCampiteEndpoint,
+  ListCampitesEndpoint,
+  UpdateCampiteEndpoint,
+} from './routes/campites'
+import { GetPaymentEndpoint, ListPaymentsEndpoint } from './routes/payments'
+import {
+  CreateEntityEndpoint,
+  DeleteEntityEndpoint,
+  GetEntityEndpoint,
+  ListEntitiesEndpoint,
+  UpdateEntityEndpoint,
+} from './routes/entities'
+import {
+  CreateDistrictEndpoint,
+  DeleteDistrictEndpoint,
+  GetDistrictEndpoint,
+  ListDistrictsEndpoint,
+  UpdateDistrictEndpoint,
+} from './routes/districts'
+import { authMiddleware } from './middlewares/auth'
+import { ForgotPassword } from './routes/auth/forgot_pass/forgot_password'
+import { ChangePasswordPublic } from './routes/auth/forgot_pass/change_password'
 
 export type AppBindings = { Bindings: Env }
 export type AppContext = Context<AppBindings>
 
 // Setup OpenAPI registry
-const app = fromHono(new Hono<AppBindings>(), {
-  docs_url: '/',
+const baseApp = fromHono(new Hono<AppBindings>(), {
+  docs_url: '/api/v1/internal-doc',
   schema: {
     info: {
       title: 'Ajebo Camp Management System',
@@ -35,7 +67,7 @@ const app = fromHono(new Hono<AppBindings>(), {
 })
 
 // Bot middleware and reject if score is lower than 30
-app.use('*', async (c, next) => {
+baseApp.use('*', async (c, next) => {
   const botScore = c.req.header('cf-bot-score')
   if (botScore && Number(botScore) < 30) {
     return c.json(
@@ -49,16 +81,29 @@ app.use('*', async (c, next) => {
   await next()
 })
 
-app.onError((err, c) => {
+baseApp.onError((err, c) => {
   if (err instanceof ApiException) {
+    console.log(err)
     // If it's a Chanfana ApiException, let Chanfana handle the response
     return c.json(
-      { success: false, errors: err.buildResponse() },
-      err.status as ContentfulStatusCode,
+      {
+        success: false,
+        errors: err.buildResponse(),
+      }
     )
   }
 
-  console.error('Global error handler caught:', err) // Log the error if it's not known
+  if (err instanceof MultiException) {
+    // If it's a Chanfana ApiException, let Chanfana handle the response
+    return c.json(
+      {
+        success: false,
+        errors: err.message,
+      }
+    )
+  }
+
+  console.error('Global error caught:', err) // Log the error if it's not known
 
   // For other errors, return a generic 500 response
   return c.json(
@@ -70,24 +115,70 @@ app.onError((err, c) => {
   )
 })
 
-app.use('*', async (c, next) => {
+baseApp.use('*', async (c, next) => {
   c.env.PRISMA = c.env.DATABASE.prisma() as PrismaClient
   await next()
 })
 
 // Register endpoints
+
+const app = fromHono(new Hono<AppBindings>())
+
+// Public routes
+app.post('/auth/login', LoginEndpoint)
+
+
+app.post('/forgot', ForgotPassword)
+app.post('/forgot/change-password/:code', ChangePasswordPublic)
+
+// Authenticate all subsequent requests using JWT in Authorization header
+app.use(authMiddleware)
+
 app.post('/users', CreateUserEndpoint)
 app.get('/users/list', ListUsersEndpoint)
-// app.post('/users/get', GetUserEndpoint)
+app.get('/users/:id', GetUserEndpoint)
 app.patch('/users/:id', UpdateUserEndpoint)
 app.delete('/users/:id', DeleteUserEndpoint)
 
-// Create endpoints for other collections
-// app.post('/camps', CreateCampEndpoint)
-// app.post('/camp_allocations', CreateCampAllocationEndpoint)
-// app.post('/campites', CreateCampiteEndpoint)
-// app.post('/payments', CreatePaymentEndpoint)
-// app.post('/entities', CreateEntityEndpoint)
-// app.post('/districts', CreateDistrictEndpoint)
+// // Districts
+app.post('/districts', CreateDistrictEndpoint)
+app.get('/districts/list', ListDistrictsEndpoint)
+app.get('/districts/:id', GetDistrictEndpoint)
+app.patch('/districts/:id', UpdateDistrictEndpoint)
+app.delete('/districts/:id', DeleteDistrictEndpoint)
 
-export default app
+// Entities
+app.post('/entities', CreateEntityEndpoint)
+app.get('/entities/list', ListEntitiesEndpoint)
+app.get('/entities/:id', GetEntityEndpoint)
+app.patch('/entities/:id', UpdateEntityEndpoint)
+app.delete('/entities/:id', DeleteEntityEndpoint)
+
+// Payments
+app.get('/payments/list', ListPaymentsEndpoint)
+app.get('/payments/:id', GetPaymentEndpoint)
+
+// Campites
+app.post('/campites', CreateCampiteEndpoint)
+app.get('/campites/list', ListCampitesEndpoint)
+app.get('/campites/:id', GetCampiteEndpoint)
+app.patch('/campites/:id', UpdateCampiteEndpoint)
+app.delete('/campites/:id', DeleteCampiteEndpoint)
+
+// Camp Allocations
+app.post('/camp-allocations', CreateCampAllocationEndpoint)
+app.get('/camp-allocations/list', ListCampAllocationsEndpoint)
+app.get('/camp-allocations/:id', GetCampAllocationEndpoint)
+app.patch('/camp-allocations/:id', UpdateCampAllocationEndpoint)
+app.delete('/camp-allocations/:id', DeleteCampAllocationEndpoint)
+
+// Camps
+app.post('/camps', CreateCampEndpoint)
+app.get('/camps/list', ListCampsEndpoint)
+app.get('/camps/:id', GetCampEndpoint)
+app.patch('/camps/:id', UpdateCampEndpoint)
+app.delete('/camps/:id', DeleteCampEndpoint)
+
+baseApp.route('/api/v1', app)
+
+export default baseApp

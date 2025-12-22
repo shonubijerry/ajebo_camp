@@ -1,3 +1,7 @@
+import { UserSchema } from "./db_schema";
+
 declare global {
-  namespace PrismaJson {}
+  namespace PrismaJson {
+    type UserMeta = typeof UserSchema.shape.meta._type;
+  }
 }

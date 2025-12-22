@@ -1,12 +1,109 @@
 import { z } from 'zod'
-import { CreateEndpoint } from './generic/create'
+import { OpenAPIEndpoint } from './generic/create'
+import { ListEndpoint, listRequestQuerySchema } from './generic/list'
+import { GetEndpoint } from './generic/get'
+import { UpdateEndpoint } from './generic/update'
+import { DeleteEndpoint } from './generic/delete'
 import { requestBodies, responseBodies } from '../schemas'
+import { AppContext } from '..'
+import { Prisma } from '@ajebo_camp/database'
+import { AwaitedReturnType } from './generic/types'
 
-export class CreateCampAllocationEndpoint extends CreateEndpoint<
-  z.infer<typeof requestBodies.camp_Allocation>,
-  'camp_Allocation'
-> {
-  collection = 'camp_Allocation' as const
-  requestBodySchema = requestBodies.camp_Allocation
-  responseSchema = responseBodies.camp_Allocation
+const campAllocationMeta = {
+  collection: 'Camp_Allocation' as const,
+  responseSchema: responseBodies.camp_Allocation,
+}
+
+export class CreateCampAllocationEndpoint extends OpenAPIEndpoint {
+  meta = {
+    ...campAllocationMeta,
+    requestSchema: z.object({
+      body: requestBodies.camp_Allocation,
+    }),
+  }
+
+  async action(c: AppContext, { body }: typeof this.meta.requestSchema._type) {
+    return c.env.PRISMA.camp_Allocation.create({ data: body })
+  }
+}
+
+export class ListCampAllocationsEndpoint extends ListEndpoint<Prisma.Camp_AllocationWhereInput> {
+  meta = {
+    ...campAllocationMeta,
+    requestSchema: listRequestQuerySchema,
+  }
+  protected pageSize = 25
+
+  async action(
+    c: AppContext,
+    params: AwaitedReturnType<typeof this.preAction>,
+  ) {
+    const [data, total] = await Promise.all([
+      c.env.PRISMA.camp_Allocation.findMany({
+        where: params.where,
+        skip: params.skip,
+        take: params.take,
+        orderBy: params.orderBy,
+      }),
+      c.env.PRISMA.camp_Allocation.count({ where: params.where }),
+    ])
+
+    return { data, total }
+  }
+}
+
+export class GetCampAllocationEndpoint extends GetEndpoint {
+  meta = {
+    ...campAllocationMeta,
+    requestSchema: z.object({
+      params: responseBodies.camp_Allocation.pick({
+        id: true,
+      }),
+    }),
+  }
+
+  action(c: AppContext, { params }: typeof this.meta.requestSchema._type) {
+    return c.env.PRISMA.camp_Allocation.findFirst({ where: { id: params.id } })
+  }
+}
+
+export class UpdateCampAllocationEndpoint extends UpdateEndpoint {
+  meta = {
+    ...campAllocationMeta,
+    requestSchema: z.object({
+      params: responseBodies.camp_Allocation.pick({ id: true }),
+      body: requestBodies.camp_Allocation,
+    }),
+  }
+
+  async action(
+    c: AppContext,
+    { params, body }: typeof this.meta.requestSchema._type,
+  ) {
+    return c.env.PRISMA.camp_Allocation.update({
+      where: { id: params.id },
+      data: body,
+    })
+  }
+}
+
+export class DeleteCampAllocationEndpoint extends DeleteEndpoint {
+  meta = {
+    ...campAllocationMeta,
+    requestSchema: z.object({
+      params: responseBodies.camp_Allocation.pick({ id: true }),
+      query: z
+        .object({
+          soft: z.boolean().optional(),
+        })
+    }),
+  }
+
+  action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {
+    const { data, where } = input
+    if (data) {
+      return c.env.PRISMA.camp_Allocation.update({ where, data })
+    }
+    return c.env.PRISMA.camp_Allocation.delete({ where })
+  }
 }

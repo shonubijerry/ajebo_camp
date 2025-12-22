@@ -3,16 +3,18 @@
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  */
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"compatibility_date": "2025-10-08",
-  "compatibility_flags": ["nodejs_compat"],
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "compatibility_date": "2025-10-08",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "account_id": "e5d5d460d5114f727f30dc01a4b9e363",
-	"main": "src/index.ts",
-	"name": "ajebo_camp_api",
-	"upload_source_maps": true,
-	"observability": {
-		"enabled": true
-	},
+  "main": "src/index.ts",
+  "name": "ajebo_camp_api",
+  "upload_source_maps": true,
+  "observability": {
+    "enabled": true
+  },
   "vars": {
     "ENVIRONMENT": "development"
   },

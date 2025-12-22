@@ -9,13 +9,15 @@
   "scripts": {
     "format": "prettier  --config .prettierrc --write '*.{json,js}' 'src/**/*.{js,ts}'",
     "lint": "eslint . --max-warnings 0 --fix",
-    "dev": "concurrently -n 'DB,API' -c 'yellow,blue,green' 'cd packages/database && npm run dev' 'cd api && npm run dev'"
+    "dev": "concurrently --kill-others -n 'DB,API' -c 'yellow,blue,green' 'cd packages/database && npm run dev' 'cd api && npm run dev'"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "typescript": "5.9.3"
   },
   "workspaces": [
     "packages/*",
-    "api"
+    "api",
+    "ui"
   ]
 }

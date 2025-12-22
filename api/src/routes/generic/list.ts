@@ -2,7 +2,10 @@ import { OpenAPIRoute, OpenAPIRouteSchema, contentJson } from 'chanfana'
 import { z } from '@hono/zod-openapi'
 import { AppContext } from '../..'
 import { Env } from '../../env'
-import { queryStringToPrismaWhere } from './query'
+import { GenericError, queryStringToPrismaWhere } from './query'
+import { OpenAPIEndpoint } from './create'
+import { Prisma } from '@ajebo_camp/database'
+import { AwaitedReturnType } from './types'
 
 /* ---------------------------------------------
  * List request query schema
@@ -29,18 +32,16 @@ export const listRequestQuerySchema = z.object({
  * @template TWhereInput     Prisma where input type
  * @template TOrderByInput   Prisma orderBy input type
  */
-export abstract class ListEndpoint<
-  TWhereInput = any,
-  TOrderByInput = any,
-> extends OpenAPIRoute {
+export abstract class ListEndpoint<TWhereInput> extends OpenAPIEndpoint {
   /** Zod schema for query parameters */
-  querySchema = listRequestQuerySchema
-
-  /** Zod schema for individual item response */
-  abstract responseSchema: z.ZodTypeAny
-
-  /** Prisma collection name (e.g. 'user', 'campaign') */
-  abstract collection: keyof Env['PRISMA']
+  abstract meta: {
+    requestSchema: typeof listRequestQuerySchema
+    responseSchema: z.AnyZodObject
+    tag?: string
+    summary?: string
+    description?: string
+    collection?: Prisma.ModelName
+  }
 
   /** Default page size */
   protected pageSize = 25
@@ -49,80 +50,9 @@ export abstract class ListEndpoint<
   protected maxPageSize = 100
 
   /**
-   * Optional hook to mutate or replace where input before query
+   * Optional hook to mutate or replace input before persistence
    */
-  async preAction(params: {
-    where: TWhereInput
-    skip: number
-    take: number
-    orderBy?: TOrderByInput
-  }) {
-    return params
-  }
-
-  /**
-   * Prisma list action - queries the database
-   */
-  async action(
-    c: AppContext,
-    params: Awaited<ReturnType<typeof this.preAction>>,
-  ): Promise<{ data: unknown[]; total: number }> {
-    throw new Error('action not implemented for ' + this.constructor.name)
-  }
-
-  /**
-   * Optional hook to transform database results before responding
-   */
-  async afterAction(data: Awaited<ReturnType<typeof this.action>>['data']) {
-    return data
-  }
-
-  /**
-   * OpenAPI schema (resolved lazily)
-   */
-  getSchema(): OpenAPIRouteSchema {
-    return {
-      tags: [String(this.collection)],
-      summary: `List ${String(this.collection)}`,
-      description: `List ${String(this.collection)} with pagination and filters`,
-      request: {
-        query: this.querySchema,
-      },
-      responses: {
-        '200': {
-          description: 'List response',
-          ...contentJson(
-            z.object({
-              success: z.literal(true),
-              data: z.array(this.responseSchema),
-              meta: z.object({
-                total: z.number().int(),
-                page: z.number().int(),
-                per_page: z.number().int(),
-                total_pages: z.number().int(),
-              }),
-            }),
-          ),
-        },
-        '400': {
-          description: 'Validation error',
-          ...contentJson(
-            z.object({
-              success: z.literal(false),
-              errors: z.array(
-                z.object({
-                  code: z.string(),
-                  message: z.string(),
-                }),
-              ),
-            }),
-          ),
-        },
-      },
-    }
-  }
-
-  async handle(c: AppContext) {
+  async preAction() {
     const validated = await this.getValidatedData()
     const { query } = validated
 
@@ -133,29 +63,75 @@ export abstract class ListEndpoint<
     )
 
     const skip = (page - 1) * per_page
-    const take = per_page
 
     const where = queryStringToPrismaWhere<TWhereInput>(query.filter)
-    const params = await this.preAction({
-      where,
+
+    return {
+      page,
+      take: per_page,
       skip,
-      take,
-      orderBy: query.orderBy as TOrderByInput,
-    })
+      where,
+      orderBy: query.orderBy,
+    }
+  }
 
-    const { data, total } = await this.action(c, params)
+  async action(
+    c: AppContext,
+    data: AwaitedReturnType<typeof this.preAction>,
+  ): Promise<Response | { data: unknown; total: number }> {
+    throw new Error('action implemented for ' + this.constructor.name)
+  }
 
-    const transformedData = await this.afterAction(data)
+  getSchema() {
+    return {
+      tags: this.meta.tag ? [this.meta.tag] : [String(this.meta.collection)],
+      summary:
+        this.meta.summary ?? `List ${this.meta.collection?.toLowerCase()}`,
+      description:
+        this.meta.description ??
+        `Endpoint to list ${this.meta.collection?.toLowerCase()}`,
+      request: {
+        params: listRequestQuerySchema,
+      },
+      responses: {
+        '200': {
+          description: `Operation successfully`,
+          ...contentJson(this.meta.responseSchema),
+        },
+        '400': {
+          description: 'Validation error',
+          ...contentJson(GenericError),
+        },
+        '401': {
+          description: 'Validation error',
+          ...contentJson(GenericError),
+        },
+        '500': {
+          description: 'Server error',
+          ...contentJson(GenericError),
+        },
+      },
+    }
+  }
+
+  async handle(c: AppContext) {
+    const params = await this.preAction()
+
+    const result = await this.action(c, params)
+
+    if (result instanceof Response) {
+      return result
+    }
 
     return c.json(
       {
         success: true,
-        data: transformedData,
+        data: result.data,
         meta: {
-          page,
-          per_page,
-          total,
-          total_pages: Math.ceil(total / per_page),
+          page: params.page,
+          per_page: params.take,
+          total: result.total,
+          total_pages: Math.ceil(result.total / params.take),
         },
       },
       200,

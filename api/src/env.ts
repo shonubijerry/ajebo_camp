@@ -5,4 +5,7 @@ export type Env = {
   SENTRY_RELEASE: string
   DATABASE: Service<dbService>
   PRISMA: PrismaClient
+  JWT_SECRET: string
+  SALT_ROUND: string
+  RESEND_API_KEY: string
 }

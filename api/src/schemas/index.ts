@@ -8,7 +8,7 @@ const isoDate = z
 export const userCreate = z.object({
   firstname: z.string().min(1).max(100),
   lastname: z.string().min(1).max(100),
-  email: z.string().email().min(1).transform((v) => v.toLowerCase()),
+  email: z.string().trim().email().min(1).transform((v) => v.toLowerCase()),
   phone: z.string().optional().nullable(),
   role: z.enum(['user', 'staff', 'admin']).optional().default('user'),
 })
@@ -87,7 +87,7 @@ export const campiteCreate = z.object({
   checkin_at: isoDate.optional().nullable(),
 })
 export const campiteResponse = campiteCreate.extend({
-  id: z.number(),
+  id: z.string(),
   created_at: isoDate,
   updated_at: isoDate,
 })

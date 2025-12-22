@@ -174,3 +174,13 @@ export function queryStringToPrismaWhere<T = PrismaWhere>(queryString: string) {
 
   return queryParamsToPrismaWhere<T>(queryParams)
 }
+
+export const GenericError = z.object({
+  success: z.literal(false),
+  errors: z.array(
+    z.object({
+      code: z.string(),
+      message: z.string(),
+    }),
+  ),
+})

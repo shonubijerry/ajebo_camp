@@ -1,8 +1,10 @@
 import { OpenAPIRoute, OpenAPIRouteSchema, contentJson } from 'chanfana'
 import { z } from 'zod'
+import { GenericError } from './query'
 import { AppContext } from '../..'
-import { Env } from '../../env'
+import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './types'
+import { successRes } from '../../lib/response'
 
 /**
  * Generic CreateEndpoint for streamlined resource creation.
@@ -12,40 +14,28 @@ import { AwaitedReturnType } from './types'
  * @template TDbResult      Type returned from Prisma
  * @template TResponse      Type returned to the client
  */
-export abstract class CreateEndpoint<
-  TCreateInput = z.AnyZodObject,
-> extends OpenAPIRoute {
-  /** Zod schema for request body validation */
-  abstract requestBodySchema: typeof this.schema.request
-
-  /** Zod schema for success response */
-  abstract responseSchema: z.AnyZodObject
-
-  /** Prisma collection name (e.g. 'user', 'campaign') */
-  abstract collection: keyof Env['PRISMA']
+export abstract class OpenAPIEndpoint extends OpenAPIRoute {
+  abstract meta: {
+    requestSchema: z.AnyZodObject
+    responseSchema: z.AnyZodObject
+    tag?: string
+    summary?: string
+    description?: string
+    collection?: Prisma.ModelName
+  }
 
   /**
    * Optional hook to mutate or replace input before persistence
    */
-  async preAction(data: TCreateInput) {
-    return data
+  async preAction(): Promise<typeof this.meta.requestSchema._type> {
+    return this.getValidatedData()
   }
 
-  /**
-   * Prisma create action
-   */
   async action(
     c: AppContext,
     data: AwaitedReturnType<typeof this.preAction>,
-  ): Promise<unknown> {
+  ): Promise<Response | unknown> {
     throw new Error('action implemented for ' + this.constructor.name)
-  }
-
-  /**
-   * Optional hook to transform database result before responding
-   */
-  async afterAction(data: AwaitedReturnType<typeof this.action>) {
-    return data
   }
 
   /**
@@ -53,44 +43,46 @@ export abstract class CreateEndpoint<
    */
   getSchema(): OpenAPIRouteSchema {
     return {
-      tags: [String(this.collection)],
-      summary: `Create a new ${String(this.collection)}`,
-      description: `Creates a new ${String(this.collection)} in the system.`,
-      request: this.requestBodySchema,
+      tags: this.meta.tag ? [this.meta.tag] : [String(this.meta.collection)],
+      summary:
+        this.meta.summary ?? `Create ${this.meta.collection?.toLowerCase()}`,
+      description:
+        this.meta.description ??
+        `Endpoint to create ${this.meta.collection?.toLowerCase()}`,
+      request: {
+        ...this.meta.requestSchema.shape,
+        body: contentJson(this.meta.requestSchema.shape.body),
+      },
       responses: {
         '200': {
-          description: `${String(this.collection)} created successfully`,
-          ...contentJson(this.responseSchema),
+          description: `Operation successfully`,
+          ...contentJson(this.meta.responseSchema),
         },
         '400': {
           description: 'Validation error',
-          ...contentJson(
-            z.object({
-              success: z.literal(false),
-              errors: z.array(
-                z.object({
-                  code: z.string(),
-                  message: z.string(),
-                }),
-              ),
-            }),
-          ),
+          ...contentJson(GenericError),
+        },
+        '401': {
+          description: 'Validation error',
+          ...contentJson(GenericError),
+        },
+        '500': {
+          description: 'Server error',
+          ...contentJson(GenericError),
         },
       },
     }
   }
 
   async handle(c: AppContext) {
-    const validated = await this.getValidatedData()
-    const input = await this.preAction(validated.body)
-    const dbResult = await this.action(c, input)
+    const data = await this.preAction()
 
-    return c.json(
-      {
-        success: true,
-        data: await this.afterAction(dbResult),
-      },
-      201,
-    )
+    const result = await this.action(c, data)
+
+    if (result instanceof Response) {
+      return result
+    }
+
+    return successRes(c, data)
   }
 }
