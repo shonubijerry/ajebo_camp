@@ -24,6 +24,8 @@ model Entity {
 model District {
   id         String    @id @default(uuid())
   name       String
+  /// ![string[]]
+  zones      Json      @default("[]")
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
@@ -115,6 +117,7 @@ model Campite {
   gender          String
   camp_id         String
   user_id         String
+  district_id     String?
   payment_ref     String?
   type            CampiteType @default(regular)
   amount          Int? // premium only

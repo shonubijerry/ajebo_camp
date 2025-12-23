@@ -80,6 +80,7 @@ export const campiteCreate = z.object({
   gender: z.string().min(1),
   camp_id: z.string(),
   user_id: z.string(),
+  district_id: z.string().optional(),
   payment_ref: z.string().optional().nullable(),
   type: z.enum(['regular', 'premium']).optional().default('regular'),
   amount: z.number().int().optional().nullable(),
