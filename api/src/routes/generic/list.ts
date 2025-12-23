@@ -41,6 +41,7 @@ export abstract class ListEndpoint<TWhereInput> extends OpenAPIEndpoint {
     summary?: string
     description?: string
     collection?: Prisma.ModelName
+    security?: Array<{ bearer: [] }>
   }
 
   /** Default page size */
@@ -90,6 +91,7 @@ export abstract class ListEndpoint<TWhereInput> extends OpenAPIEndpoint {
       description:
         this.meta.description ??
         `Endpoint to list ${this.meta.collection?.toLowerCase()}`,
+      security: this.meta.security ?? [{ bearer: [] }],
       request: {
         params: listRequestQuerySchema,
       },

@@ -22,6 +22,7 @@ export abstract class OpenAPIEndpoint extends OpenAPIRoute {
     summary?: string
     description?: string
     collection?: Prisma.ModelName
+    security?: Array<{ bearer: [] }>
   }
 
   /**
@@ -49,6 +50,7 @@ export abstract class OpenAPIEndpoint extends OpenAPIRoute {
       description:
         this.meta.description ??
         `Endpoint to create ${this.meta.collection?.toLowerCase()}`,
+      security: this.meta.security ?? [{ bearer: [] }],
       request: {
         ...this.meta.requestSchema.shape,
         body: contentJson(this.meta.requestSchema.shape.body),

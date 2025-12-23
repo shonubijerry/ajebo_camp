@@ -1,10 +1,10 @@
 import { z } from 'zod'
 import { OpenAPIEndpoint } from '../generic/create'
-import { contentJson, ApiException } from 'chanfana'
+import { ApiException } from 'chanfana'
 import { AppContext } from '../..'
 import { sign } from 'hono/jwt'
 import { compare } from '../../lib/encrypt'
-import { schemas } from '../../schemas'
+import { schemas, userResponse } from '../../schemas'
 import { errorRes } from '../../lib/response'
 
 export class LoginEndpoint extends OpenAPIEndpoint {
@@ -12,9 +12,9 @@ export class LoginEndpoint extends OpenAPIEndpoint {
     tag: 'Auth',
     summary: 'Login',
     description: 'Login with email and password',
-    responseSchema: z.object({
+    security: [],
+    responseSchema: userResponse.extend({
       token: z.string(),
-      user: z.any(),
     }),
     requestSchema: z.object({
       body: z.object({
@@ -26,8 +26,6 @@ export class LoginEndpoint extends OpenAPIEndpoint {
 
   async action(c: AppContext, data: typeof this.meta.requestSchema._type) {
     const { email, password } = data.body
-
-    this.validatedData
 
     const user = await c.env.PRISMA.user.findUnique({
       where: { email, deleted_at: null },

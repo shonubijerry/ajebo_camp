@@ -37,6 +37,7 @@ export abstract class DeleteEndpoint extends OpenAPIEndpoint {
       description:
         this.meta.description ??
         `Endpoint to delete ${this.meta.collection?.toLowerCase()}`,
+      security: this.meta.security ?? [{ bearer: [] }],
       responses: {
         '200': {
           description: `Operation successfully`,

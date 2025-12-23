@@ -49,6 +49,7 @@ import {
 import { authMiddleware } from './middlewares/auth'
 import { ForgotPassword } from './routes/auth/forgot_pass/forgot_password'
 import { ChangePasswordPublic } from './routes/auth/forgot_pass/change_password'
+import SignupEndpoint from './routes/auth/signup'
 
 export type AppBindings = { Bindings: Env }
 export type AppContext = Context<AppBindings>
@@ -93,16 +94,6 @@ baseApp.onError((err, c) => {
     )
   }
 
-  if (err instanceof MultiException) {
-    // If it's a Chanfana ApiException, let Chanfana handle the response
-    return c.json(
-      {
-        success: false,
-        errors: err.message,
-      }
-    )
-  }
-
   console.error('Global error caught:', err) // Log the error if it's not known
 
   // For other errors, return a generic 500 response
@@ -115,17 +106,22 @@ baseApp.onError((err, c) => {
   )
 })
 
-baseApp.use('*', async (c, next) => {
+baseApp.use(async (c, next) => {
   c.env.PRISMA = c.env.DATABASE.prisma() as PrismaClient
   await next()
 })
 
-// Register endpoints
+baseApp.registry.registerComponent('securitySchemes', 'bearer', {
+  type: 'http',
+  scheme: 'bearer',
+  bearerFormat: 'JWT',
+})
 
 const app = fromHono(new Hono<AppBindings>())
 
 // Public routes
 app.post('/auth/login', LoginEndpoint)
+app.post('/auth/signup', SignupEndpoint)
 
 
 app.post('/forgot', ForgotPassword)
