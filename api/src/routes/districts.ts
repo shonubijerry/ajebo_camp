@@ -31,6 +31,7 @@ export class ListDistrictsEndpoint extends ListEndpoint<Prisma.DistrictWhereInpu
   meta = {
     ...districtMeta,
     requestSchema: listRequestQuerySchema,
+    responseSchema: responseBodies.district,
   }
   protected pageSize = 25
 

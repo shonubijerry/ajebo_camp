@@ -50,6 +50,7 @@ import { authMiddleware } from './middlewares/auth'
 import { ForgotPassword } from './routes/auth/forgot_pass/forgot_password'
 import { ChangePasswordPublic } from './routes/auth/forgot_pass/change_password'
 import SignupEndpoint from './routes/auth/signup'
+import { cors } from 'hono/cors'
 
 export type AppBindings = { Bindings: Env }
 export type AppContext = Context<AppBindings>
@@ -67,8 +68,19 @@ const baseApp = fromHono(new Hono<AppBindings>(), {
   },
 })
 
+baseApp.use(
+  cors({
+    origin: ['http://localhost:3000'],
+    allowHeaders: ['Content-Type', 'Upgrade-Insecure-Requests', 'Authorization'],
+    allowMethods: ['POST', 'GET', 'OPTIONS', 'PATCH', 'DELETE'],
+    exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
+    maxAge: 600,
+    credentials: true,
+  })
+)
+
 // Bot middleware and reject if score is lower than 30
-baseApp.use('*', async (c, next) => {
+baseApp.use(async (c, next) => {
   const botScore = c.req.header('cf-bot-score')
   if (botScore && Number(botScore) < 30) {
     return c.json(
@@ -86,12 +98,10 @@ baseApp.onError((err, c) => {
   if (err instanceof ApiException) {
     console.log(err)
     // If it's a Chanfana ApiException, let Chanfana handle the response
-    return c.json(
-      {
-        success: false,
-        errors: err.buildResponse(),
-      }
-    )
+    return c.json({
+      success: false,
+      errors: err.buildResponse(),
+    })
   }
 
   console.error('Global error caught:', err) // Log the error if it's not known
@@ -122,7 +132,6 @@ const app = fromHono(new Hono<AppBindings>())
 // Public routes
 app.post('/auth/login', LoginEndpoint)
 app.post('/auth/signup', SignupEndpoint)
-
 
 app.post('/forgot', ForgotPassword)
 app.post('/forgot/change-password/:code', ChangePasswordPublic)

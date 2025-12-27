@@ -21,6 +21,22 @@ export const listRequestQuerySchema = z.object({
   }),
 })
 
+export const responseMetaSchema = z.object({
+  page: z.number().int().min(1),
+  per_page: z.number().int().min(1),
+  total: z.number().int().min(0),
+  total_pages: z.number().int().min(0),
+})
+
+export const responseListSchema = <T extends z.ZodTypeAny>(
+  itemSchema: T,
+) =>
+  z.object({
+    success: z.literal(true),
+    data: z.array(itemSchema),
+    meta: responseMetaSchema,
+  })
+
 /* ---------------------------------------------
  * Generic list endpoint
  * --------------------------------------------- */
@@ -93,12 +109,12 @@ export abstract class ListEndpoint<TWhereInput> extends OpenAPIEndpoint {
         `Endpoint to list ${this.meta.collection?.toLowerCase()}`,
       security: this.meta.security ?? [{ bearer: [] }],
       request: {
-        params: listRequestQuerySchema,
+        query: listRequestQuerySchema,
       },
       responses: {
         '200': {
           description: `Operation successfully`,
-          ...contentJson(this.meta.responseSchema),
+          ...contentJson(responseListSchema(this.meta.responseSchema)),
         },
         '400': {
           description: 'Validation error',

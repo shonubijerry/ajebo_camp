@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "update-api": "openapi-typescript http://localhost:6001/openapi.json --output src/lib/api/v1.ts --use-options --export-type --immutable-types && prettier --write src/lib/api/v1.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -14,7 +15,10 @@
     "@fontsource/roboto": "^5.2.9",
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
+    "@tanstack/react-table": "^8.21.3",
     "next": "16.1.0",
+    "openapi-fetch": "^0.15.0",
+    "openapi-react-query": "^0.5.1",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
@@ -25,6 +29,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.0",
+    "openapi-typescript": "^7.10.1",
     "typescript": "^5"
   }
 }

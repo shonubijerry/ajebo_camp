@@ -18,46 +18,6 @@ export default function HomePage() {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#fff' }}>
       {/* Top Bar */}
-      <AppBar
-        position="static"
-        elevation={1}
-        sx={{ bgcolor: '#fff', color: '#000' }}
-      >
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
-          {/* Logo Placeholder */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box
-              sx={{
-                width: 40,
-                height: 40,
-                bgcolor: 'grey.300',
-                borderRadius: 1,
-              }}
-            />
-            <Typography variant="subtitle1" fontWeight={600}>
-              Foursquare Youth
-            </Typography>
-          </Box>
-
-          {/* Actions */}
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button
-              startIcon={<PersonAddIcon />}
-              color="primary"
-              variant="text"
-            >
-              Create Account
-            </Button>
-            <Button
-              startIcon={<LoginIcon />}
-              color="primary"
-              variant="text"
-            >
-              Login
-            </Button>
-          </Box>
-        </Toolbar>
-      </AppBar>
 
       {/* Main Content */}
       <Container maxWidth="lg" sx={{ mt: 8 }}>
