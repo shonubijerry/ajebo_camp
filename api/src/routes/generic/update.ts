@@ -1,6 +1,7 @@
 import { contentJson } from 'chanfana'
 import { OpenAPIEndpoint } from './create'
 import { GenericError } from './query'
+import { z } from 'zod'
 
 export abstract class UpdateEndpoint extends OpenAPIEndpoint {
   getSchema() {
@@ -19,7 +20,12 @@ export abstract class UpdateEndpoint extends OpenAPIEndpoint {
       responses: {
         '200': {
           description: `Operation successfully`,
-          ...contentJson(this.meta.responseSchema),
+          ...contentJson(
+            z.object({
+              success: z.literal(true),
+              data: this.meta.responseSchema,
+            }),
+          ),
         },
         '400': {
           description: 'Validation error',

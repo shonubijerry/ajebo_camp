@@ -92,18 +92,15 @@ export class DeleteEntityEndpoint extends DeleteEndpoint {
     ...entityMeta,
     requestSchema: z.object({
       params: responseBodies.entity.pick({ id: true }),
-      query: z
-        .object({
-          soft: z.boolean().optional(),
-        })
+      query: z.object({
+        soft: z.boolean().optional(),
+      }),
     }),
   }
 
   action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {
-    const { data, where } = input
-    if (data) {
-      return c.env.PRISMA.entity.update({ where, data })
-    }
+    const { where } = input
+
     return c.env.PRISMA.entity.delete({ where })
   }
 }

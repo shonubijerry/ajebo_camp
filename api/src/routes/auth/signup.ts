@@ -3,7 +3,7 @@ import { OpenAPIEndpoint } from '../generic/create'
 import { AppContext } from '../..'
 import { sign } from 'hono/jwt'
 import { requestBodies, userResponse } from '../../schemas'
-import { errorRes } from '../../lib/response'
+import { errorRes, successRes } from '../../lib/response'
 import { hash } from '../../lib/encrypt'
 
 export class SignupEndpoint extends OpenAPIEndpoint {
@@ -43,11 +43,11 @@ export class SignupEndpoint extends OpenAPIEndpoint {
 
     const token = await sign(payload, c.env.JWT_SECRET)
 
-    return c.json({
+    return {
       ...user,
       password: undefined,
       token,
-    })
+    }
   }
 }
 

@@ -14,6 +14,7 @@ export const CampiteTypeSchema = z.enum(["regular", "premium"]);
 export const DistrictSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
+  zones: z.string().array().default([]),
   ...DefaultSchema.shape,
 });
 
@@ -32,6 +33,7 @@ export const CampSchema = z.object({
   banner: z.string().nullable(),
   year: z.number().int(),
   fee: z.number().int(),
+  premium_fees: z.array(z.number().int()).default([]),
   start_date: z.coerce.date(),
   end_date: z.coerce.date(),
   ...DefaultSchema.shape,

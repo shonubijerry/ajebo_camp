@@ -5,7 +5,7 @@ import { AppContext } from '../..'
 import { sign } from 'hono/jwt'
 import { compare } from '../../lib/encrypt'
 import { schemas, userResponse } from '../../schemas'
-import { errorRes } from '../../lib/response'
+import { errorRes, successRes } from '../../lib/response'
 
 export class LoginEndpoint extends OpenAPIEndpoint {
   meta = {
@@ -55,11 +55,11 @@ export class LoginEndpoint extends OpenAPIEndpoint {
 
     const token = await sign(payload, c.env.JWT_SECRET)
 
-    return c.json({
+    return {
       ...user,
       password: undefined,
       token,
-    })
+    }
   }
 }
 

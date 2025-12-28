@@ -4,7 +4,7 @@ import { ListEndpoint, listRequestQuerySchema } from './generic/list'
 import { GetEndpoint } from './generic/get'
 import { UpdateEndpoint } from './generic/update'
 import { DeleteEndpoint } from './generic/delete'
-import { requestBodies, responseBodies, userResponse } from '../schemas'
+import { requestBodies, responseBodies } from '../schemas'
 import { AppContext } from '..'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './generic/types'
@@ -25,11 +25,16 @@ export class CreateUserEndpoint extends OpenAPIEndpoint {
   }
 
   async action(c: AppContext, { body }: typeof this.meta.requestSchema._type) {
+    const exist = await c.env.PRISMA.user.findUnique({
+      where: { email: body.email },
+    })
+
+    if (exist) {
+      return exist
+    }
+
     return c.env.PRISMA.user.create({
       data: body,
-      omit: {
-        password: true,
-      },
     })
   }
 }
@@ -108,8 +113,8 @@ export class DeleteUserEndpoint extends DeleteEndpoint {
   }
 
   async action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {
-    const { data, where } = input
+    const { where } = input
 
-    return c.env.PRISMA.user.update({ where, data: data })
+    return c.env.PRISMA.user.delete({ where })
   }
 }

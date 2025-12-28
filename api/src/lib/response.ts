@@ -23,7 +23,7 @@ export const successRes = (
   c.json(
     {
       success: true,
-      data: unknown,
+      data: data,
     },
     status,
   )

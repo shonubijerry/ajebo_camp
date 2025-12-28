@@ -8,50 +8,28 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import DataTable from "@/components/dashboard/DataTable";
 import { useApi } from "@/lib/api/useApi";
 import { ColumnDef } from "@tanstack/react-table";
-import { paths } from "@/lib/api/v1";
-
-type CampAllocation = paths["/api/v1/camp-allocations/list"]["get"]["responses"]["200"]["content"]["application/json"]['data'][number]
+import { CampAllocation } from "@/interfaces";
 
 const columns: ColumnDef<CampAllocation>[] = [
   {
-    accessorKey: "id",
-    header: "Allocation ID",
+    accessorKey: "name",
+    header: "Name",
   },
   {
-    accessorKey: "camp_id",
-    header: "Camp ID",
-  },
-  {
-    accessorKey: "user_id",
-    header: "User ID",
-  },
-  {
-    accessorKey: "allocation_date",
-    header: "Allocation Date",
+    accessorKey: "items",
+    header: "Items",
     cell: ({ getValue }) => {
-      const date = getValue();
-      return date ? new Date(String(date)).toLocaleDateString() : "-";
+      const items = getValue() as string[];
+      return items?.join(", ") || "-";
     },
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ getValue }) => (
-      <Box
-        sx={{
-          display: "inline-block",
-          px: 1.5,
-          py: 0.5,
-          borderRadius: "6px",
-          fontSize: "0.75rem",
-          fontWeight: 600,
-          bgcolor: getValue() === "active" ? "success.light" : "warning.light",
-          color: getValue() === "active" ? "success.dark" : "warning.dark",
-        }}
-      >
-        {String(getValue() || "pending").toUpperCase()}
-      </Box>
-    ),
+    accessorKey: "allocation_type",
+    header: "Type",
+    cell: ({ getValue }) => {
+      const type = getValue() as string;
+      return type ? type.charAt(0).toUpperCase() + type.slice(1) : "-";
+    },
   },
   {
     accessorKey: "created_at",
@@ -63,7 +41,7 @@ const columns: ColumnDef<CampAllocation>[] = [
 export default function CampAllocationsPage() {
   const router = useRouter();
   const { $api } = useApi();
-  
+
   const result = $api.useQuery("get", "/api/v1/camp-allocations/list", {
     params: { query: { page: 1, per_page: 100 } },
   });
@@ -82,18 +60,17 @@ export default function CampAllocationsPage() {
       <DashboardLayout onLogout={handleLogout}>
         <Box sx={{ mb: 3 }}>
           <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
-            Camp Allocations Management
+            Camp Allocations
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            View and manage camp allocations
+            View all camp allocations. Create allocations through the Camps form.
           </Typography>
         </Box>
+
         <DataTable
           data={allocations}
           columns={columns}
           isLoading={isLoading}
-          onEdit={(allocation) => console.log("Edit:", allocation)}
-          onDelete={(allocation) => console.log("Delete:", allocation)}
         />
       </DashboardLayout>
     </AppTheme>

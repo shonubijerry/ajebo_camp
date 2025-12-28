@@ -8,7 +8,12 @@ const isoDate = z
 export const userCreate = z.object({
   firstname: z.string().min(1).max(100),
   lastname: z.string().min(1).max(100),
-  email: z.string().trim().email().min(1).transform((v) => v.toLowerCase()),
+  email: z
+    .string()
+    .trim()
+    .email()
+    .min(1)
+    .transform((v) => v.toLowerCase()),
   phone: z.string().optional().nullable(),
   role: z.enum(['user', 'staff', 'admin']).optional().default('user'),
 })
@@ -32,6 +37,7 @@ export const entityResponse = entityCreate.extend({
 // District
 export const districtCreate = z.object({
   name: z.string().min(1),
+  zones: z.array(z.string()).optional().default([]),
 })
 export const districtResponse = districtCreate.extend({
   id: z.string(),
@@ -48,6 +54,7 @@ export const campCreate = z.object({
   banner: z.string().optional().nullable(),
   year: z.number().int(),
   fee: z.number().int(),
+  premium_fees: z.array(z.number().int()).default([]),
   start_date: isoDate,
   end_date: isoDate,
 })

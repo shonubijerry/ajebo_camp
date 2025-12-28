@@ -15,9 +15,6 @@ export abstract class DeleteEndpoint extends OpenAPIEndpoint {
 
     return {
       where: { id: input.params.id },
-      ...(input.query.soft && {
-        data: { deleted_at: new Date().toISOString() },
-      }),
     }
   }
 
@@ -39,9 +36,8 @@ export abstract class DeleteEndpoint extends OpenAPIEndpoint {
         `Endpoint to delete ${this.meta.collection?.toLowerCase()}`,
       security: this.meta.security ?? [{ bearer: [] }],
       responses: {
-        '200': {
+        '204': {
           description: `Operation successfully`,
-          ...contentJson(this.meta.responseSchema),
         },
         '400': {
           description: 'Validation error',

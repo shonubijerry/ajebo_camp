@@ -92,18 +92,15 @@ export class DeleteCampiteEndpoint extends DeleteEndpoint {
     ...campiteMeta,
     requestSchema: z.object({
       params: responseBodies.campite.pick({ id: true }),
-      query: z
-        .object({
-          soft: z.boolean().optional(),
-        })
+      query: z.object({
+        soft: z.boolean().optional(),
+      }),
     }),
   }
 
   action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {
-    const { data, where } = input
-    if (data) {
-      return c.env.PRISMA.campite.update({ where, data })
-    }
+    const { where } = input
+
     return c.env.PRISMA.campite.delete({ where })
   }
 }

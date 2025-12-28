@@ -31,7 +31,6 @@ export class ListDistrictsEndpoint extends ListEndpoint<Prisma.DistrictWhereInpu
   meta = {
     ...districtMeta,
     requestSchema: listRequestQuerySchema,
-    responseSchema: responseBodies.district,
   }
   protected pageSize = 25
 
@@ -100,10 +99,8 @@ export class DeleteDistrictEndpoint extends DeleteEndpoint {
   }
 
   action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {
-    const { data, where } = input
-    if (data) {
-      return c.env.PRISMA.district.update({ where, data })
-    }
+    const { where } = input
+
     return c.env.PRISMA.district.delete({ where })
   }
 }

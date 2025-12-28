@@ -1,12 +1,7 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import { CssBaseline, Box, Typography } from "@mui/material";
-import AppTheme from "@/components/theme/AppTheme";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import DataTable from "@/components/dashboard/DataTable";
-import { useApi } from "@/lib/api/useApi";
+import CRUDPage from "@/components/admin/CRUDPage";
+import CampForm from "@/components/forms/CampForm";
 import { ColumnDef } from "@tanstack/react-table";
 import { paths } from "@/lib/api/v1";
 
@@ -14,20 +9,27 @@ type Camp = paths["/api/v1/camps/list"]["get"]["responses"]["200"]["content"]["a
 
 const columns: ColumnDef<Camp>[] = [
   {
-    accessorKey: "name",
-    header: "Camp Name",
+    accessorKey: "title",
+    header: "Title",
   },
   {
-    accessorKey: "location",
-    header: "Location",
+    accessorKey: "year",
+    header: "Year",
   },
   {
-    accessorKey: "capacity",
-    header: "Capacity",
+    accessorKey: "fee",
+    header: "Fee",
+    cell: ({ getValue }) => `₦${Number(getValue()).toLocaleString()}`,
   },
   {
-    accessorKey: "district_id",
-    header: "District ID",
+    accessorKey: "start_date",
+    header: "Start Date",
+    cell: ({ getValue }) => new Date(String(getValue())).toLocaleDateString(),
+  },
+  {
+    accessorKey: "end_date",
+    header: "End Date",
+    cell: ({ getValue }) => new Date(String(getValue())).toLocaleDateString(),
   },
   {
     accessorKey: "created_at",
@@ -37,41 +39,18 @@ const columns: ColumnDef<Camp>[] = [
 ];
 
 export default function CampsPage() {
-  const router = useRouter();
-  const { $api } = useApi();
-  
-  const result =  $api.useQuery("get", "/api/v1/camps/list", {
-    params: { query: { page: 1, per_page: 100 } },
-  });
-
-  const camps = result.data?.success ? result.data.data : [];
-  const isLoading = result.isLoading;
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    router.push("/admin");
-  };
-
   return (
-    <AppTheme>
-      <CssBaseline enableColorScheme />
-      <DashboardLayout onLogout={handleLogout}>
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
-            Camps Management
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            View and manage all camps
-          </Typography>
-        </Box>
-        <DataTable
-          data={camps}
-          columns={columns}
-          isLoading={isLoading}
-          onEdit={(camp) => console.log("Edit:", camp)}
-          onDelete={(camp) => console.log("Delete:", camp)}
-        />
-      </DashboardLayout>
-    </AppTheme>
+    <CRUDPage<Camp>
+      title="Camps Management"
+      description="View and manage all camps"
+      entityName="camp"
+      listEndpoint="/api/v1/camps/list"
+      deleteEndpoint="/api/v1/camps/{id}"
+      columns={columns}
+      FormComponent={CampForm}
+      getDeleteMessage={(camp) =>
+        `Are you sure you want to delete ${camp?.title}? This action cannot be undone.`
+      }
+    />
   );
 }

@@ -31,11 +31,13 @@ import {
   KeyboardArrowDown as ChevronDownIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
+  Visibility as ViewIcon,
 } from "@mui/icons-material";
 
 interface DataTableProps<T> {
   data: T[];
   columns: ColumnDef<T>[];
+  onView?: (row: T) => void;
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
   isLoading?: boolean;
@@ -45,6 +47,7 @@ interface DataTableProps<T> {
 export default function DataTable<T>({
   data,
   columns,
+  onView,
   onEdit,
   onDelete,
   isLoading = false,
@@ -60,12 +63,23 @@ export default function DataTable<T>({
   const tableColumns = React.useMemo(() => {
     const cols: ColumnDef<T>[] = [...columns];
 
-    if (onEdit || onDelete) {
+    if (onView || onEdit || onDelete) {
       cols.push({
         id: "actions",
         header: "Actions",
         cell: ({ row }) => (
           <Stack direction="row" spacing={0.5}>
+            {onView && (
+              <Tooltip title="View">
+                <IconButton
+                  size="small"
+                  onClick={() => onView(row.original)}
+                  color="info"
+                >
+                  <ViewIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
             {onEdit && (
               <Tooltip title="Edit">
                 <IconButton
@@ -94,7 +108,7 @@ export default function DataTable<T>({
     }
 
     return cols;
-  }, [columns, onEdit, onDelete]);
+  }, [columns, onView, onEdit, onDelete]);
 
   const table = useReactTable({
     data,

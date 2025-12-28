@@ -92,18 +92,15 @@ export class DeleteCampAllocationEndpoint extends DeleteEndpoint {
     ...campAllocationMeta,
     requestSchema: z.object({
       params: responseBodies.camp_Allocation.pick({ id: true }),
-      query: z
-        .object({
-          soft: z.boolean().optional(),
-        })
+      query: z.object({
+        soft: z.boolean().optional(),
+      }),
     }),
   }
 
   action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {
-    const { data, where } = input
-    if (data) {
-      return c.env.PRISMA.camp_Allocation.update({ where, data })
-    }
+    const { where } = input
+
     return c.env.PRISMA.camp_Allocation.delete({ where })
   }
 }

@@ -23,7 +23,7 @@ import AppTheme from "@/components/theme/AppTheme";
 import ColorModeSelect from "@/components/theme/ColorModeSelect";
 import { SitemarkIcon } from "@/components/auth/CustomIcons";
 import { useApi } from "@/lib/api/useApi";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -51,7 +51,7 @@ type FormValues = {
 export default function SignIn(props: { disableCustomTheme?: boolean }) {
   const [open, setOpen] = React.useState(false);
   const { $api } = useApi();
-  const router = useRouter(); 
+  const router = useRouter();
 
   const {
     register,
@@ -80,13 +80,13 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
         body: values,
       });
 
-      localStorage.setItem("token", result.token);
+      localStorage.setItem("token", result.data.token);
       router.push("/admin/dashboard");
     } catch (err: unknown) {
       setError("root", {
         type: "server",
         message: (err as Error)?.message ?? "Login failed",
-      })
+      });
     }
   };
 

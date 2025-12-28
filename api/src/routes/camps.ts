@@ -92,18 +92,15 @@ export class DeleteCampEndpoint extends DeleteEndpoint {
     ...campMeta,
     requestSchema: z.object({
       params: responseBodies.camp.pick({ id: true }),
-      query: z
-        .object({
-          soft: z.boolean().optional(),
-        })
+      query: z.object({
+        soft: z.boolean().optional(),
+      }),
     }),
   }
 
   action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {
-    const { data, where } = input
-    if (data) {
-      return c.env.PRISMA.camp.update({ where, data })
-    }
+    const { where } = input
+
     return c.env.PRISMA.camp.delete({ where })
   }
 }

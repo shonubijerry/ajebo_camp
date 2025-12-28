@@ -568,20 +568,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        firstname: string;
-                        lastname: string;
-                        /** Format: email */
-                        email: string;
-                        phone?: string | null;
-                        /**
-                         * @default user
-                         * @enum {string}
-                         */
-                        role: "user" | "staff" | "admin";
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
-                        token: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            firstname: string;
+                            lastname: string;
+                            /** Format: email */
+                            email: string;
+                            phone?: string | null;
+                            /**
+                             * @default user
+                             * @enum {string}
+                             */
+                            role: "user" | "staff" | "admin";
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                            token: string;
+                        };
                     };
                 };
             };
@@ -667,20 +671,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        firstname: string;
-                        lastname: string;
-                        /** Format: email */
-                        email: string;
-                        phone?: string | null;
-                        /**
-                         * @default user
-                         * @enum {string}
-                         */
-                        role: "user" | "staff" | "admin";
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
-                        token: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            firstname: string;
+                            lastname: string;
+                            /** Format: email */
+                            email: string;
+                            phone?: string | null;
+                            /**
+                             * @default user
+                             * @enum {string}
+                             */
+                            role: "user" | "staff" | "admin";
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                            token: string;
+                        };
                     };
                 };
             };
@@ -756,7 +764,11 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: true;
+                        data: Record<string, never>;
+                    };
                 };
             };
             /** @description Validation error */
@@ -833,8 +845,12 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** Format: cuid2 */
-                        id: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            /** Format: cuid2 */
+                            id: string;
+                        };
                     };
                 };
             };
@@ -920,19 +936,23 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        firstname: string;
-                        lastname: string;
-                        /** Format: email */
-                        email: string;
-                        phone?: string | null;
-                        /**
-                         * @default user
-                         * @enum {string}
-                         */
-                        role: "user" | "staff" | "admin";
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            firstname: string;
+                            lastname: string;
+                            /** Format: email */
+                            email: string;
+                            phone?: string | null;
+                            /**
+                             * @default user
+                             * @enum {string}
+                             */
+                            role: "user" | "staff" | "admin";
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -1089,7 +1109,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -1101,19 +1123,23 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        firstname: string;
-                        lastname: string;
-                        /** Format: email */
-                        email: string;
-                        phone?: string | null;
-                        /**
-                         * @default user
-                         * @enum {string}
-                         */
-                        role: "user" | "staff" | "admin";
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            firstname: string;
+                            lastname: string;
+                            /** Format: email */
+                            email: string;
+                            phone?: string | null;
+                            /**
+                             * @default user
+                             * @enum {string}
+                             */
+                            role: "user" | "staff" | "admin";
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -1181,27 +1207,11 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Operation successfully */
-            200: {
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": {
-                        firstname: string;
-                        lastname: string;
-                        /** Format: email */
-                        email: string;
-                        phone?: string | null;
-                        /**
-                         * @default user
-                         * @enum {string}
-                         */
-                        role: "user" | "staff" | "admin";
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
-                    };
-                };
+                content?: never;
             };
             /** @description Validation error */
             400: {
@@ -1286,19 +1296,23 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        firstname: string;
-                        lastname: string;
-                        /** Format: email */
-                        email: string;
-                        phone?: string | null;
-                        /**
-                         * @default user
-                         * @enum {string}
-                         */
-                        role: "user" | "staff" | "admin";
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            firstname: string;
+                            lastname: string;
+                            /** Format: email */
+                            email: string;
+                            phone?: string | null;
+                            /**
+                             * @default user
+                             * @enum {string}
+                             */
+                            role: "user" | "staff" | "admin";
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -1363,6 +1377,8 @@ export interface operations {
             content: {
                 "application/json": {
                     name: string;
+                    /** @default [] */
+                    zones?: string[];
                 };
             };
         };
@@ -1374,10 +1390,16 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        name: string;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            name: string;
+                            /** @default [] */
+                            zones: string[];
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -1458,6 +1480,8 @@ export interface operations {
                         success: true;
                         data: {
                             name: string;
+                            /** @default [] */
+                            zones: string[];
                             id: string;
                             created_at: string;
                             updated_at: string;
@@ -1525,7 +1549,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -1537,10 +1563,16 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        name: string;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            name: string;
+                            /** @default [] */
+                            zones: string[];
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -1608,18 +1640,11 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Operation successfully */
-            200: {
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": {
-                        name: string;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
-                    };
-                };
+                content?: never;
             };
             /** @description Validation error */
             400: {
@@ -1684,6 +1709,8 @@ export interface operations {
             content: {
                 "application/json": {
                     name: string;
+                    /** @default [] */
+                    zones?: string[];
                 };
             };
         };
@@ -1695,10 +1722,16 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        name: string;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            name: string;
+                            /** @default [] */
+                            zones: string[];
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -1774,10 +1807,14 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        name: string;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            name: string;
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -1925,7 +1962,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -1937,10 +1976,14 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        name: string;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            name: string;
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -2008,18 +2051,11 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Operation successfully */
-            200: {
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": {
-                        name: string;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
-                    };
-                };
+                content?: never;
             };
             /** @description Validation error */
             400: {
@@ -2095,10 +2131,14 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        name: string;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            name: string;
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -2249,7 +2289,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -2261,13 +2303,17 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        reference: string;
-                        amount: number;
-                        user_id: string;
-                        camp_id: string;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            reference: string;
+                            amount: number;
+                            user_id: string;
+                            camp_id: string;
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -2362,29 +2408,33 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        firstname: string;
-                        lastname: string;
-                        /** Format: email */
-                        email?: string | null;
-                        phone: string;
-                        age_group: string;
-                        gender: string;
-                        camp_id: string;
-                        user_id: string;
-                        district_id?: string;
-                        payment_ref?: string | null;
-                        /**
-                         * @default regular
-                         * @enum {string}
-                         */
-                        type: "regular" | "premium";
-                        amount?: number | null;
-                        /** @default  */
-                        allocated_items: string;
-                        checkin_at?: string | null;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            firstname: string;
+                            lastname: string;
+                            /** Format: email */
+                            email?: string | null;
+                            phone: string;
+                            age_group: string;
+                            gender: string;
+                            camp_id: string;
+                            user_id: string;
+                            district_id?: string;
+                            payment_ref?: string | null;
+                            /**
+                             * @default regular
+                             * @enum {string}
+                             */
+                            type: "regular" | "premium";
+                            amount?: number | null;
+                            /** @default  */
+                            allocated_items: string;
+                            checkin_at?: string | null;
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -2551,7 +2601,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -2563,29 +2615,33 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        firstname: string;
-                        lastname: string;
-                        /** Format: email */
-                        email?: string | null;
-                        phone: string;
-                        age_group: string;
-                        gender: string;
-                        camp_id: string;
-                        user_id: string;
-                        district_id?: string;
-                        payment_ref?: string | null;
-                        /**
-                         * @default regular
-                         * @enum {string}
-                         */
-                        type: "regular" | "premium";
-                        amount?: number | null;
-                        /** @default  */
-                        allocated_items: string;
-                        checkin_at?: string | null;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            firstname: string;
+                            lastname: string;
+                            /** Format: email */
+                            email?: string | null;
+                            phone: string;
+                            age_group: string;
+                            gender: string;
+                            camp_id: string;
+                            user_id: string;
+                            district_id?: string;
+                            payment_ref?: string | null;
+                            /**
+                             * @default regular
+                             * @enum {string}
+                             */
+                            type: "regular" | "premium";
+                            amount?: number | null;
+                            /** @default  */
+                            allocated_items: string;
+                            checkin_at?: string | null;
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -2653,37 +2709,11 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Operation successfully */
-            200: {
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": {
-                        firstname: string;
-                        lastname: string;
-                        /** Format: email */
-                        email?: string | null;
-                        phone: string;
-                        age_group: string;
-                        gender: string;
-                        camp_id: string;
-                        user_id: string;
-                        district_id?: string;
-                        payment_ref?: string | null;
-                        /**
-                         * @default regular
-                         * @enum {string}
-                         */
-                        type: "regular" | "premium";
-                        amount?: number | null;
-                        /** @default  */
-                        allocated_items: string;
-                        checkin_at?: string | null;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
-                    };
-                };
+                content?: never;
             };
             /** @description Validation error */
             400: {
@@ -2778,29 +2808,33 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        firstname: string;
-                        lastname: string;
-                        /** Format: email */
-                        email?: string | null;
-                        phone: string;
-                        age_group: string;
-                        gender: string;
-                        camp_id: string;
-                        user_id: string;
-                        district_id?: string;
-                        payment_ref?: string | null;
-                        /**
-                         * @default regular
-                         * @enum {string}
-                         */
-                        type: "regular" | "premium";
-                        amount?: number | null;
-                        /** @default  */
-                        allocated_items: string;
-                        checkin_at?: string | null;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            firstname: string;
+                            lastname: string;
+                            /** Format: email */
+                            email?: string | null;
+                            phone: string;
+                            age_group: string;
+                            gender: string;
+                            camp_id: string;
+                            user_id: string;
+                            district_id?: string;
+                            payment_ref?: string | null;
+                            /**
+                             * @default regular
+                             * @enum {string}
+                             */
+                            type: "regular" | "premium";
+                            amount?: number | null;
+                            /** @default  */
+                            allocated_items: string;
+                            checkin_at?: string | null;
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -2884,18 +2918,22 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        camp_id: string;
-                        name: string;
-                        /** @default [] */
-                        items: string[];
-                        /**
-                         * @default random
-                         * @enum {string}
-                         */
-                        allocation_type: "random" | "definite";
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            camp_id: string;
+                            name: string;
+                            /** @default [] */
+                            items: string[];
+                            /**
+                             * @default random
+                             * @enum {string}
+                             */
+                            allocation_type: "random" | "definite";
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -3051,7 +3089,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -3063,18 +3103,22 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        camp_id: string;
-                        name: string;
-                        /** @default [] */
-                        items: string[];
-                        /**
-                         * @default random
-                         * @enum {string}
-                         */
-                        allocation_type: "random" | "definite";
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            camp_id: string;
+                            name: string;
+                            /** @default [] */
+                            items: string[];
+                            /**
+                             * @default random
+                             * @enum {string}
+                             */
+                            allocation_type: "random" | "definite";
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -3142,26 +3186,11 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Operation successfully */
-            200: {
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": {
-                        camp_id: string;
-                        name: string;
-                        /** @default [] */
-                        items: string[];
-                        /**
-                         * @default random
-                         * @enum {string}
-                         */
-                        allocation_type: "random" | "definite";
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
-                    };
-                };
+                content?: never;
             };
             /** @description Validation error */
             400: {
@@ -3245,18 +3274,22 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        camp_id: string;
-                        name: string;
-                        /** @default [] */
-                        items: string[];
-                        /**
-                         * @default random
-                         * @enum {string}
-                         */
-                        allocation_type: "random" | "definite";
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            camp_id: string;
+                            name: string;
+                            /** @default [] */
+                            items: string[];
+                            /**
+                             * @default random
+                             * @enum {string}
+                             */
+                            allocation_type: "random" | "definite";
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -3327,6 +3360,8 @@ export interface operations {
                     banner?: string | null;
                     year: number;
                     fee: number;
+                    /** @default [] */
+                    premium_fees?: number[];
                     start_date: string;
                     end_date: string;
                 };
@@ -3340,18 +3375,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        title: string;
-                        theme?: string | null;
-                        verse?: string | null;
-                        entity_id: string;
-                        banner?: string | null;
-                        year: number;
-                        fee: number;
-                        start_date: string;
-                        end_date: string;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            title: string;
+                            theme?: string | null;
+                            verse?: string | null;
+                            entity_id: string;
+                            banner?: string | null;
+                            year: number;
+                            fee: number;
+                            /** @default [] */
+                            premium_fees: number[];
+                            start_date: string;
+                            end_date: string;
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -3438,6 +3479,8 @@ export interface operations {
                             banner?: string | null;
                             year: number;
                             fee: number;
+                            /** @default [] */
+                            premium_fees: number[];
                             start_date: string;
                             end_date: string;
                             id: string;
@@ -3507,7 +3550,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -3519,18 +3564,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        title: string;
-                        theme?: string | null;
-                        verse?: string | null;
-                        entity_id: string;
-                        banner?: string | null;
-                        year: number;
-                        fee: number;
-                        start_date: string;
-                        end_date: string;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            title: string;
+                            theme?: string | null;
+                            verse?: string | null;
+                            entity_id: string;
+                            banner?: string | null;
+                            year: number;
+                            fee: number;
+                            /** @default [] */
+                            premium_fees: number[];
+                            start_date: string;
+                            end_date: string;
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
@@ -3598,26 +3649,11 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Operation successfully */
-            200: {
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": {
-                        title: string;
-                        theme?: string | null;
-                        verse?: string | null;
-                        entity_id: string;
-                        banner?: string | null;
-                        year: number;
-                        fee: number;
-                        start_date: string;
-                        end_date: string;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
-                    };
-                };
+                content?: never;
             };
             /** @description Validation error */
             400: {
@@ -3688,6 +3724,8 @@ export interface operations {
                     banner?: string | null;
                     year: number;
                     fee: number;
+                    /** @default [] */
+                    premium_fees?: number[];
                     start_date: string;
                     end_date: string;
                 };
@@ -3701,18 +3739,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        title: string;
-                        theme?: string | null;
-                        verse?: string | null;
-                        entity_id: string;
-                        banner?: string | null;
-                        year: number;
-                        fee: number;
-                        start_date: string;
-                        end_date: string;
-                        id: string;
-                        created_at: string;
-                        updated_at: string;
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            title: string;
+                            theme?: string | null;
+                            verse?: string | null;
+                            entity_id: string;
+                            banner?: string | null;
+                            year: number;
+                            fee: number;
+                            /** @default [] */
+                            premium_fees: number[];
+                            start_date: string;
+                            end_date: string;
+                            id: string;
+                            created_at: string;
+                            updated_at: string;
+                        };
                     };
                 };
             };
