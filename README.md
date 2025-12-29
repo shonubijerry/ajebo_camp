@@ -68,8 +68,15 @@ npx openapi-typescript ...    # Generate API types from OpenAPI
 ### Camp Registration
 - Public registration form
 - District and age group selection
-- Payment integration
-- Allocated items selection
+- Paystack payment integration
+- Free camps with optional donations
+- Automatic camp allocation assignment
+
+### Payment Integration
+- **Paystack** - Secure payment processing
+- Real-time payment verification
+- Webhook for payment confirmation
+- Support for free camps with donations
 
 ### Technical Features
 - OpenAPI type-safe API client
@@ -100,16 +107,27 @@ npx openapi-typescript ...    # Generate API types from OpenAPI
 
 ## Environment Variables
 
-### API (.dev.vars)
+### API (.dev.vars or Cloudflare Dashboard)
 ```
-DATABASE_URL=...
-JWT_SECRET=...
+JWT_SECRET=your-secret-key
+SALT_ROUND=10
+RESEND_API_KEY=your-resend-key
+PAYSTACK_SECRET_KEY=sk_test_your-paystack-secret-key
 ```
 
 ### UI (.env.local)
 ```
 NEXT_PUBLIC_API_URL=http://localhost:6001
+NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=pk_test_your-paystack-public-key
 ```
+
+### Paystack Webhook Setup
+Configure webhook URL in Paystack dashboard:
+```
+https://your-api-domain.com/api/v1/webhooks/paystack
+```
+
+Enable the `charge.success` event.
 
 ## Deployment
 
@@ -132,6 +150,7 @@ npm run build
 - **Database**: Cloudflare D1 (SQLite)
 - **ORM**: Drizzle
 - **Auth**: JWT
+- **Payment**: Paystack
 - **Types**: TypeScript, OpenAPI
 
 ## Contributing

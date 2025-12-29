@@ -51,6 +51,7 @@ import { ForgotPassword } from './routes/auth/forgot_pass/forgot_password'
 import { ChangePasswordPublic } from './routes/auth/forgot_pass/change_password'
 import SignupEndpoint from './routes/auth/signup'
 import { cors } from 'hono/cors'
+import { paystackWebhook } from './routes/webhooks/paystack'
 
 export type AppBindings = { Bindings: Env }
 export type AppContext = Context<AppBindings>
@@ -135,6 +136,9 @@ app.post('/auth/signup', SignupEndpoint)
 
 app.post('/forgot', ForgotPassword)
 app.post('/forgot/change-password/:code', ChangePasswordPublic)
+
+// Webhooks (no auth required)
+app.post('/webhooks/paystack', paystackWebhook)
 
 app.get('/districts/list', ListDistrictsEndpoint)
 

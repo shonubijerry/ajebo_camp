@@ -24,8 +24,11 @@ import {
 import AppTheme from "@/components/theme/AppTheme";
 import ColorModeIconDropdown from "@/components/theme/ColorModeIconDropdown";
 import { useApi } from "@/lib/api/useApi";
+import Script from "next/script";
+import PaystackPop from '@paystack/inline-js'
 
 const AGE_GROUPS = ["11-20", "21-30", "31-40", "41-50", "above 50"];
+const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || "";
 
 interface FormData {
   firstname: string;
@@ -59,14 +62,17 @@ export default function CampiteRegistration() {
   const [submitting, setSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState(false);
+  const [paystackReady, setPaystackReady] = React.useState(false);
 
   const camp = campResult?.data?.data;
+  const isFreeRegistration = camp?.fee === 0;
 
   const {
     control,
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
@@ -82,6 +88,7 @@ export default function CampiteRegistration() {
     },
   });
   const campiteType = watch("type");
+  const currentAmount = watch("amount");
   // Fetch all districts once and filter client-side
   const districtsResult = $api.useQuery("get", "/api/v1/districts/list", {
     params: {
@@ -103,7 +110,7 @@ export default function CampiteRegistration() {
 
   // Set amount based on campite type and camp fee
   React.useEffect(() => {
-    if (campiteType === "regular" && camp?.fee) {
+    if (campiteType === "regular" && camp?.fee !== undefined) {
       setValue("amount", camp.fee);
     }
   }, [campiteType, camp?.fee, setValue]);
@@ -112,49 +119,82 @@ export default function CampiteRegistration() {
   const userMutation = $api.useMutation("post", "/api/v1/users");
   const campiteMutation = $api.useMutation("post", "/api/v1/campites");
 
+  const createRegistration = async (data: FormData, paymentRef?: string) => {
+    // Create user first
+    const userResult = await userMutation.mutateAsync({
+      body: {
+        firstname: data.firstname,
+        lastname: data.lastname,
+        email: data.email,
+        phone: data.phone,
+      },
+    });
+
+    if (!userResult) {
+      throw new Error("Failed to create user");
+    }
+
+    // Create campite
+    await campiteMutation.mutateAsync({
+      body: {
+        firstname: data.firstname,
+        lastname: data.lastname,
+        email: data.email,
+        phone: data.phone,
+        age_group: data.age_group,
+        gender: data.gender,
+        camp_id: campId,
+        user_id: userResult.data.id,
+        district_id: data.district_id,
+        type: data.type,
+        amount: data.amount,
+        payment_ref: paymentRef || null,
+      },
+    });
+  };
+
   const onSubmit = async (data: FormData) => {
     try {
       setSubmitting(true);
       setError(null);
 
-      // Create user first
-      const userResult = await userMutation.mutateAsync({
-        body: {
-          firstname: data.firstname,
-          lastname: data.lastname,
-          email: data.email,
-          phone: data.phone,
-        },
-      });
-
-      if (!userResult) {
-        throw new Error("Failed to create user");
+      // If amount is 0 or free registration, skip payment
+      if (data.amount === 0 || (isFreeRegistration && data.amount === 0)) {
+        await createRegistration(data);
+        setSuccess(true);
+        setTimeout(() => router.push("/"), 2000);
+        return;
       }
 
-      // Create campite
-      await campiteMutation.mutateAsync({
-        body: {
-          firstname: data.firstname,
-          lastname: data.lastname,
-          email: data.email,
-          phone: data.phone,
-          age_group: data.age_group,
-          gender: data.gender,
-          camp_id: campId,
-          user_id: userResult.data.id,
-          district_id: data.district_id,
-          type: data.type,
-          amount: data.amount,
+      const popup = new PaystackPop()
+      popup.newTransaction({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: data.email,
+        amount: data.amount * 100, // Convert to kobo
+        onSuccess: async (transaction) => {
+          try {
+            // Payment successful, create registration
+            await createRegistration(data, transaction.reference);
+            setSuccess(true);
+            reset();
+            setTimeout(() => router.push("/"), 2000);
+          } catch (err: any) {
+            setError(err.message || "Registration failed after payment");
+          } finally {
+            setSubmitting(false);
+          }
+        },
+        onCancel: () => {
+          setSubmitting(false);
+          setError("Payment was cancelled");
+        },
+        onError: (error) => {
+          setSubmitting(false);
+          setError(error.message || "Payment failed");
         },
       });
-
-      setSuccess(true);
-      setTimeout(() => {
-        router.push("/");
-      }, 2000);
     } catch (err: any) {
       setError(err.message || "Registration failed. Please try again.");
-    } finally {
       setSubmitting(false);
     }
   };
@@ -201,11 +241,17 @@ export default function CampiteRegistration() {
   }
 
   return (
-    <AppTheme>
-      <CssBaseline enableColorScheme />
-      <Box sx={{ position: "fixed", top: "1rem", right: "1rem" }}>
-        <ColorModeIconDropdown />
-      </Box>
+    <>
+      <Script
+        src="https://js.paystack.co/v1/inline.js"
+        onLoad={() => setPaystackReady(true)}
+        onError={() => setError("Failed to load payment service")}
+      />
+      <AppTheme>
+        <CssBaseline enableColorScheme />
+        <Box sx={{ position: "fixed", top: "1rem", right: "1rem" }}>
+          <ColorModeIconDropdown />
+        </Box>
 
       <Box
         sx={{
@@ -224,7 +270,7 @@ export default function CampiteRegistration() {
               gutterBottom
               sx={{ fontWeight: 700, mb: 1 }}
             >
-              Register for {camp.title}
+              Register for {camp.title} ({camp.theme})
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
               {camp.theme && `Theme: ${camp.theme}`}
@@ -427,7 +473,23 @@ export default function CampiteRegistration() {
                 </Grid>
 
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  {campiteType === "regular" ? (
+                  {isFreeRegistration && campiteType === "regular" ? (
+                    <Controller
+                      name="amount"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Donation Amount (Optional)"
+                          type="number"
+                          fullWidth
+                          helperText={`Are you willing to support ${camp.title} financially (Any amount is appreciated).`}
+                          value={field.value || ""}
+                          onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                        />
+                      )}
+                    />
+                  ) : campiteType === "regular" ? (
                     <TextField
                       label="Amount"
                       value={`₦${camp.fee?.toLocaleString() || "0"}`}
@@ -468,7 +530,13 @@ export default function CampiteRegistration() {
                     size="large"
                     disabled={submitting || success}
                   >
-                    {submitting ? <CircularProgress size={24} /> : "Register"}
+                    {submitting ? (
+                      <CircularProgress size={24} />
+                    ) : currentAmount > 0 ? (
+                      `Pay ₦${currentAmount.toLocaleString()} & Register`
+                    ) : (
+                      "Register"
+                    )}
                   </Button>
                 </Grid>
               </Grid>
@@ -476,6 +544,7 @@ export default function CampiteRegistration() {
           </CardContent>
         </Card>
       </Box>
-    </AppTheme>
+      </AppTheme>
+    </>
   );
 }

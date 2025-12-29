@@ -8,4 +8,5 @@ export type Env = {
   JWT_SECRET: string
   SALT_ROUND: string
   RESEND_API_KEY: string
+  PAYSTACK_SECRET_KEY: string
 }
