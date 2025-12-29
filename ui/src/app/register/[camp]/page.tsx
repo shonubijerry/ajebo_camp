@@ -17,33 +17,15 @@ import {
   Select,
   FormControl,
   InputLabel,
-  Chip,
   Alert,
   CircularProgress,
   FormHelperText,
-  SelectChangeEvent,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
 } from "@mui/material";
 import AppTheme from "@/components/theme/AppTheme";
 import ColorModeIconDropdown from "@/components/theme/ColorModeIconDropdown";
 import { useApi } from "@/lib/api/useApi";
-import { paths } from "@/lib/api/v1";
-
-type Camp =
-  paths["/api/v1/camps/{id}"]["get"]["responses"]["200"]["content"]["application/json"];
-type District =
-  paths["/api/v1/districts/list"]["get"]["responses"]["200"]["content"]["application/json"]["data"][number];
-type CampAllocation =
-  paths["/api/v1/camp-allocations/list"]["get"]["responses"]["200"]["content"]["application/json"]["data"][number];
-type CampiteData = NonNullable<
-  paths["/api/v1/campites"]["post"]["requestBody"]
->["content"]["application/json"];
 
 const AGE_GROUPS = ["11-20", "21-30", "31-40", "41-50", "above 50"];
-const PREMIUM_FEES = [5000, 7000, 10000, 15000, 20000];
 
 interface FormData {
   firstname: string;
@@ -55,7 +37,6 @@ interface FormData {
   district_id: string;
   type: "regular" | "premium";
   amount: number;
-  allocated_items: string[];
 }
 
 export default function CampiteRegistration() {
@@ -74,28 +55,12 @@ export default function CampiteRegistration() {
     params: { path: { id: campId } },
   });
 
-  // Fetch allocations
-  const allocationsResult = $api.useQuery(
-    "get",
-    "/api/v1/camp-allocations/list",
-    {
-      params: { query: { page: 1, per_page: 100 } },
-    }
-  );
-
   const [districtSearch, setDistrictSearch] = React.useState("");
-  const [debouncedSearch, setDebouncedSearch] = React.useState("");
-  const [allocations, setAllocations] = React.useState<CampAllocation[]>([]);
   const [submitting, setSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState(false);
 
-
-
   const camp = campResult?.data?.data;
-
-  console.log(campResult.data);
-  
 
   const {
     control,
@@ -114,44 +79,27 @@ export default function CampiteRegistration() {
       district_id: "",
       type: "regular",
       amount: camp?.fee ?? 0,
-      allocated_items: [],
     },
   });
   const campiteType = watch("type");
-
-  // Debounce district search
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(districtSearch);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [districtSearch]);
-
-  // Fetch districts with debounced search
+  // Fetch all districts once and filter client-side
   const districtsResult = $api.useQuery("get", "/api/v1/districts/list", {
     params: {
       query: {
-        page: 1,
-        per_page: 20,
-        filter:
-          debouncedSearch.length >= 2
-            ? `[name][contains]=${debouncedSearch}`
-            : undefined,
+        page: 0,
       },
     },
   });
 
-  const districts =
-    districtsResult.data?.success && debouncedSearch.length >= 2
-      ? districtsResult.data.data
-      : [];
+  const allDistricts = districtsResult.data?.success
+    ? districtsResult.data.data
+    : [];
 
-  React.useEffect(() => {
-    if (allocationsResult.data?.success) {
-      setAllocations(allocationsResult.data.data);
-    }
-  }, [allocationsResult.data]);
+  const filteredDistricts = React.useMemo(() => {
+    if (!districtSearch) return allDistricts;
+    const term = districtSearch.toLowerCase();
+    return allDistricts.filter((d) => d.name.toLowerCase().includes(term));
+  }, [allDistricts, districtSearch]);
 
   // Set amount based on campite type and camp fee
   React.useEffect(() => {
@@ -197,7 +145,6 @@ export default function CampiteRegistration() {
           district_id: data.district_id,
           type: data.type,
           amount: data.amount,
-          allocated_items: data.allocated_items.join(","),
         },
       });
 
@@ -426,10 +373,10 @@ export default function CampiteRegistration() {
                     rules={{ required: "District is required" }}
                     render={({ field: { onChange, value } }) => (
                       <Autocomplete
-                        options={districts}
+                        options={filteredDistricts}
                         getOptionLabel={(option) => option.name}
                         loading={districtsResult.isLoading}
-                        value={districts.find((d) => d.id === value) || null}
+                        value={filteredDistricts.find((d) => d.id === value) || null}
                         onChange={(_, data) => onChange(data?.id || "")}
                         onInputChange={(_, newValue) =>
                           setDistrictSearch(newValue)
@@ -441,7 +388,7 @@ export default function CampiteRegistration() {
                             error={!!errors.district_id}
                             helperText={
                               errors.district_id?.message ||
-                              "Start typing (min 3 characters) to search districts"
+                              "Search by district name"
                             }
                             slotProps={{
                               input: {
@@ -449,7 +396,7 @@ export default function CampiteRegistration() {
                                 endAdornment: (
                                   <>
                                     {districtsResult.isLoading && (
-                                      <CircularProgress size={20} />
+                                      <CircularProgress size={20}  />
                                     )}
                                     {params.InputProps.endAdornment}
                                   </>
@@ -496,7 +443,7 @@ export default function CampiteRegistration() {
                         <FormControl fullWidth error={!!errors.amount}>
                           <InputLabel>Premium Amount</InputLabel>
                           <Select {...field} label="Premium Amount">
-                            {PREMIUM_FEES.map((fee) => (
+                            {camp.premium_fees?.map((fee) => (
                               <MenuItem key={fee} value={fee}>
                                 ₦{fee.toLocaleString()}
                               </MenuItem>
@@ -511,47 +458,6 @@ export default function CampiteRegistration() {
                       )}
                     />
                   )}
-                </Grid>
-
-                <Grid size={{ xs: 12 }}>
-                  <Controller
-                    name="allocated_items"
-                    control={control}
-                    render={({ field: { onChange, value } }) => (
-                      <FormControl component="fieldset" fullWidth>
-                        <FormLabel component="legend" sx={{ mb: 1 }}>
-                          Allocated Items
-                        </FormLabel>
-                        <FormGroup>
-                          {allocations.map((allocation) => (
-                            <FormControlLabel
-                              key={allocation.id}
-                              control={
-                                <Checkbox
-                                  checked={value.includes(allocation.id)}
-                                  onChange={(e) => {
-                                    if (e.target.checked) {
-                                      onChange([...value, allocation.id]);
-                                    } else {
-                                      onChange(
-                                        value.filter(
-                                          (id) => id !== allocation.id
-                                        )
-                                      );
-                                    }
-                                  }}
-                                />
-                              }
-                              label={allocation.name}
-                            />
-                          ))}
-                        </FormGroup>
-                        <FormHelperText>
-                          Select items to allocate to this campite
-                        </FormHelperText>
-                      </FormControl>
-                    )}
-                  />
                 </Grid>
 
                 <Grid size={{ xs: 12 }}>

@@ -38,6 +38,15 @@ export class ListDistrictsEndpoint extends ListEndpoint<Prisma.DistrictWhereInpu
     c: AppContext,
     params: AwaitedReturnType<typeof this.preAction>,
   ) {
+    if (!params.page) {
+      const result = await c.env.PRISMA.district.findMany({
+        where: params.where,
+        orderBy: params.orderBy,
+      })
+
+      return { data: result }
+    }
+    
     const [data, total] = await Promise.all([
       c.env.PRISMA.district.findMany({
         where: params.where,

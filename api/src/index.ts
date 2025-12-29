@@ -136,6 +136,8 @@ app.post('/auth/signup', SignupEndpoint)
 app.post('/forgot', ForgotPassword)
 app.post('/forgot/change-password/:code', ChangePasswordPublic)
 
+app.get('/districts/list', ListDistrictsEndpoint)
+
 // Authenticate all subsequent requests using JWT in Authorization header
 app.use(authMiddleware)
 
@@ -147,7 +149,6 @@ app.delete('/users/:id', DeleteUserEndpoint)
 
 // // Districts
 app.post('/districts', CreateDistrictEndpoint)
-app.get('/districts/list', ListDistrictsEndpoint)
 app.get('/districts/:id', GetDistrictEndpoint)
 app.patch('/districts/:id', UpdateDistrictEndpoint)
 app.delete('/districts/:id', DeleteDistrictEndpoint)

@@ -23,7 +23,25 @@ export class CreateCampiteEndpoint extends OpenAPIEndpoint {
   }
 
   async action(c: AppContext, { body }: typeof this.meta.requestSchema._type) {
-    return c.env.PRISMA.campite.create({ data: body })
+    const allocations = await c.env.PRISMA.camp_Allocation.findMany({
+      where: { camp_id: body.camp_id },
+    })
+
+    const availableItems = allocations.flatMap((allocation) => {
+      if (!allocation.items || !Array.isArray(allocation.items)) return [] as string[]
+      return allocation.items.filter(Boolean)
+    })
+
+    const allocated_items = availableItems.length
+      ? availableItems[Math.floor(Math.random() * availableItems.length)]
+      : ''
+
+    return c.env.PRISMA.campite.create({
+      data: {
+        ...body,
+        allocated_items,
+      },
+    })
   }
 }
 

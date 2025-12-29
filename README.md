@@ -1,72 +1,148 @@
-# OpenAPI Template
+# Ajebo Camp Management System
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/templates/tree/main/chanfana-openapi-template)
+A full-stack camp management system built with Next.js, Cloudflare Workers, and D1 database.
 
-![OpenAPI Template Preview](https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/91076b39-1f5b-46f6-7f14-536a6f183000/public)
+## Architecture
 
-<!-- dash-content-start -->
+- **UI** (`/ui`) - Next.js 16 frontend with Material-UI
+- **API** (`/api`) - Cloudflare Workers with Hono framework
+- **Database** (`/packages/database`) - D1 database with Drizzle ORM
+- **Shared** (`/packages/shared`) - Shared utilities and helpers
 
-This is a Cloudflare Worker with OpenAPI 3.1 Auto Generation and Validation using [chanfana](https://github.com/cloudflare/chanfana) and [Hono](https://github.com/honojs/hono).
+## Quick Start
 
-This is an example project made to be used as a quick start into building OpenAPI compliant Workers that generates the
-`openapi.json` schema automatically from code and validates the incoming request to the defined parameters or request body.
+### Prerequisites
+- Node.js 18+
+- npm/pnpm
+- Cloudflare account (for deployment)
 
-This template includes various endpoints, a D1 database, and integration tests using [Vitest](https://vitest.dev/) as examples. In endpoints, you will find [chanfana D1 AutoEndpoints](https://chanfana.com/endpoints/auto/d1) and a [normal endpoint](https://chanfana.com/endpoints/defining-endpoints) to serve as examples for your projects.
-
-Besides being able to see the OpenAPI schema (openapi.json) in the browser, you can also extract the schema locally no hassle by running this command `npm run schema`.
-
-<!-- dash-content-end -->
-
-> [!IMPORTANT]
-> When using C3 to create this project, select "no" when it asks if you want to deploy. You need to follow this project's [setup steps](https://github.com/cloudflare/templates/tree/main/openapi-template#setup-steps) before deploying.
-
-## Getting Started
-
-Outside of this repo, you can start a new project with this template using [C3](https://developers.cloudflare.com/pages/get-started/c3/) (the `create-cloudflare` CLI):
+### Installation
 
 ```bash
-npm create cloudflare@latest -- --template=cloudflare/templates/openapi-template
+# Install dependencies
+npm install
+
+# Start development servers
+npm run dev
 ```
 
-A live public deployment of this template is available at [https://openapi-template.templates.workers.dev](https://openapi-template.templates.workers.dev)
+This starts:
+- UI: http://localhost:3000
+- API: http://localhost:6001
 
-## Setup Steps
+## Development
 
-1. Install the project dependencies with a package manager of your choice:
-   ```bash
-   npm install
-   ```
-2. Create a [D1 database](https://developers.cloudflare.com/d1/get-started/) with the name "openapi-template-db":
-   ```bash
-   npx wrangler d1 create openapi-template-db
-   ```
-   ...and update the `database_id` field in `wrangler.json` with the new database ID.
-3. Run the following db migration to initialize the database (notice the `migrations` directory in this project):
-   ```bash
-   npx wrangler d1 migrations apply DB --remote
-   ```
-4. Deploy the project!
-   ```bash
-   npx wrangler deploy
-   ```
-5. Monitor your worker
-   ```bash
-   npx wrangler tail
-   ```
-
-## Testing
-
-This template includes integration tests using [Vitest](https://vitest.dev/). To run the tests locally:
+### Database Migrations
 
 ```bash
-npm run test
+# Run migrations
+cd packages/database
+npm run migrate:prisma-afterwards -- migrations/db/<migration-file>.sql
 ```
 
-Test files are located in the `tests/` directory, with examples demonstrating how to test your endpoints and database interactions.
+### API Development
 
-## Project structure
+```bash
+cd api
+npm run dev        # Start dev server
+npx tsc --noEmit  # Type check
+```
 
-1. Your main router is defined in `src/index.ts`.
-2. Each endpoint has its own file in `src/endpoints/`.
-3. Integration tests are located in the `tests/` directory.
-4. For more information read the [chanfana documentation](https://chanfana.com/), [Hono documentation](https://hono.dev/docs), and [Vitest documentation](https://vitest.dev/guide/).
+### UI Development
+
+```bash
+cd ui
+npm run dev                    # Start dev server
+npx openapi-typescript ...    # Generate API types from OpenAPI
+```
+
+## Key Features
+
+### Admin Panel
+- **Users Management** - CRUD operations for users
+- **Camps Management** - Create camps with allocations
+- **Districts** - Manage districts with zones
+- **Entities** - Organizational entities
+- **Camp Allocations** - View and manage allocations
+
+### Camp Registration
+- Public registration form
+- District and age group selection
+- Payment integration
+- Allocated items selection
+
+### Technical Features
+- OpenAPI type-safe API client
+- React Query for data fetching
+- Material-UI v7 for UI components
+- Role-based authentication (admin/user/super-admin)
+
+## Project Structure
+
+```
+/api
+  /src
+    /routes        # API endpoints
+    /middlewares   # Auth, etc.
+    /schemas       # Validation schemas
+    
+/ui
+  /src
+    /app           # Next.js app router pages
+    /components    # Reusable components
+    /lib/api       # API client and types
+    /interfaces    # TypeScript types
+    
+/packages
+  /database        # Database schema and migrations
+  /shared          # Shared utilities
+```
+
+## Environment Variables
+
+### API (.dev.vars)
+```
+DATABASE_URL=...
+JWT_SECRET=...
+```
+
+### UI (.env.local)
+```
+NEXT_PUBLIC_API_URL=http://localhost:6001
+```
+
+## Deployment
+
+### API (Cloudflare Workers)
+```bash
+cd api
+npm run deploy
+```
+
+### UI (Vercel/Netlify)
+```bash
+cd ui
+npm run build
+```
+
+## Tech Stack
+
+- **Frontend**: Next.js 16, React 19, Material-UI v7, TanStack Query
+- **Backend**: Cloudflare Workers, Hono, D1
+- **Database**: Cloudflare D1 (SQLite)
+- **ORM**: Drizzle
+- **Auth**: JWT
+- **Types**: TypeScript, OpenAPI
+
+## Contributing
+
+1. Create feature branch
+2. Make changes
+3. Run type checks: `npx tsc --noEmit`
+4. Test locally
+5. Submit PR
+
+## License
+
+Private project
+

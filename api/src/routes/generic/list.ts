@@ -12,8 +12,19 @@ import { AwaitedReturnType } from './types'
  * --------------------------------------------- */
 
 export const listRequestQuerySchema = z.object({
-  page: z.number().int().min(1).default(1),
-  per_page: z.number().int().min(1).max(100).default(20),
+  page: z
+    .number()
+    .int()
+    .default(1)
+    .describe(
+      'The page number to retrieve. If set to 0, all records are returned.',
+    ),
+  per_page: z
+    .number()
+    .int()
+    .max(100)
+    .default(20)
+    .describe('Number of records per page.'),
   orderBy: z.array(z.record(z.enum(['asc', 'desc']))).optional(),
   filter: z.string().optional().openapi({
     example: '[firstname][contains]=string',
@@ -28,9 +39,7 @@ export const responseMetaSchema = z.object({
   total_pages: z.number().int().min(0),
 })
 
-export const responseListSchema = <T extends z.ZodTypeAny>(
-  itemSchema: T,
-) =>
+export const responseListSchema = <T extends z.ZodTypeAny>(itemSchema: T) =>
   z.object({
     success: z.literal(true),
     data: z.array(itemSchema),
@@ -73,15 +82,23 @@ export abstract class ListEndpoint<TWhereInput> extends OpenAPIEndpoint {
     const validated = await this.getValidatedData()
     const { query } = validated
 
-    const page = Math.max(1, Number(query.page ?? 1))
+    const where = queryStringToPrismaWhere<TWhereInput>(query.filter)
     const per_page = Math.min(
       Number(query.per_page ?? this.pageSize),
       this.maxPageSize,
     )
 
-    const skip = (page - 1) * per_page
+    if (query.page === 0) {
+      return {
+        page: 0,
+        where,
+        orderBy: query.orderBy,
+      }
+    }
 
-    const where = queryStringToPrismaWhere<TWhereInput>(query.filter)
+    const page = Math.max(1, Number(query.page ?? 1))
+
+    const skip = (page - 1) * per_page
 
     return {
       page,
@@ -95,7 +112,7 @@ export abstract class ListEndpoint<TWhereInput> extends OpenAPIEndpoint {
   async action(
     c: AppContext,
     data: AwaitedReturnType<typeof this.preAction>,
-  ): Promise<Response | { data: unknown; total: number }> {
+  ): Promise<Response | { data: unknown; total?: number }> {
     throw new Error('action implemented for ' + this.constructor.name)
   }
 
@@ -145,12 +162,16 @@ export abstract class ListEndpoint<TWhereInput> extends OpenAPIEndpoint {
       {
         success: true,
         data: result.data,
-        meta: {
-          page: params.page,
-          per_page: params.take,
-          total: result.total,
-          total_pages: Math.ceil(result.total / params.take),
-        },
+        ...(params.page && {
+          meta: {
+            page: params.page,
+            per_page: params.take,
+            total: result.total,
+            total_pages: Math.ceil(
+              (result.total ?? 0) / (params.take ?? this.pageSize),
+            ),
+          },
+        }),
       },
       200,
     )

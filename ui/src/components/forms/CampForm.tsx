@@ -23,6 +23,7 @@ import { useApi } from "@/lib/api/useApi";
 import { CreateCampRequest } from "@/interfaces";
 
 interface CampAllocation {
+  id?: string;
   name: string;
   items: string;
   allocation_type: "random" | "definite";
@@ -39,22 +40,52 @@ interface CampFormProps {
   onCancel: () => void;
 }
 
-export default function CampForm({ camp, mode, onSuccess, onCancel }: CampFormProps) {
+export default function CampForm({
+  camp,
+  mode,
+  onSuccess,
+  onCancel,
+}: CampFormProps) {
   const { $api } = useApi();
   const [error, setError] = React.useState<string | null>(null);
   const isView = mode === "view";
 
   const createCampMutation = $api.useMutation("post", "/api/v1/camps");
   const updateCampMutation = $api.useMutation("patch", "/api/v1/camps/{id}");
-  const createAllocationMutation = $api.useMutation("post", "/api/v1/camp-allocations");
+  const createAllocationMutation = $api.useMutation(
+    "post",
+    "/api/v1/camp-allocations"
+  );
+  const updateAllocationMutation = $api.useMutation(
+    "patch",
+    "/api/v1/camp-allocations/{id}"
+  );
 
   const entitiesResult = $api.useQuery("get", "/api/v1/entities/list", {
     params: { query: { page: 1, per_page: 100 } },
   });
 
-  const entities = entitiesResult.data?.success ? entitiesResult.data.data : [];
+  const allocationsResult = $api.useQuery(
+    "get",
+    "/api/v1/camp-allocations/list",
+    {
+      params: { query: { page: 1, per_page: 100, camp_id: camp?.id } },
+      queryKey: ["camp-allocations", camp?.id],
+    },
+    { enabled: !!camp?.id && mode === "edit" }
+  );
 
-  const { control, handleSubmit, formState: { errors } } = useForm<CampFormData>({
+  const entities = entitiesResult.data?.success ? entitiesResult.data.data : [];
+  const existingAllocations = allocationsResult.data?.success
+    ? allocationsResult.data.data
+    : [];
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<CampFormData>({
     defaultValues: {
       title: camp?.title || "",
       theme: camp?.theme || "",
@@ -68,6 +99,28 @@ export default function CampForm({ camp, mode, onSuccess, onCancel }: CampFormPr
     },
   });
 
+  React.useEffect(() => {
+    if (mode === "edit" && existingAllocations.length > 0) {
+      reset({
+        title: camp?.title || "",
+        theme: camp?.theme || "",
+        verse: camp?.verse || "",
+        entity_id: camp?.entity_id || "",
+        year: camp?.year || new Date().getFullYear(),
+        fee: camp?.fee || 0,
+        start_date: camp?.start_date || "",
+        end_date: camp?.end_date || "",
+        allocations: existingAllocations.map((a) => ({
+          id: a.id,
+          name: a.name || "",
+          items: Array.isArray(a.items) ? a.items.join(", ") : "",
+          allocation_type:
+            (a.allocation_type as "random" | "definite") || "random",
+        })),
+      });
+    }
+  }, [mode, existingAllocations, camp, reset]);
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "allocations",
@@ -79,7 +132,9 @@ export default function CampForm({ camp, mode, onSuccess, onCancel }: CampFormPr
       const { allocations, ...campData } = data;
 
       if (mode === "create") {
-        const campResponse = await createCampMutation.mutateAsync({ body: campData });
+        const campResponse = await createCampMutation.mutateAsync({
+          body: campData,
+        });
         const campId = campResponse.data?.id;
 
         if (campId && allocations.length > 0) {
@@ -89,7 +144,10 @@ export default function CampForm({ camp, mode, onSuccess, onCancel }: CampFormPr
                 body: {
                   camp_id: campId,
                   name: allocation.name,
-                  items: allocation.items.split(",").map((item) => item.trim()).filter(Boolean),
+                  items: allocation.items
+                    .split(",")
+                    .map((item) => item.trim())
+                    .filter(Boolean),
                   allocation_type: allocation.allocation_type,
                 },
               })
@@ -101,6 +159,31 @@ export default function CampForm({ camp, mode, onSuccess, onCancel }: CampFormPr
           params: { path: { id: camp.id } },
           body: campData as CreateCampRequest,
         });
+
+        if (allocations.length > 0) {
+          await Promise.all(
+            allocations.map((allocation) => {
+              const allocationBody = {
+                camp_id: camp.id!,
+                name: allocation.name,
+                items: allocation.items
+                  .split(",")
+                  .map((item) => item.trim())
+                  .filter(Boolean),
+                allocation_type: allocation.allocation_type,
+              };
+
+              return allocation.id
+                ? updateAllocationMutation.mutateAsync({
+                    params: { path: { id: allocation.id } },
+                    body: allocationBody,
+                  })
+                : createAllocationMutation.mutateAsync({
+                    body: allocationBody,
+                  });
+            })
+          );
+        }
       }
       onSuccess();
     } catch (err: any) {
@@ -108,7 +191,10 @@ export default function CampForm({ camp, mode, onSuccess, onCancel }: CampFormPr
     }
   };
 
-  const isLoading = createCampMutation.isPending || updateCampMutation.isPending || createAllocationMutation.isPending;
+  const isLoading =
+    createCampMutation.isPending ||
+    updateCampMutation.isPending ||
+    createAllocationMutation.isPending;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -175,7 +261,9 @@ export default function CampForm({ camp, mode, onSuccess, onCancel }: CampFormPr
                   </MenuItem>
                 ))}
               </Select>
-              {errors.entity_id && <FormHelperText>{errors.entity_id.message}</FormHelperText>}
+              {errors.entity_id && (
+                <FormHelperText>{errors.entity_id.message}</FormHelperText>
+              )}
             </FormControl>
           )}
         />
@@ -222,12 +310,13 @@ export default function CampForm({ camp, mode, onSuccess, onCancel }: CampFormPr
             <TextField
               {...field}
               label="Start Date"
-              type="date"
+              type={isView ? "text" : "date"}
               fullWidth
               disabled={isView}
               error={!!errors.start_date}
               helperText={errors.start_date?.message}
               slotProps={{ inputLabel: { shrink: true } }}
+              value={isView && field.value ? new Date(field.value).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : field.value}
             />
           )}
         />
@@ -240,26 +329,36 @@ export default function CampForm({ camp, mode, onSuccess, onCancel }: CampFormPr
             <TextField
               {...field}
               label="End Date"
-              type="date"
+              type={isView ? "text" : "date"}
               fullWidth
               disabled={isView}
               error={!!errors.end_date}
               helperText={errors.end_date?.message}
               slotProps={{ inputLabel: { shrink: true } }}
+              value={isView && field.value ? new Date(field.value).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : field.value}
             />
           )}
         />
 
-        {mode === "create" && (
+        {!isView && (
           <Box>
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 2,
+              }}
+            >
               <Typography variant="subtitle1" fontWeight={600}>
                 Camp Allocations
               </Typography>
               <Button
                 variant="outlined"
                 startIcon={<AddIcon />}
-                onClick={() => append({ name: "", items: "", allocation_type: "random" })}
+                onClick={() =>
+                  append({ name: "", items: "", allocation_type: "random" })
+                }
                 size="small"
               >
                 Add Allocation
@@ -270,11 +369,21 @@ export default function CampForm({ camp, mode, onSuccess, onCancel }: CampFormPr
               {fields.map((field, index) => (
                 <Paper key={field.id} sx={{ p: 2, bgcolor: "grey.50" }}>
                   <Stack spacing={2}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
                       <Typography variant="body2" fontWeight={600}>
                         Allocation {index + 1}
                       </Typography>
-                      <IconButton size="small" color="error" onClick={() => remove(index)}>
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={() => remove(index)}
+                      >
                         <DeleteIcon fontSize="small" />
                       </IconButton>
                     </Box>
@@ -291,7 +400,9 @@ export default function CampForm({ camp, mode, onSuccess, onCancel }: CampFormPr
                           fullWidth
                           size="small"
                           error={!!errors.allocations?.[index]?.name}
-                          helperText={errors.allocations?.[index]?.name?.message}
+                          helperText={
+                            errors.allocations?.[index]?.name?.message
+                          }
                         />
                       )}
                     />
@@ -310,7 +421,9 @@ export default function CampForm({ camp, mode, onSuccess, onCancel }: CampFormPr
                           multiline
                           rows={2}
                           error={!!errors.allocations?.[index]?.items}
-                          helperText={errors.allocations?.[index]?.items?.message}
+                          helperText={
+                            errors.allocations?.[index]?.items?.message
+                          }
                         />
                       )}
                     />
@@ -335,8 +448,54 @@ export default function CampForm({ camp, mode, onSuccess, onCancel }: CampFormPr
           </Box>
         )}
 
+        {isView && existingAllocations.length > 0 && (
+          <Box>
+            <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2 }}>
+              Camp Allocations
+            </Typography>
+            <Stack spacing={2}>
+              {existingAllocations.map((allocation, index) => (
+                <Paper key={allocation.id} sx={{ p: 2, bgcolor: "grey.50" }}>
+                  <Stack spacing={1.5}>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Name
+                      </Typography>
+                      <Typography variant="body2" fontWeight={500}>
+                        {allocation.name}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Items
+                      </Typography>
+                      <Typography variant="body2">
+                        {Array.isArray(allocation.items)
+                          ? allocation.items.join(", ")
+                          : allocation.items}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Allocation Type
+                      </Typography>
+                      <Typography variant="body2" sx={{ textTransform: "capitalize" }}>
+                        {allocation.allocation_type}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Paper>
+              ))}
+            </Stack>
+          </Box>
+        )}
+
         {!isView && (
-          <Stack direction="row" spacing={2} sx={{ justifyContent: "flex-end" }}>
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{ justifyContent: "flex-end" }}
+          >
             <Button onClick={onCancel} disabled={isLoading}>
               Cancel
             </Button>
