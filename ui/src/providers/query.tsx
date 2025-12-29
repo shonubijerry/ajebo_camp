@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode, useMemo, useState } from "react";
 import createFetchClient from "openapi-fetch";
-import type { paths } from "../../lib/api/v1.d.ts";
+import type { paths } from "../lib/api/v1.js";
 import createClient from "openapi-react-query";
 
 export default function Providers({ children }: { children: ReactNode }) {

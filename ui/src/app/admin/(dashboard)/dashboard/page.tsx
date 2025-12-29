@@ -1,14 +1,11 @@
 "use client";
 
 import React from "react";
-import { CssBaseline, Grid, Typography, Box } from "@mui/material";
-import AppTheme from "@/components/theme/AppTheme";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import { Grid, Typography, Box } from "@mui/material";
 import StatCard from "@/components/dashboard/StatCard";
 import { People as UsersIcon, TrendingUp as TrendingIcon } from "@mui/icons-material";
 import Link from "next/link";
 import { Card, CardContent, Stack, Button } from "@mui/material";
-import { useRouter } from "next/navigation";
 
 const statCards = [
 	{ label: "Total Users", value: 1280, delta: "+12%", icon: <UsersIcon /> },
@@ -18,18 +15,9 @@ const statCards = [
 ];
 
 export default function AdminDashboard() {
-	const router = useRouter();
-
-	const handleLogout = () => {
-		localStorage.removeItem("token");
-		router.push("/admin");
-	};
-
 	return (
-		<AppTheme>
-			<CssBaseline enableColorScheme />
-			<DashboardLayout onLogout={handleLogout}>
-				<Grid container spacing={3} sx={{ mb: 4 }}>
+		<>
+			<Grid container spacing={3} sx={{ mb: 4 }}>
 					{statCards.map((card) => (
 					<Grid sx={{ xs: 12, sm: 6, md: 3 }} key={card.label}>
 						<StatCard {...card} isPositive={!card.delta.includes("-")} />
@@ -89,7 +77,6 @@ export default function AdminDashboard() {
 						</Card>
 					</Grid>
 				</Grid>
-			</DashboardLayout>
-		</AppTheme>
+		</>
 	);
 }

@@ -84,6 +84,62 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/webhooks/paystack": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_paystackWebhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/districts/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List district
+         * @description Endpoint to list district
+         */
+        get: operations["get_ListDistrictsEndpoint"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/camps/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List camp
+         * @description Endpoint to list camp
+         */
+        get: operations["get_ListCampsEndpoint"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/users": {
         parameters: {
             query?: never;
@@ -166,26 +222,6 @@ export interface paths {
          * @description Endpoint to create district
          */
         post: operations["post_CreateDistrictEndpoint"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/districts/list": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List district
-         * @description Endpoint to list district
-         */
-        get: operations["get_ListDistrictsEndpoint"];
-        put?: never;
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -484,26 +520,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/camps/list": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List camp
-         * @description Endpoint to list camp
-         */
-        get: operations["get_ListCampsEndpoint"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/camps/{id}": {
         parameters: {
             query?: never;
@@ -554,7 +570,10 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
-                    /** Format: email */
+                    /**
+                     * Format: email
+                     * @example ada.okafor@example.com
+                     */
                     email: string;
                     password: string;
                 };
@@ -571,18 +590,33 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Ada */
                             firstname: string;
+                            /** @example Okafor */
                             lastname: string;
-                            /** Format: email */
+                            /**
+                             * Format: email
+                             * @example ada.okafor@example.com
+                             */
                             email: string;
+                            /** @example +2348012345678 */
                             phone?: string | null;
                             /**
                              * @default user
+                             * @example user
                              * @enum {string}
                              */
                             role: "user" | "staff" | "admin";
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                             token: string;
                         };
@@ -649,13 +683,20 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @example Ada */
                     firstname: string;
+                    /** @example Okafor */
                     lastname: string;
-                    /** Format: email */
+                    /**
+                     * Format: email
+                     * @example ada.okafor@example.com
+                     */
                     email: string;
+                    /** @example +2348012345678 */
                     phone?: string | null;
                     /**
                      * @default user
+                     * @example user
                      * @enum {string}
                      */
                     role?: "user" | "staff" | "admin";
@@ -674,18 +715,33 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Ada */
                             firstname: string;
+                            /** @example Okafor */
                             lastname: string;
-                            /** Format: email */
+                            /**
+                             * Format: email
+                             * @example ada.okafor@example.com
+                             */
                             email: string;
+                            /** @example +2348012345678 */
                             phone?: string | null;
                             /**
                              * @default user
+                             * @example user
                              * @enum {string}
                              */
                             role: "user" | "staff" | "admin";
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                             token: string;
                         };
@@ -904,6 +960,264 @@ export interface operations {
             };
         };
     };
+    post_paystackWebhook: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    get_ListDistrictsEndpoint: {
+        parameters: {
+            query?: {
+                /** @description The page number to retrieve. If set to 0, all records are returned. */
+                page?: number;
+                /** @description Number of records per page. */
+                per_page?: number;
+                orderBy?: {
+                    [key: string]: "asc" | "desc";
+                }[];
+                filter?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Operation successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            /** @example Yaba */
+                            name: string;
+                            /**
+                             * @default []
+                             * @example [
+                             *       "Zone A",
+                             *       "Zone B"
+                             *     ]
+                             */
+                            zones: string[];
+                            id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
+                            created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
+                            updated_at: string;
+                        }[];
+                        meta: {
+                            page: number;
+                            per_page: number;
+                            total: number;
+                            total_pages: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: false;
+                        errors: {
+                            code: string;
+                            message: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Validation error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: false;
+                        errors: {
+                            code: string;
+                            message: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: false;
+                        errors: {
+                            code: string;
+                            message: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    get_ListCampsEndpoint: {
+        parameters: {
+            query?: {
+                /** @description The page number to retrieve. If set to 0, all records are returned. */
+                page?: number;
+                /** @description Number of records per page. */
+                per_page?: number;
+                orderBy?: {
+                    [key: string]: "asc" | "desc";
+                }[];
+                filter?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Operation successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            /** @example Summer Camp 2025 */
+                            title: string;
+                            /** @example Faith and Fire */
+                            theme?: string | null;
+                            /** @example Jeremiah 29:11 */
+                            verse?: string | null;
+                            /** @example entity_123 */
+                            entity_id: string;
+                            /** @example https://example.com/banner.jpg */
+                            banner?: string | null;
+                            /** @example 2025 */
+                            year: number;
+                            /** @example 15000 */
+                            fee: number;
+                            /**
+                             * @default []
+                             * @example [
+                             *       20000,
+                             *       30000
+                             *     ]
+                             */
+                            premium_fees: number[];
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
+                            start_date: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
+                            end_date: string;
+                            id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
+                            created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
+                            updated_at: string;
+                        }[];
+                        meta: {
+                            page: number;
+                            per_page: number;
+                            total: number;
+                            total_pages: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: false;
+                        errors: {
+                            code: string;
+                            message: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Validation error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: false;
+                        errors: {
+                            code: string;
+                            message: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: false;
+                        errors: {
+                            code: string;
+                            message: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     post_CreateUserEndpoint: {
         parameters: {
             query?: never;
@@ -914,13 +1228,20 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @example Ada */
                     firstname: string;
+                    /** @example Okafor */
                     lastname: string;
-                    /** Format: email */
+                    /**
+                     * Format: email
+                     * @example ada.okafor@example.com
+                     */
                     email: string;
+                    /** @example +2348012345678 */
                     phone?: string | null;
                     /**
                      * @default user
+                     * @example user
                      * @enum {string}
                      */
                     role?: "user" | "staff" | "admin";
@@ -939,18 +1260,33 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Ada */
                             firstname: string;
+                            /** @example Okafor */
                             lastname: string;
-                            /** Format: email */
+                            /**
+                             * Format: email
+                             * @example ada.okafor@example.com
+                             */
                             email: string;
+                            /** @example +2348012345678 */
                             phone?: string | null;
                             /**
                              * @default user
+                             * @example user
                              * @enum {string}
                              */
                             role: "user" | "staff" | "admin";
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -1009,7 +1345,9 @@ export interface operations {
     get_ListUsersEndpoint: {
         parameters: {
             query?: {
+                /** @description The page number to retrieve. If set to 0, all records are returned. */
                 page?: number;
+                /** @description Number of records per page. */
                 per_page?: number;
                 orderBy?: {
                     [key: string]: "asc" | "desc";
@@ -1032,18 +1370,33 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Ada */
                             firstname: string;
+                            /** @example Okafor */
                             lastname: string;
-                            /** Format: email */
+                            /**
+                             * Format: email
+                             * @example ada.okafor@example.com
+                             */
                             email: string;
+                            /** @example +2348012345678 */
                             phone?: string | null;
                             /**
                              * @default user
+                             * @example user
                              * @enum {string}
                              */
                             role: "user" | "staff" | "admin";
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         }[];
                         meta: {
@@ -1126,18 +1479,33 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Ada */
                             firstname: string;
+                            /** @example Okafor */
                             lastname: string;
-                            /** Format: email */
+                            /**
+                             * Format: email
+                             * @example ada.okafor@example.com
+                             */
                             email: string;
+                            /** @example +2348012345678 */
                             phone?: string | null;
                             /**
                              * @default user
+                             * @example user
                              * @enum {string}
                              */
                             role: "user" | "staff" | "admin";
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -1275,13 +1643,20 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @example Ada */
                     firstname: string;
+                    /** @example Okafor */
                     lastname: string;
-                    /** Format: email */
+                    /**
+                     * Format: email
+                     * @example ada.okafor@example.com
+                     */
                     email: string;
+                    /** @example +2348012345678 */
                     phone?: string | null;
                     /**
                      * @default user
+                     * @example user
                      * @enum {string}
                      */
                     role?: "user" | "staff" | "admin";
@@ -1299,18 +1674,33 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Ada */
                             firstname: string;
+                            /** @example Okafor */
                             lastname: string;
-                            /** Format: email */
+                            /**
+                             * Format: email
+                             * @example ada.okafor@example.com
+                             */
                             email: string;
+                            /** @example +2348012345678 */
                             phone?: string | null;
                             /**
                              * @default user
+                             * @example user
                              * @enum {string}
                              */
                             role: "user" | "staff" | "admin";
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -1376,8 +1766,15 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @example Yaba */
                     name: string;
-                    /** @default [] */
+                    /**
+                     * @default []
+                     * @example [
+                     *       "Zone A",
+                     *       "Zone B"
+                     *     ]
+                     */
                     zones?: string[];
                 };
             };
@@ -1393,104 +1790,27 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Yaba */
                             name: string;
-                            /** @default [] */
+                            /**
+                             * @default []
+                             * @example [
+                             *       "Zone A",
+                             *       "Zone B"
+                             *     ]
+                             */
                             zones: string[];
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_ListDistrictsEndpoint: {
-        parameters: {
-            query?: {
-                page?: number;
-                per_page?: number;
-                orderBy?: {
-                    [key: string]: "asc" | "desc";
-                }[];
-                filter?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            name: string;
-                            /** @default [] */
-                            zones: string[];
-                            id: string;
-                            created_at: string;
-                            updated_at: string;
-                        }[];
-                        meta: {
-                            page: number;
-                            per_page: number;
-                            total: number;
-                            total_pages: number;
                         };
                     };
                 };
@@ -1566,11 +1886,26 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Yaba */
                             name: string;
-                            /** @default [] */
+                            /**
+                             * @default []
+                             * @example [
+                             *       "Zone A",
+                             *       "Zone B"
+                             *     ]
+                             */
                             zones: string[];
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -1708,8 +2043,15 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @example Yaba */
                     name: string;
-                    /** @default [] */
+                    /**
+                     * @default []
+                     * @example [
+                     *       "Zone A",
+                     *       "Zone B"
+                     *     ]
+                     */
                     zones?: string[];
                 };
             };
@@ -1725,11 +2067,26 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Yaba */
                             name: string;
-                            /** @default [] */
+                            /**
+                             * @default []
+                             * @example [
+                             *       "Zone A",
+                             *       "Zone B"
+                             *     ]
+                             */
                             zones: string[];
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -1795,6 +2152,7 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @example Lagos Mainland */
                     name: string;
                 };
             };
@@ -1810,9 +2168,18 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Lagos Mainland */
                             name: string;
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -1871,7 +2238,9 @@ export interface operations {
     get_ListEntitiesEndpoint: {
         parameters: {
             query?: {
+                /** @description The page number to retrieve. If set to 0, all records are returned. */
                 page?: number;
+                /** @description Number of records per page. */
                 per_page?: number;
                 orderBy?: {
                     [key: string]: "asc" | "desc";
@@ -1894,9 +2263,18 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Lagos Mainland */
                             name: string;
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         }[];
                         meta: {
@@ -1979,9 +2357,18 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Lagos Mainland */
                             name: string;
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -2119,6 +2506,7 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @example Lagos Mainland */
                     name: string;
                 };
             };
@@ -2134,9 +2522,18 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Lagos Mainland */
                             name: string;
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -2195,7 +2592,9 @@ export interface operations {
     get_ListPaymentsEndpoint: {
         parameters: {
             query?: {
+                /** @description The page number to retrieve. If set to 0, all records are returned. */
                 page?: number;
+                /** @description Number of records per page. */
                 per_page?: number;
                 orderBy?: {
                     [key: string]: "asc" | "desc";
@@ -2218,12 +2617,24 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example pay_123 */
                             reference: string;
+                            /** @example 15000 */
                             amount: number;
+                            /** @example user_456 */
                             user_id: string;
+                            /** @example camp_123 */
                             camp_id: string;
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         }[];
                         meta: {
@@ -2306,12 +2717,24 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example pay_123 */
                             reference: string;
+                            /** @example 15000 */
                             amount: number;
+                            /** @example user_456 */
                             user_id: string;
+                            /** @example camp_123 */
                             camp_id: string;
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -2377,25 +2800,46 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @example John */
                     firstname: string;
+                    /** @example Doe */
                     lastname: string;
-                    /** Format: email */
+                    /**
+                     * Format: email
+                     * @example john.doe@example.com
+                     */
                     email?: string | null;
+                    /** @example +2348012345678 */
                     phone: string;
+                    /** @example 21-30 */
                     age_group: string;
+                    /** @example male */
                     gender: string;
+                    /** @example camp_123 */
                     camp_id: string;
+                    /** @example user_456 */
                     user_id: string;
+                    /** @example district_789 */
                     district_id?: string;
+                    /** @example pay_ref_001 */
                     payment_ref?: string | null;
                     /**
                      * @default regular
+                     * @example regular
                      * @enum {string}
                      */
                     type?: "regular" | "premium";
+                    /** @example 5000 */
                     amount?: number | null;
-                    /** @default  */
+                    /**
+                     * @default
+                     * @example Boot 1
+                     */
                     allocated_items?: string;
+                    /**
+                     * Format: date-time
+                     * @example 2025-01-01T00:00:00Z
+                     */
                     checkin_at?: string | null;
                 };
             };
@@ -2411,28 +2855,57 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example John */
                             firstname: string;
+                            /** @example Doe */
                             lastname: string;
-                            /** Format: email */
+                            /**
+                             * Format: email
+                             * @example john.doe@example.com
+                             */
                             email?: string | null;
+                            /** @example +2348012345678 */
                             phone: string;
+                            /** @example 21-30 */
                             age_group: string;
+                            /** @example male */
                             gender: string;
+                            /** @example camp_123 */
                             camp_id: string;
+                            /** @example user_456 */
                             user_id: string;
+                            /** @example district_789 */
                             district_id?: string;
+                            /** @example pay_ref_001 */
                             payment_ref?: string | null;
                             /**
                              * @default regular
+                             * @example regular
                              * @enum {string}
                              */
                             type: "regular" | "premium";
+                            /** @example 5000 */
                             amount?: number | null;
-                            /** @default  */
+                            /**
+                             * @default
+                             * @example Boot 1
+                             */
                             allocated_items: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             checkin_at?: string | null;
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -2491,7 +2964,9 @@ export interface operations {
     get_ListCampitesEndpoint: {
         parameters: {
             query?: {
+                /** @description The page number to retrieve. If set to 0, all records are returned. */
                 page?: number;
+                /** @description Number of records per page. */
                 per_page?: number;
                 orderBy?: {
                     [key: string]: "asc" | "desc";
@@ -2514,28 +2989,57 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example John */
                             firstname: string;
+                            /** @example Doe */
                             lastname: string;
-                            /** Format: email */
+                            /**
+                             * Format: email
+                             * @example john.doe@example.com
+                             */
                             email?: string | null;
+                            /** @example +2348012345678 */
                             phone: string;
+                            /** @example 21-30 */
                             age_group: string;
+                            /** @example male */
                             gender: string;
+                            /** @example camp_123 */
                             camp_id: string;
+                            /** @example user_456 */
                             user_id: string;
+                            /** @example district_789 */
                             district_id?: string;
+                            /** @example pay_ref_001 */
                             payment_ref?: string | null;
                             /**
                              * @default regular
+                             * @example regular
                              * @enum {string}
                              */
                             type: "regular" | "premium";
+                            /** @example 5000 */
                             amount?: number | null;
-                            /** @default  */
+                            /**
+                             * @default
+                             * @example Boot 1
+                             */
                             allocated_items: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             checkin_at?: string | null;
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         }[];
                         meta: {
@@ -2618,28 +3122,57 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example John */
                             firstname: string;
+                            /** @example Doe */
                             lastname: string;
-                            /** Format: email */
+                            /**
+                             * Format: email
+                             * @example john.doe@example.com
+                             */
                             email?: string | null;
+                            /** @example +2348012345678 */
                             phone: string;
+                            /** @example 21-30 */
                             age_group: string;
+                            /** @example male */
                             gender: string;
+                            /** @example camp_123 */
                             camp_id: string;
+                            /** @example user_456 */
                             user_id: string;
+                            /** @example district_789 */
                             district_id?: string;
+                            /** @example pay_ref_001 */
                             payment_ref?: string | null;
                             /**
                              * @default regular
+                             * @example regular
                              * @enum {string}
                              */
                             type: "regular" | "premium";
+                            /** @example 5000 */
                             amount?: number | null;
-                            /** @default  */
+                            /**
+                             * @default
+                             * @example Boot 1
+                             */
                             allocated_items: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             checkin_at?: string | null;
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -2777,25 +3310,46 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @example John */
                     firstname: string;
+                    /** @example Doe */
                     lastname: string;
-                    /** Format: email */
+                    /**
+                     * Format: email
+                     * @example john.doe@example.com
+                     */
                     email?: string | null;
+                    /** @example +2348012345678 */
                     phone: string;
+                    /** @example 21-30 */
                     age_group: string;
+                    /** @example male */
                     gender: string;
+                    /** @example camp_123 */
                     camp_id: string;
+                    /** @example user_456 */
                     user_id: string;
+                    /** @example district_789 */
                     district_id?: string;
+                    /** @example pay_ref_001 */
                     payment_ref?: string | null;
                     /**
                      * @default regular
+                     * @example regular
                      * @enum {string}
                      */
                     type?: "regular" | "premium";
+                    /** @example 5000 */
                     amount?: number | null;
-                    /** @default  */
+                    /**
+                     * @default
+                     * @example Boot 1
+                     */
                     allocated_items?: string;
+                    /**
+                     * Format: date-time
+                     * @example 2025-01-01T00:00:00Z
+                     */
                     checkin_at?: string | null;
                 };
             };
@@ -2811,28 +3365,57 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example John */
                             firstname: string;
+                            /** @example Doe */
                             lastname: string;
-                            /** Format: email */
+                            /**
+                             * Format: email
+                             * @example john.doe@example.com
+                             */
                             email?: string | null;
+                            /** @example +2348012345678 */
                             phone: string;
+                            /** @example 21-30 */
                             age_group: string;
+                            /** @example male */
                             gender: string;
+                            /** @example camp_123 */
                             camp_id: string;
+                            /** @example user_456 */
                             user_id: string;
+                            /** @example district_789 */
                             district_id?: string;
+                            /** @example pay_ref_001 */
                             payment_ref?: string | null;
                             /**
                              * @default regular
+                             * @example regular
                              * @enum {string}
                              */
                             type: "regular" | "premium";
+                            /** @example 5000 */
                             amount?: number | null;
-                            /** @default  */
+                            /**
+                             * @default
+                             * @example Boot 1
+                             */
                             allocated_items: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             checkin_at?: string | null;
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -2898,12 +3481,22 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @example camp_123 */
                     camp_id: string;
+                    /** @example Prayer Boot */
                     name: string;
-                    /** @default [] */
+                    /**
+                     * @default []
+                     * @example [
+                     *       "Boot 1",
+                     *       "Boot 2",
+                     *       "Boot 3"
+                     *     ]
+                     */
                     items?: string[];
                     /**
                      * @default random
+                     * @example random
                      * @enum {string}
                      */
                     allocation_type?: "random" | "definite";
@@ -2921,17 +3514,35 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example camp_123 */
                             camp_id: string;
+                            /** @example Prayer Boot */
                             name: string;
-                            /** @default [] */
+                            /**
+                             * @default []
+                             * @example [
+                             *       "Boot 1",
+                             *       "Boot 2",
+                             *       "Boot 3"
+                             *     ]
+                             */
                             items: string[];
                             /**
                              * @default random
+                             * @example random
                              * @enum {string}
                              */
                             allocation_type: "random" | "definite";
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -2990,7 +3601,9 @@ export interface operations {
     get_ListCampAllocationsEndpoint: {
         parameters: {
             query?: {
+                /** @description The page number to retrieve. If set to 0, all records are returned. */
                 page?: number;
+                /** @description Number of records per page. */
                 per_page?: number;
                 orderBy?: {
                     [key: string]: "asc" | "desc";
@@ -3013,17 +3626,35 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example camp_123 */
                             camp_id: string;
+                            /** @example Prayer Boot */
                             name: string;
-                            /** @default [] */
+                            /**
+                             * @default []
+                             * @example [
+                             *       "Boot 1",
+                             *       "Boot 2",
+                             *       "Boot 3"
+                             *     ]
+                             */
                             items: string[];
                             /**
                              * @default random
+                             * @example random
                              * @enum {string}
                              */
                             allocation_type: "random" | "definite";
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         }[];
                         meta: {
@@ -3106,17 +3737,35 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example camp_123 */
                             camp_id: string;
+                            /** @example Prayer Boot */
                             name: string;
-                            /** @default [] */
+                            /**
+                             * @default []
+                             * @example [
+                             *       "Boot 1",
+                             *       "Boot 2",
+                             *       "Boot 3"
+                             *     ]
+                             */
                             items: string[];
                             /**
                              * @default random
+                             * @example random
                              * @enum {string}
                              */
                             allocation_type: "random" | "definite";
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -3254,12 +3903,22 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @example camp_123 */
                     camp_id: string;
+                    /** @example Prayer Boot */
                     name: string;
-                    /** @default [] */
+                    /**
+                     * @default []
+                     * @example [
+                     *       "Boot 1",
+                     *       "Boot 2",
+                     *       "Boot 3"
+                     *     ]
+                     */
                     items?: string[];
                     /**
                      * @default random
+                     * @example random
                      * @enum {string}
                      */
                     allocation_type?: "random" | "definite";
@@ -3277,17 +3936,35 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example camp_123 */
                             camp_id: string;
+                            /** @example Prayer Boot */
                             name: string;
-                            /** @default [] */
+                            /**
+                             * @default []
+                             * @example [
+                             *       "Boot 1",
+                             *       "Boot 2",
+                             *       "Boot 3"
+                             *     ]
+                             */
                             items: string[];
                             /**
                              * @default random
+                             * @example random
                              * @enum {string}
                              */
                             allocation_type: "random" | "definite";
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -3353,16 +4030,37 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @example Summer Camp 2025 */
                     title: string;
+                    /** @example Faith and Fire */
                     theme?: string | null;
+                    /** @example Jeremiah 29:11 */
                     verse?: string | null;
+                    /** @example entity_123 */
                     entity_id: string;
+                    /** @example https://example.com/banner.jpg */
                     banner?: string | null;
+                    /** @example 2025 */
                     year: number;
+                    /** @example 15000 */
                     fee: number;
-                    /** @default [] */
+                    /**
+                     * @default []
+                     * @example [
+                     *       20000,
+                     *       30000
+                     *     ]
+                     */
                     premium_fees?: number[];
+                    /**
+                     * Format: date-time
+                     * @example 2025-01-01T00:00:00Z
+                     */
                     start_date: string;
+                    /**
+                     * Format: date-time
+                     * @example 2025-01-01T00:00:00Z
+                     */
                     end_date: string;
                 };
             };
@@ -3378,120 +4076,49 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Summer Camp 2025 */
                             title: string;
+                            /** @example Faith and Fire */
                             theme?: string | null;
+                            /** @example Jeremiah 29:11 */
                             verse?: string | null;
+                            /** @example entity_123 */
                             entity_id: string;
+                            /** @example https://example.com/banner.jpg */
                             banner?: string | null;
+                            /** @example 2025 */
                             year: number;
+                            /** @example 15000 */
                             fee: number;
-                            /** @default [] */
+                            /**
+                             * @default []
+                             * @example [
+                             *       20000,
+                             *       30000
+                             *     ]
+                             */
                             premium_fees: number[];
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             start_date: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             end_date: string;
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_ListCampsEndpoint: {
-        parameters: {
-            query?: {
-                page?: number;
-                per_page?: number;
-                orderBy?: {
-                    [key: string]: "asc" | "desc";
-                }[];
-                filter?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            title: string;
-                            theme?: string | null;
-                            verse?: string | null;
-                            entity_id: string;
-                            banner?: string | null;
-                            year: number;
-                            fee: number;
-                            /** @default [] */
-                            premium_fees: number[];
-                            start_date: string;
-                            end_date: string;
-                            id: string;
-                            created_at: string;
-                            updated_at: string;
-                        }[];
-                        meta: {
-                            page: number;
-                            per_page: number;
-                            total: number;
-                            total_pages: number;
                         };
                     };
                 };
@@ -3567,19 +4194,48 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Summer Camp 2025 */
                             title: string;
+                            /** @example Faith and Fire */
                             theme?: string | null;
+                            /** @example Jeremiah 29:11 */
                             verse?: string | null;
+                            /** @example entity_123 */
                             entity_id: string;
+                            /** @example https://example.com/banner.jpg */
                             banner?: string | null;
+                            /** @example 2025 */
                             year: number;
+                            /** @example 15000 */
                             fee: number;
-                            /** @default [] */
+                            /**
+                             * @default []
+                             * @example [
+                             *       20000,
+                             *       30000
+                             *     ]
+                             */
                             premium_fees: number[];
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             start_date: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             end_date: string;
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };
@@ -3717,16 +4373,37 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @example Summer Camp 2025 */
                     title: string;
+                    /** @example Faith and Fire */
                     theme?: string | null;
+                    /** @example Jeremiah 29:11 */
                     verse?: string | null;
+                    /** @example entity_123 */
                     entity_id: string;
+                    /** @example https://example.com/banner.jpg */
                     banner?: string | null;
+                    /** @example 2025 */
                     year: number;
+                    /** @example 15000 */
                     fee: number;
-                    /** @default [] */
+                    /**
+                     * @default []
+                     * @example [
+                     *       20000,
+                     *       30000
+                     *     ]
+                     */
                     premium_fees?: number[];
+                    /**
+                     * Format: date-time
+                     * @example 2025-01-01T00:00:00Z
+                     */
                     start_date: string;
+                    /**
+                     * Format: date-time
+                     * @example 2025-01-01T00:00:00Z
+                     */
                     end_date: string;
                 };
             };
@@ -3742,19 +4419,48 @@ export interface operations {
                         /** @enum {boolean} */
                         success: true;
                         data: {
+                            /** @example Summer Camp 2025 */
                             title: string;
+                            /** @example Faith and Fire */
                             theme?: string | null;
+                            /** @example Jeremiah 29:11 */
                             verse?: string | null;
+                            /** @example entity_123 */
                             entity_id: string;
+                            /** @example https://example.com/banner.jpg */
                             banner?: string | null;
+                            /** @example 2025 */
                             year: number;
+                            /** @example 15000 */
                             fee: number;
-                            /** @default [] */
+                            /**
+                             * @default []
+                             * @example [
+                             *       20000,
+                             *       30000
+                             *     ]
+                             */
                             premium_fees: number[];
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             start_date: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             end_date: string;
                             id: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             created_at: string;
+                            /**
+                             * Format: date-time
+                             * @example 2025-01-01T00:00:00Z
+                             */
                             updated_at: string;
                         };
                     };

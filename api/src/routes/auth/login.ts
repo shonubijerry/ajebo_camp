@@ -28,7 +28,7 @@ export class LoginEndpoint extends OpenAPIEndpoint {
     const { email, password } = data.body
 
     const user = await c.env.PRISMA.user.findUnique({
-      where: { email, deleted_at: null },
+      where: { email },
     })
 
     if (!user) {

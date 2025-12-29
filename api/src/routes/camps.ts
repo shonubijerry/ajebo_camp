@@ -22,8 +22,59 @@ export class CreateCampEndpoint extends OpenAPIEndpoint {
     }),
   }
 
-  async action(c: AppContext, { body }: typeof this.meta.requestSchema._type) {
-    return c.env.PRISMA.camp.create({ data: body })
+  async action(c: AppContext, payload: typeof this.meta.requestSchema._type) {
+    const contentType = c.req.header('content-type')?.toLowerCase() || ''
+    let file: File | null = null
+    let bodyInput: unknown = payload?.body
+
+    if (contentType.includes('multipart/form-data')) {
+      const formData = await c.req.formData()
+      file = (formData.get('banner') as File) || null
+
+      const premiumFeesRaw = formData.get('premium_fees')?.toString() || '[]'
+      let premiumFees: number[] = []
+      try {
+        premiumFees = JSON.parse(premiumFeesRaw)
+      } catch {
+        premiumFees = []
+      }
+
+      bodyInput = {
+        title: formData.get('title')?.toString() || '',
+        theme: formData.get('theme')?.toString() || null,
+        verse: formData.get('verse')?.toString() || null,
+        entity_id: formData.get('entity_id')?.toString() || '',
+        banner: null,
+        year: Number(formData.get('year')),
+        fee: Number(formData.get('fee')),
+        premium_fees: premiumFees,
+        start_date: formData.get('start_date')?.toString() || '',
+        end_date: formData.get('end_date')?.toString() || '',
+      }
+    }
+
+    const parsed = requestBodies.camp.safeParse(bodyInput)
+    if (!parsed.success) {
+      return c.json({ success: false, errors: parsed.error.issues }, 400)
+    }
+
+    const campData = { ...parsed.data }
+
+    if (file && file.size > 0) {
+      const key = `camps/${crypto.randomUUID()}`
+      const bytes = await file.arrayBuffer()
+
+      await c.env.MEDIA_BUCKET.put(key, bytes, {
+        httpMetadata: {
+          contentType: file.type || 'application/octet-stream',
+        },
+      })
+
+      const base = (c.env.R2_PUBLIC_BASE_URL || '').replace(/\/$/, '')
+      campData.banner = base ? `${base}/${key}` : key
+    }
+
+    return c.env.PRISMA.camp.create({ data: campData })
   }
 }
 

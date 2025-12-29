@@ -19,7 +19,6 @@ import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 
 import ForgotPassword from "@/components/auth/ForgotPassword";
-import AppTheme from "@/components/theme/AppTheme";
 import ColorModeSelect from "@/components/theme/ColorModeSelect";
 import { SitemarkIcon } from "@/components/auth/CustomIcons";
 import { useApi } from "@/lib/api/useApi";
@@ -80,8 +79,10 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
         body: values,
       });
 
-      localStorage.setItem("token", result.data.token);
-      router.push("/admin/dashboard");
+      if (result.data?.token) {
+        localStorage.setItem("token", result.data.token);
+        router.push("/admin/dashboard");
+      }
     } catch (err: unknown) {
       setError("root", {
         type: "server",
@@ -91,10 +92,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
   };
 
   return (
-    <AppTheme {...props}>
-      <CssBaseline enableColorScheme />
-
-      <SignInContainer direction="column">
+    <SignInContainer direction="column">
         <ColorModeSelect sx={{ position: "fixed", top: 16, right: 16 }} />
 
         <Card variant="outlined">
@@ -168,12 +166,11 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
           <Divider>or</Divider>
 
           <Typography align="center">
-            Don&apos;t have an account? <Link href="/signup">Sign up</Link>
+            Don&apos;t have an account? <Link href="/admin/signup">Sign up</Link>
           </Typography>
 
           <ForgotPassword open={open} handleClose={() => setOpen(false)} />
         </Card>
       </SignInContainer>
-    </AppTheme>
   );
 }

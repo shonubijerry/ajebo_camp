@@ -1,128 +1,38 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Toolbar,
-  Typography,
-} from '@mui/material';
-import LoginIcon from '@mui/icons-material/Login';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { api } from "@/lib/api/server";
+import CampsDisplay from "../components/home/CampsDisplay";
 
-export default function HomePage() {
-  return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#fff' }}>
-      {/* Top Bar */}
+type Camp = {
+  id: string;
+  title: string;
+  theme?: string | null;
+  verse?: string | null;
+  banner?: string | null;
+  fee: number;
+  start_date: string;
+  end_date: string;
+};
 
-      {/* Main Content */}
-      <Container maxWidth="lg" sx={{ mt: 8 }}>
-        <Grid container spacing={6} alignItems="flex-start">
-          {/* Left: Poster Placeholder */}
-          <Grid size={{ xs: 12, md: 5 }}>
-            <Box
-              sx={{
-                height: 600,
-                borderRadius: 2,
-                border: '1px solid',
-                borderColor: 'grey.300',
-                bgcolor: 'grey.100',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Typography variant="h6" color="text.secondary">
-                Camp Poster Placeholder
-              </Typography>
-            </Box>
-          </Grid>
+function getCampStatus(camp: Camp) {
+  const now = new Date();
+  const start = new Date(camp.start_date);
+  const end = new Date(camp.end_date);
 
-          {/* Right: Text Content */}
-          <Grid size={{ xs: 12, md: 7 }}>
-            <Box sx={{ maxWidth: 520 }}>
-              <Typography
-                variant="h6"
-                sx={{ color: 'red', mb: 1, fontWeight: 600 }}
-              >
-                Welcome!!!
-              </Typography>
+  if (now > end)
+    return { label: "Completed", color: "default", isActive: false };
+  if (now < start) return { label: "Upcoming", color: "info", isActive: false };
+  return { label: "Active", color: "success", isActive: true };
+}
 
-              <Typography variant="body1" sx={{ mb: 2 }}>
-                to <br />
-                KC 2025 Youth Camp Registration Portal (Free Registration)
-              </Typography>
+export default async function HomePage() {
+  const result = await api.GET("/api/v1/camps/list", {
+    query: { page: 0, per_page: 100 },
+  });
 
-              <Typography
-                variant="h6"
-                sx={{ fontWeight: 700, mb: 2 }}
-              >
-                ONLINE REGISTRATION IS CLOSED!!!
-              </Typography>
+  const camps = result.data?.success ? result.data.data : [];
 
-              <List dense>
-                <ListItem disablePadding>
-                  <ListItemText primary="• Click on create account" />
-                </ListItem>
-                <ListItem disablePadding>
-                  <ListItemText primary="• If you already have an account, click login" />
-                </ListItem>
-                <ListItem disablePadding>
-                  <ListItemText primary="• Fill in your details to register/login" />
-                </ListItem>
-                <ListItem disablePadding>
-                  <ListItemText primary="• On regular form, fill in your details and click on add list for other members" />
-                </ListItem>
-              </List>
+  if (!camps || camps.length === 0) {
+    return <CampsDisplay camps={[]} />;
+  }
 
-              {/* Buttons */}
-              <Box sx={{ display: 'flex', gap: 3, mt: 4 }}>
-                <Button
-                  variant="contained"
-                  sx={{
-                    bgcolor: 'red',
-                    px: 4,
-                    py: 1.5,
-                    '&:hover': { bgcolor: '#c40000' },
-                  }}
-                >
-                  Register Now
-                </Button>
-
-                <Button
-                  variant="outlined"
-                  sx={{
-                    color: 'green',
-                    borderColor: 'green',
-                    px: 4,
-                    py: 1.5,
-                    '&:hover': {
-                      borderColor: 'darkgreen',
-                      bgcolor: 'rgba(0,128,0,0.04)',
-                    },
-                  }}
-                >
-                  Donate to KC 2025
-                </Button>
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
-      </Container>
-
-      {/* Footer */}
-      <Box sx={{ mt: 10, py: 3, textAlign: 'center' }}>
-        <Typography variant="body2" color="text.secondary">
-          Powered By{' '}
-          <Box component="span" sx={{ color: 'primary.main' }}>
-            FOURSQUARE YOUTH NIGERIA
-          </Box>
-        </Typography>
-      </Box>
-    </Box>
-  );
+  return <CampsDisplay camps={camps} />;
 }

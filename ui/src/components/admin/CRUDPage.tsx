@@ -39,7 +39,9 @@ interface CRUDPageProps<T extends { id?: string }> {
   getDeleteMessage?: (entity: T) => string;
 }
 
-export default function CRUDPage<T extends { id?: string; name?: string; title?: string }>({
+export default function CRUDPage<
+  T extends { id?: string; name?: string; title?: string },
+>({
   title,
   description,
   entityName,
@@ -56,7 +58,9 @@ export default function CRUDPage<T extends { id?: string; name?: string; title?:
   const { $api } = useApi();
 
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [drawerMode, setDrawerMode] = React.useState<"create" | "edit" | "view">("view");
+  const [drawerMode, setDrawerMode] = React.useState<
+    "create" | "edit" | "view"
+  >("view");
   const [selectedEntity, setSelectedEntity] = React.useState<T | undefined>();
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [entityToDelete, setEntityToDelete] = React.useState<T | null>(null);
@@ -142,84 +146,97 @@ export default function CRUDPage<T extends { id?: string; name?: string; title?:
   };
 
   const getDrawerTitle = () => {
-    const capitalizedName = entityName.charAt(0).toUpperCase() + entityName.slice(1);
+    const capitalizedName =
+      entityName.charAt(0).toUpperCase() + entityName.slice(1);
     if (drawerMode === "create") return `Create New ${capitalizedName}`;
     if (drawerMode === "edit") return `Edit ${capitalizedName}`;
     return `View ${capitalizedName}`;
   };
 
   const getDefaultDeleteMessage = () => {
-    const name = (entityToDelete as any)?.name || (entityToDelete as any)?.title || "this item";
+    const name =
+      (entityToDelete as any)?.name ||
+      (entityToDelete as any)?.title ||
+      "this item";
     return `Are you sure you want to delete ${name}? This action cannot be undone.`;
   };
 
   return (
-    <AppTheme>
-      <CssBaseline enableColorScheme />
-      <DashboardLayout onLogout={handleLogout}>
-        <Box sx={{ mb: 3, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Box>
-            <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
-              {title}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {description}
-            </Typography>
-          </Box>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleCreateNew}
-          >
-            Create New
-          </Button>
+    <>
+      <Box
+        sx={{
+          mb: 3,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Box>
+          <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
+            {title}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {description}
+          </Typography>
         </Box>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={handleCreateNew}
+        >
+          Create New
+        </Button>
+      </Box>
 
-        <DataTable
-          data={entities}
-          columns={columns}
-          isLoading={isLoading}
-          onView={handleView}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
+      <DataTable
+        data={entities}
+        columns={columns}
+        isLoading={isLoading}
+        onView={handleView}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+
+      <SlideInDrawer
+        open={drawerOpen}
+        onClose={handleDrawerClose}
+        title={getDrawerTitle()}
+      >
+        <FormComponent
+          {...{
+            [propName === "camp-allocation" ? "campAllocation" : propName]:
+              selectedEntity,
+          }}
+          mode={drawerMode}
+          onSuccess={handleFormSuccess}
+          onCancel={handleDrawerClose}
         />
+      </SlideInDrawer>
 
-        <SlideInDrawer
-          open={drawerOpen}
-          onClose={handleDrawerClose}
-          title={getDrawerTitle()}
-        >
-          <FormComponent
-            {...{ [propName]: selectedEntity }}
-            mode={drawerMode}
-            onSuccess={handleFormSuccess}
-            onCancel={handleDrawerClose}
-          />
-        </SlideInDrawer>
-
-        <Dialog
-          open={deleteDialogOpen}
-          onClose={() => setDeleteDialogOpen(false)}
-        >
-          <DialogTitle>Confirm Delete</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              {getDeleteMessage ? getDeleteMessage(entityToDelete!) : getDefaultDeleteMessage()}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-            <Button
-              onClick={confirmDelete}
-              color="error"
-              variant="contained"
-              disabled={deleteMutation.isPending}
-            >
-              Delete
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </DashboardLayout>
-    </AppTheme>
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+      >
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {getDeleteMessage
+              ? getDeleteMessage(entityToDelete!)
+              : getDefaultDeleteMessage()}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+          <Button
+            onClick={confirmDelete}
+            color="error"
+            variant="contained"
+            disabled={deleteMutation.isPending}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }

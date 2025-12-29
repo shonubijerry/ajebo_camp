@@ -141,6 +141,8 @@ app.post('/forgot/change-password/:code', ChangePasswordPublic)
 app.post('/webhooks/paystack', paystackWebhook)
 
 app.get('/districts/list', ListDistrictsEndpoint)
+app.get('/camps/list', ListCampsEndpoint)
+app.get('/camps/:id', GetCampEndpoint)
 
 // Authenticate all subsequent requests using JWT in Authorization header
 app.use(authMiddleware)
@@ -184,8 +186,6 @@ app.delete('/camp-allocations/:id', DeleteCampAllocationEndpoint)
 
 // Camps
 app.post('/camps', CreateCampEndpoint)
-app.get('/camps/list', ListCampsEndpoint)
-app.get('/camps/:id', GetCampEndpoint)
 app.patch('/camps/:id', UpdateCampEndpoint)
 app.delete('/camps/:id', DeleteCampEndpoint)
 

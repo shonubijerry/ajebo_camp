@@ -10,11 +10,13 @@
     "update-api": "openapi-typescript http://localhost:6001/openapi.json --output src/lib/api/v1.ts --use-options --export-type --immutable-types && prettier --write src/lib/api/v1.ts"
   },
   "dependencies": {
+    "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@fontsource/roboto": "^5.2.9",
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
+    "@mui/material-nextjs": "^7.3.6",
     "@paystack/inline-js": "^2.22.7",
     "@tanstack/react-table": "^8.21.3",
     "next": "16.1.0",

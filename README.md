@@ -113,6 +113,7 @@ JWT_SECRET=your-secret-key
 SALT_ROUND=10
 RESEND_API_KEY=your-resend-key
 PAYSTACK_SECRET_KEY=sk_test_your-paystack-secret-key
+R2_PUBLIC_BASE_URL=https://ajebo-camp-media.r2.dev
 ```
 
 ### UI (.env.local)

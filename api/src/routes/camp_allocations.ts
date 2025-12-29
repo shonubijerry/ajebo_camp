@@ -44,6 +44,7 @@ export class ListCampAllocationsEndpoint extends ListEndpoint<Prisma.Camp_Alloca
         skip: params.skip,
         take: params.take,
         orderBy: params.orderBy,
+        include: { camp: true },
       }),
       c.env.PRISMA.camp_Allocation.count({ where: params.where }),
     ])

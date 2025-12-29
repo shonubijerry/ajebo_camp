@@ -1,4 +1,4 @@
-import QueryProviders from "../../providers/query";
+import QueryProviders from "../../../providers/query";
 
 export default function RootLayout({
   children,

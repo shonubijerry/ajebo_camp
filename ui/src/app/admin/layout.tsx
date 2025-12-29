@@ -1,9 +1,23 @@
-import QueryProviders from "../providers/query";
+"use client";
 
-export default function RootLayout({
+import QueryProviders from "../../providers/query";
+import AdminAuthProvider from "./providers/auth";
+import AppTheme from "@/components/theme/AppTheme";
+import CssBaseline from "@mui/material/CssBaseline";
+
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <QueryProviders>{children}</QueryProviders>;
+  return (
+    <QueryProviders>
+      <AdminAuthProvider>
+        <AppTheme>
+          <CssBaseline enableColorScheme />
+          {children}
+        </AppTheme>
+      </AdminAuthProvider>
+    </QueryProviders>
+  );
 }

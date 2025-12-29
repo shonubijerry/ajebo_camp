@@ -16,12 +16,19 @@
     "enabled": true
   },
   "vars": {
-    "ENVIRONMENT": "development"
+    "ENVIRONMENT": "development",
+    "R2_PUBLIC_BASE_URL": "https://ajebo-camp-media.r2.dev"
   },
   "services": [
     {
       "binding": "DATABASE",
       "service": "database"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA_BUCKET",
+      "bucket_name": "ajebo-camp-media"
     }
   ],
   "env": {
@@ -35,6 +42,12 @@
         {
           "binding": "DATABASE",
           "service": "database-staging"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "MEDIA_BUCKET",
+          "bucket_name": "ajebo-camp-media"
         }
       ]
     }
