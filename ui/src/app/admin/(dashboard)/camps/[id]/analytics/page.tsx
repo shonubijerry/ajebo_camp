@@ -37,6 +37,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
   PieLabelRenderProps,
+  TooltipContentProps,
 } from "recharts";
 import StatCard from "@/components/dashboard/StatCard";
 import { useApi } from "@/lib/api/useApi";
@@ -124,6 +125,30 @@ const ChartCard = ({ title, loading, children }: ChartCardProps) => (
     </CardContent>
   </Card>
 );
+
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: TooltipContentProps<string | number, string>) => {
+  if (!active || !payload[0]?.payload?.currency) {
+    return null;
+  }
+
+  const isVisible = active && payload && payload.length;
+  console.log({ active, payload, label });
+
+  return (
+    <div
+      className="custom-tooltip"
+      style={{ visibility: isVisible ? "visible" : "hidden" }}
+    >
+      {isVisible && (
+        <span className="label" style={{ background: 'white', padding: '10px' }}>{`${payload[0].name} : ${payload[0]?.payload?.currency ?? payload[0].value}`}</span>
+      )}
+    </div>
+  );
+};
 
 export default function CampAnalyticsPage() {
   const params = useParams();
@@ -278,6 +303,7 @@ export default function CampAnalyticsPage() {
                   data={typeBreakdown.map((t) => ({
                     name: `${t.type} revenue` || "Unknown",
                     value: t.revenue,
+                    currency: currency.format(t.revenue),
                   }))}
                   cx="50%"
                   cy="50%"
@@ -285,12 +311,16 @@ export default function CampAnalyticsPage() {
                   outerRadius="80%"
                   labelLine={false}
                   label={renderCustomizedLabel}
+                  tooltipType="none"
                 >
                   {typeBreakdown.map((_, idx) => (
-                    <Cell
-                      key={idx}
-                      fill={pieColors[(idx + 3) % pieColors.length]}
-                    />
+                    <>
+                      <Cell
+                        key={idx}
+                        fill={pieColors[(idx + 3) % pieColors.length]}
+                      />
+                      <Tooltip key={`tooltip-${idx}`} content={CustomTooltip} defaultIndex={idx} />
+                    </>
                   ))}
                 </Pie>
                 <Tooltip />

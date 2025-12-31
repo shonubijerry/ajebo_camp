@@ -54,6 +54,9 @@ export default function DashboardAppBar({
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.08)",
         borderBottom: "1px solid",
         borderColor: "divider",
+        "@media print": {
+          display: "none",
+        },
       }}
       color="inherit"
     >
@@ -106,7 +109,10 @@ export default function DashboardAppBar({
             <Typography variant="body2">Profile</Typography>
           </MenuItem>
           <MenuItem onClick={handleLogout}>
-            <LogoutIcon fontSize="small" sx={{ mr: 1.5, color: "error.main" }} />
+            <LogoutIcon
+              fontSize="small"
+              sx={{ mr: 1.5, color: "error.main" }}
+            />
             <Typography variant="body2" color="error">
               Logout
             </Typography>

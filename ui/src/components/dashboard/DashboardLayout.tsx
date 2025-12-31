@@ -33,21 +33,34 @@ export default function DashboardLayout({
         onLogout={onLogout}
         userName={userName}
       />
-      <Sidebar
-        mobileOpen={mobileOpen}
-        onMobileClose={handleMobileClose}
-        onLogout={onLogout}
-        image={sidebarImage}
-      />
+      <Box
+        sx={{
+          "@media print": {
+            display: "none",
+          },
+        }}
+      >
+        <Sidebar
+          mobileOpen={mobileOpen}
+          onMobileClose={handleMobileClose}
+          onLogout={onLogout}
+          image={sidebarImage}
+        />
+      </Box>
       <Box
         component="main"
         sx={{
           flexGrow: 1,
           p: { xs: 2, sm: 3, md: 4 },
           width: { sm: `calc(100% - ${drawerWidth}px)` },
+          "@media print": {
+            width: "100%",
+            padding: 2,
+            marginLeft: 0,
+          },
         }}
       >
-        <Toolbar />
+        <Toolbar sx={{ "@media print": { display: "none" } }} />
         {children}
       </Box>
     </Box>
