@@ -4,6 +4,7 @@ import { Context, Hono } from 'hono'
 import { Env } from './env'
 import {
   CreateUserEndpoint,
+  GetCurrentUserEndpoint,
   ListUsersEndpoint,
   GetUserEndpoint,
   UpdateUserEndpoint,
@@ -26,6 +27,7 @@ import {
 } from './routes/camp_allocations'
 import {
   CreateCampiteEndpoint,
+  BulkCreateCampitesEndpoint,
   DeleteCampiteEndpoint,
   GetCampiteEndpoint,
   ListCampitesEndpoint,
@@ -52,8 +54,14 @@ import { ChangePasswordPublic } from './routes/auth/forgot_pass/change_password'
 import SignupEndpoint from './routes/auth/signup'
 import { cors } from 'hono/cors'
 import { paystackWebhook } from './routes/webhooks/paystack'
+import {
+  GetDashboardAnalyticsEndpoint,
+  GetDetailedAnalyticsEndpoint,
+} from './routes/analytics'
 
-export type AppBindings = { Bindings: Env }
+export type AppBindings = {
+  Bindings: Env
+}
 export type AppContext = Context<AppBindings>
 
 // Setup OpenAPI registry
@@ -72,12 +80,16 @@ const baseApp = fromHono(new Hono<AppBindings>(), {
 baseApp.use(
   cors({
     origin: ['http://localhost:3000'],
-    allowHeaders: ['Content-Type', 'Upgrade-Insecure-Requests', 'Authorization'],
+    allowHeaders: [
+      'Content-Type',
+      'Upgrade-Insecure-Requests',
+      'Authorization',
+    ],
     allowMethods: ['POST', 'GET', 'OPTIONS', 'PATCH', 'DELETE'],
     exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
     maxAge: 600,
     credentials: true,
-  })
+  }),
 )
 
 // Bot middleware and reject if score is lower than 30
@@ -148,6 +160,7 @@ app.get('/camps/:id', GetCampEndpoint)
 app.use(authMiddleware)
 
 app.post('/users', CreateUserEndpoint)
+app.get('/users/me', GetCurrentUserEndpoint)
 app.get('/users/list', ListUsersEndpoint)
 app.get('/users/:id', GetUserEndpoint)
 app.patch('/users/:id', UpdateUserEndpoint)
@@ -172,6 +185,7 @@ app.get('/payments/:id', GetPaymentEndpoint)
 
 // Campites
 app.post('/campites', CreateCampiteEndpoint)
+app.post('/campites/bulk', BulkCreateCampitesEndpoint)
 app.get('/campites/list', ListCampitesEndpoint)
 app.get('/campites/:id', GetCampiteEndpoint)
 app.patch('/campites/:id', UpdateCampiteEndpoint)
@@ -188,6 +202,10 @@ app.delete('/camp-allocations/:id', DeleteCampAllocationEndpoint)
 app.post('/camps', CreateCampEndpoint)
 app.patch('/camps/:id', UpdateCampEndpoint)
 app.delete('/camps/:id', DeleteCampEndpoint)
+
+// Analytics
+app.get('/analytics/dashboard', GetDashboardAnalyticsEndpoint)
+app.get('/analytics/detailed', GetDetailedAnalyticsEndpoint)
 
 baseApp.route('/api/v1', app)
 

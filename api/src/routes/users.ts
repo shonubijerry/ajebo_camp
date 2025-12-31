@@ -8,6 +8,7 @@ import { requestBodies, responseBodies } from '../schemas'
 import { AppContext } from '..'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './generic/types'
+import { AuthenticatedUser } from '../middlewares/auth'
 
 const userMeta = {
   collection: 'User' as const,
@@ -86,7 +87,7 @@ export class UpdateUserEndpoint extends UpdateEndpoint {
     ...userMeta,
     requestSchema: z.object({
       params: responseBodies.user.pick({ id: true }),
-      body: requestBodies.user,
+      body: requestBodies.user.partial(),
     }),
   }
 
@@ -97,6 +98,23 @@ export class UpdateUserEndpoint extends UpdateEndpoint {
     return c.env.PRISMA.user.update({
       where: { id: params.id },
       data: body,
+    })
+  }
+}
+
+export class GetCurrentUserEndpoint extends OpenAPIEndpoint {
+  meta = {
+    ...userMeta,
+    requestSchema: null,
+  }
+
+  async action(c: AppContext & { user?: AuthenticatedUser }) {
+    if (!c.user?.sub) {
+      throw new Error('Unauthorized')
+    }
+
+    return c.env.PRISMA.user.findUnique({
+      where: { id: c.user.sub },
     })
   }
 }

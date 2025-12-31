@@ -123,7 +123,7 @@ export class UpdateCampEndpoint extends UpdateEndpoint {
     ...campMeta,
     requestSchema: z.object({
       params: responseBodies.camp.pick({ id: true }),
-      body: requestBodies.camp,
+      body: requestBodies.camp.partial(),
     }),
   }
 

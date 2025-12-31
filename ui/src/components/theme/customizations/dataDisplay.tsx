@@ -197,6 +197,13 @@ export const dataDisplayCustomizations: Components<Theme> = {
       }),
     },
   },
+  MuiTableCell: {
+    styleOverrides: {
+      root: {
+        padding: '10px',
+      },
+    },
+  },
   MuiTablePagination: {
     styleOverrides: {
       actions: {

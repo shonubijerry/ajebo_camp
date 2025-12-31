@@ -81,7 +81,7 @@ export class UpdateDistrictEndpoint extends UpdateEndpoint {
     ...districtMeta,
     requestSchema: z.object({
       params: responseBodies.district.pick({ id: true }),
-      body: requestBodies.district,
+      body: requestBodies.district.partial(),
     }),
   }
 

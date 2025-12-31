@@ -73,7 +73,7 @@ export class UpdateCampAllocationEndpoint extends UpdateEndpoint {
     ...campAllocationMeta,
     requestSchema: z.object({
       params: responseBodies.camp_Allocation.pick({ id: true }),
-      body: requestBodies.camp_Allocation,
+      body: requestBodies.camp_Allocation.partial(),
     }),
   }
 

@@ -72,7 +72,7 @@ export class UpdateEntityEndpoint extends UpdateEndpoint {
     ...entityMeta,
     requestSchema: z.object({
       params: responseBodies.entity.pick({ id: true }),
-      body: requestBodies.entity,
+      body: requestBodies.entity.partial(),
     }),
   }
 

@@ -85,6 +85,7 @@ export default function CampForm({
     handleSubmit,
     formState: { errors },
     reset,
+    register,
   } = useForm<CampFormData>({
     defaultValues: {
       title: camp?.title || "",
@@ -187,7 +188,10 @@ export default function CampForm({
       }
       onSuccess();
     } catch (err: any) {
-      setError(err.message || "Operation failed");
+      setError(
+        err.errors.map((e: any) => e?.message ?? e).join(", ") ||
+          "Operation failed"
+      );
     }
   };
 
@@ -275,6 +279,7 @@ export default function CampForm({
           render={({ field }) => (
             <TextField
               {...field}
+              {...register("year", { valueAsNumber: true })}
               label="Year"
               type="number"
               fullWidth
@@ -292,6 +297,7 @@ export default function CampForm({
           render={({ field }) => (
             <TextField
               {...field}
+              {...register("fee", { valueAsNumber: true })}
               label="Fee"
               type="number"
               fullWidth
@@ -316,7 +322,23 @@ export default function CampForm({
               error={!!errors.start_date}
               helperText={errors.start_date?.message}
               slotProps={{ inputLabel: { shrink: true } }}
-              value={isView && field.value ? new Date(field.value).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : field.value}
+              value={
+                isView && field.value
+                  ? new Date(field.value).toISOString().split("T")[0]
+                  : field.value
+                    ? new Date(field.value).toISOString().split("T")[0]
+                    : ""
+              }
+              onChange={(e) => {
+                // Convert the date input (YYYY-MM-DD) to ISO 8601 format
+                const dateValue = e.target.value;
+                if (dateValue) {
+                  const isoDate = new Date(dateValue).toISOString();
+                  field.onChange(isoDate);
+                } else {
+                  field.onChange("");
+                }
+              }}
             />
           )}
         />
@@ -335,7 +357,23 @@ export default function CampForm({
               error={!!errors.end_date}
               helperText={errors.end_date?.message}
               slotProps={{ inputLabel: { shrink: true } }}
-              value={isView && field.value ? new Date(field.value).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : field.value}
+              value={
+                isView && field.value
+                  ? new Date(field.value).toISOString().split("T")[0]
+                  : field.value
+                    ? new Date(field.value).toISOString().split("T")[0]
+                    : ""
+              }
+              onChange={(e) => {
+                // Convert the date input (YYYY-MM-DD) to ISO 8601 format
+                const dateValue = e.target.value;
+                if (dateValue) {
+                  const isoDate = new Date(dateValue).toISOString();
+                  field.onChange(isoDate);
+                } else {
+                  field.onChange("");
+                }
+              }}
             />
           )}
         />
@@ -479,7 +517,10 @@ export default function CampForm({
                       <Typography variant="caption" color="text.secondary">
                         Allocation Type
                       </Typography>
-                      <Typography variant="body2" sx={{ textTransform: "capitalize" }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ textTransform: "capitalize" }}
+                      >
                         {allocation.allocation_type}
                       </Typography>
                     </Box>

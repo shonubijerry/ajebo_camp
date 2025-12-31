@@ -22,7 +22,9 @@ import {
   Map as MapIcon,
   ReceiptLong as ReceiptLongIcon,
   Logout as LogoutIcon,
-  Groups3 as Groups3Icon
+  Groups3 as Groups3Icon,
+  Groups2 as Groups2Icon,
+  Insights as InsightsIcon,
 } from "@mui/icons-material";
 import Link from "next/link";
 import Image from "next/image";
@@ -44,8 +46,9 @@ interface SidebarProps {
 
 const defaultNavItems: NavItem[] = [
   { label: "Dashboard", href: "/admin/dashboard", icon: <DashboardIcon /> },
+  { label: "Campites", href: "/admin/campites", icon: <Groups3Icon /> },
   { label: "Users", href: "/admin/users", icon: <PeopleIcon /> },
-  { label: "Entities", href: "/admin/entities", icon: <Groups3Icon /> },
+  { label: "Entities", href: "/admin/entities", icon: <Groups2Icon /> },
   { label: "Camps", href: "/admin/camps", icon: <CampingIcon /> },
   { label: "Districts", href: "/admin/districts", icon: <MapIcon /> },
   { label: "Camp Allocations", href: "/admin/camp-allocations", icon: <ReceiptLongIcon /> },

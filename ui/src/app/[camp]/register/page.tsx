@@ -24,11 +24,11 @@ import {
 import AppTheme from "@/components/theme/AppTheme";
 import ColorModeIconDropdown from "@/components/theme/ColorModeIconDropdown";
 import { useApi } from "@/lib/api/useApi";
+import { useDistrictSearch } from "@/hooks/useDistrictSearch";
+import { usePaystackPayment } from "@/hooks/usePaystackPayment";
 import Script from "next/script";
-import PaystackPop from '@paystack/inline-js'
 
 const AGE_GROUPS = ["11-20", "21-30", "31-40", "41-50", "above 50"];
-const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || "";
 
 interface FormData {
   firstname: string;
@@ -58,11 +58,16 @@ export default function CampiteRegistration() {
     params: { path: { id: campId } },
   });
 
-  const [districtSearch, setDistrictSearch] = React.useState("");
   const [submitting, setSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState(false);
-  const [paystackReady, setPaystackReady] = React.useState(false);
+  const { paystackReady, setPaystackReady, processPayment } = usePaystackPayment();
+  const {
+    filteredDistricts,
+    districtSearch: districtSearchValue,
+    setDistrictSearch: setDistrictSearchValue,
+    isLoading: districtsLoading,
+  } = useDistrictSearch({ perPage: 100 });
 
   const camp = campResult?.data?.data;
   const isFreeRegistration = camp?.fee === 0;
@@ -89,25 +94,6 @@ export default function CampiteRegistration() {
   });
   const campiteType = watch("type");
   const currentAmount = watch("amount");
-  // Fetch all districts once and filter client-side
-  const districtsResult = $api.useQuery("get", "/api/v1/districts/list", {
-    params: {
-      query: {
-        page: 0,
-      },
-    },
-  });
-
-  const allDistricts = districtsResult.data?.success
-    ? districtsResult.data.data
-    : [];
-
-  const filteredDistricts = React.useMemo(() => {
-    if (!districtSearch) return allDistricts;
-    const term = districtSearch.toLowerCase();
-    return allDistricts.filter((d) => d.name.toLowerCase().includes(term));
-  }, [allDistricts, districtSearch]);
-
   // Set amount based on campite type and camp fee
   React.useEffect(() => {
     if (campiteType === "regular" && camp?.fee !== undefined) {
@@ -163,17 +149,15 @@ export default function CampiteRegistration() {
         await createRegistration(data);
         setSuccess(true);
         setTimeout(() => router.push("/"), 2000);
+        setSubmitting(false);
         return;
       }
 
-      const popup = new PaystackPop()
-      popup.newTransaction({
-        key: PAYSTACK_PUBLIC_KEY,
+      processPayment({
         email: data.email,
-        amount: data.amount * 100, // Convert to kobo
+        amount: data.amount,
         onSuccess: async (transaction) => {
           try {
-            // Payment successful, create registration
             await createRegistration(data, transaction.reference);
             setSuccess(true);
             reset();
@@ -188,9 +172,9 @@ export default function CampiteRegistration() {
           setSubmitting(false);
           setError("Payment was cancelled");
         },
-        onError: (error) => {
+        onError: (paymentError) => {
           setSubmitting(false);
-          setError(error.message || "Payment failed");
+          setError(paymentError.message || "Payment failed");
         },
       });
     } catch (err: any) {
@@ -421,11 +405,12 @@ export default function CampiteRegistration() {
                       <Autocomplete
                         options={filteredDistricts}
                         getOptionLabel={(option) => option.name}
-                        loading={districtsResult.isLoading}
+                        loading={districtsLoading}
                         value={filteredDistricts.find((d) => d.id === value) || null}
+                        inputValue={districtSearchValue}
                         onChange={(_, data) => onChange(data?.id || "")}
                         onInputChange={(_, newValue) =>
-                          setDistrictSearch(newValue)
+                          setDistrictSearchValue(newValue)
                         }
                         renderInput={(params) => (
                           <TextField
@@ -441,7 +426,7 @@ export default function CampiteRegistration() {
                                 ...params.InputProps,
                                 endAdornment: (
                                   <>
-                                    {districtsResult.isLoading && (
+                                    {districtsLoading && (
                                       <CircularProgress size={20}  />
                                     )}
                                     {params.InputProps.endAdornment}
@@ -528,7 +513,7 @@ export default function CampiteRegistration() {
                     variant="contained"
                     fullWidth
                     size="large"
-                    disabled={submitting || success}
+                    disabled={submitting || success || (currentAmount > 0 && !paystackReady)}
                   >
                     {submitting ? (
                       <CircularProgress size={24} />

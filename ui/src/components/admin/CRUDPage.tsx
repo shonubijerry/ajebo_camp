@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   CssBaseline,
   Box,
@@ -12,6 +12,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import AppTheme from "@/components/theme/AppTheme";
@@ -35,8 +37,15 @@ interface CRUDPageProps<T extends { id?: string }> {
     onSuccess: () => void;
     onCancel: () => void;
   }>;
+  FormCreateComponent?: React.ComponentType<{
+    [key: string]: any;
+    mode: "create" | "edit" | "view";
+    onSuccess: () => void;
+    onCancel: () => void;
+  }>; // optional separate component for create operations
   formPropName?: string; // name of the prop to pass entity to form, defaults to entityName
   getDeleteMessage?: (entity: T) => string;
+  filter?: string;
 }
 
 export default function CRUDPage<
@@ -50,12 +59,17 @@ export default function CRUDPage<
   deleteEndpoint,
   columns,
   FormComponent,
+  FormCreateComponent,
   formPropName,
   getDeleteMessage,
+  filter,
 }: CRUDPageProps<T>) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const { $api } = useApi();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [drawerMode, setDrawerMode] = React.useState<
@@ -67,10 +81,9 @@ export default function CRUDPage<
 
   const plural = entityNamePlural || `${entityName}s`;
   const propName = formPropName || entityName;
-
   const deleteMutation = $api.useMutation("delete", deleteEndpoint);
   const result = $api.useQuery("get", listEndpoint, {
-    params: { query: { page: 1, per_page: 100 } },
+    params: { query: { page: 1, per_page: 100, filter } },
   });
 
   const entities = result.data?.success ? result.data.data : [];
@@ -89,11 +102,6 @@ export default function CRUDPage<
     }
   }, [searchParams, entities]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    router.push("/admin");
-  };
-
   const handleCreateNew = () => {
     setSelectedEntity(undefined);
     setDrawerMode("create");
@@ -101,7 +109,7 @@ export default function CRUDPage<
   };
 
   const handleView = (entity: T) => {
-    router.push(`/admin/${plural}?id=${entity.id}`);
+    router.push(`${pathname}?id=${entity.id}`);
   };
 
   const handleEdit = (entity: T) => {
@@ -133,7 +141,7 @@ export default function CRUDPage<
   const handleDrawerClose = () => {
     setDrawerOpen(false);
     if (searchParams.get("id")) {
-      router.push(`/admin/${plural}`);
+      router.push(`${pathname}`);
     }
   };
 
@@ -167,24 +175,32 @@ export default function CRUDPage<
         sx={{
           mb: 3,
           display: "flex",
+          flexDirection: isMobile ? "column" : "row",
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: isMobile ? "stretch" : "center",
+          gap: 2,
         }}
       >
-        <Box>
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Typography variant={isMobile ? "h6" : "h5"} sx={{ fontWeight: 700, mb: 1 }}>
             {title}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="text.secondary" sx={{ display: { xs: "none", sm: "block" } }}>
             {description}
           </Typography>
         </Box>
         <Button
           variant="contained"
-          startIcon={<AddIcon />}
+          startIcon={!isMobile && <AddIcon />}
           onClick={handleCreateNew}
+          fullWidth={isMobile}
+          sx={{ 
+            whiteSpace: "nowrap",
+            flexShrink: 0,
+            minWidth: isMobile ? "100%" : "auto",
+          }}
         >
-          Create New
+          {isMobile ? "+ Create" : "Create New"}
         </Button>
       </Box>
 
@@ -202,15 +218,27 @@ export default function CRUDPage<
         onClose={handleDrawerClose}
         title={getDrawerTitle()}
       >
-        <FormComponent
-          {...{
-            [propName === "camp-allocation" ? "campAllocation" : propName]:
-              selectedEntity,
-          }}
-          mode={drawerMode}
-          onSuccess={handleFormSuccess}
-          onCancel={handleDrawerClose}
-        />
+        {drawerMode === "create" && FormCreateComponent ? (
+          <FormCreateComponent
+            {...{
+              [propName === "camp-allocation" ? "campAllocation" : propName]:
+                selectedEntity,
+            }}
+            mode={drawerMode}
+            onSuccess={handleFormSuccess}
+            onCancel={handleDrawerClose}
+          />
+        ) : (
+          <FormComponent
+            {...{
+              [propName === "camp-allocation" ? "campAllocation" : propName]:
+                selectedEntity,
+            }}
+            mode={drawerMode}
+            onSuccess={handleFormSuccess}
+            onCancel={handleDrawerClose}
+          />
+        )}
       </SlideInDrawer>
 
       <Dialog

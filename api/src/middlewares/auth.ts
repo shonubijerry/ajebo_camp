@@ -1,8 +1,23 @@
 import { verify } from 'hono/jwt'
 import { AppContext } from '..'
+import { userResponse } from '../schemas'
+import { z } from 'zod'
+
+const auth = userResponse
+  .pick({
+    email: true,
+    role: true,
+  })
+  .extend({
+    sub: z.string(),
+  })
+
+export type AuthenticatedUser = typeof auth._type
 
 export const authMiddleware = async (
-  c: AppContext,
+  c: AppContext & {
+    user?: AuthenticatedUser
+  },
   next: () => Promise<unknown>,
 ) => {
   const authHeader = c.req.header('Authorization')
@@ -27,8 +42,9 @@ export const authMiddleware = async (
       )
     }
     // verify token — consumer may need to adjust depending on `hono/jwt` version
-    const payload = await verify(token, c.env.JWT_SECRET)
-    ;(c as any).user = payload
+    const payload = (await verify(token, c.env.JWT_SECRET)) as AuthenticatedUser
+
+    c.user = payload
     await next()
   } catch (err) {
     return c.json(

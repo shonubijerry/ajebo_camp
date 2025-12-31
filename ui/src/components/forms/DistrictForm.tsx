@@ -35,7 +35,7 @@ export default function DistrictForm({ district, mode, onSuccess, onCancel }: Di
   const { control, handleSubmit, formState: { errors } } = useForm<DistrictFormData>({
     defaultValues: {
       name: district?.name || "",
-      zonesString: district?.zones?.join(", ") || "",
+      zonesString: (district?.zones ?? []).join(", ") || "",
     },
   });
 

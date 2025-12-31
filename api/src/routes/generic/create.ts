@@ -16,7 +16,7 @@ import { successRes } from '../../lib/response'
  */
 export abstract class OpenAPIEndpoint extends OpenAPIRoute {
   abstract meta: {
-    requestSchema: z.AnyZodObject
+    requestSchema: z.AnyZodObject | null
     responseSchema: z.AnyZodObject
     tag?: string
     summary?: string
@@ -28,7 +28,11 @@ export abstract class OpenAPIEndpoint extends OpenAPIRoute {
   /**
    * Optional hook to mutate or replace input before persistence
    */
-  async preAction(): Promise<typeof this.meta.requestSchema._type> {
+  async preAction(): Promise<
+    typeof this.meta.requestSchema extends z.AnyZodObject
+      ? (typeof this.meta.requestSchema)['_type']
+      : unknown
+  > {
     return this.getValidatedData()
   }
 
@@ -51,10 +55,12 @@ export abstract class OpenAPIEndpoint extends OpenAPIRoute {
         this.meta.description ??
         `Endpoint to create ${this.meta.collection?.toLowerCase()}`,
       security: this.meta.security ?? [{ bearer: [] }],
-      request: {
-        ...this.meta.requestSchema.shape,
-        body: contentJson(this.meta.requestSchema.shape.body),
-      },
+      request: this.meta.requestSchema
+        ? {
+            ...this.meta.requestSchema.shape,
+            body: contentJson(this.meta.requestSchema.shape.body),
+          }
+        : undefined,
       responses: {
         '200': {
           description: `Operation successfully`,
@@ -91,5 +97,61 @@ export abstract class OpenAPIEndpoint extends OpenAPIRoute {
     }
 
     return successRes(c, result)
+  }
+
+  handleValidationError(errors: z.ZodIssue[]) {
+    return Response.json(
+      {
+        success: false,
+        errors: errors.map((error) => {
+          const path = error.path.slice(1).join('.')
+
+          switch (error.code) {
+            case 'invalid_type':
+              return `${path}: Expected ${error.expected}, but received ${error.received}`
+
+            case 'too_small':
+              if (error.type === 'string') {
+                return `${path}: Must be at least ${error.minimum} characters`
+              }
+              if (error.type === 'number') {
+                return `${path}: Must be at least ${error.minimum}`
+              }
+              if (error.type === 'array') {
+                return `${path}: Must have at least ${error.minimum} items`
+              }
+              return `${path}: Value is too small`
+
+            case 'too_big':
+              if (error.type === 'string') {
+                return `${path}: Must be at most ${error.maximum} characters`
+              }
+              if (error.type === 'number') {
+                return `${path}: Must be at most ${error.maximum}`
+              }
+              if (error.type === 'array') {
+                return `${path}: Must have at most ${error.maximum} items`
+              }
+              return `${path}: Value is too large`
+
+            case 'invalid_string':
+              if (error.validation === 'email') {
+                return `${path}: Invalid email address`
+              }
+              if (error.validation === 'url') {
+                return `${path}: Invalid URL`
+              }
+              return `${path}: Invalid format`
+
+            case 'invalid_enum_value':
+              return `${path}: Must be one of: ${error.options.join(', ')}`
+
+            default:
+              return error.message || `${path}: Validation failed`
+          }
+        }),
+      },
+      { status: 400 },
+    )
   }
 }

@@ -23,7 +23,8 @@
     "openapi-fetch": "^0.15.0",
     "openapi-react-query": "^0.5.1",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "recharts": "^3.6.0"
   },
   "devDependencies": {
     "@types/node": "^20",
