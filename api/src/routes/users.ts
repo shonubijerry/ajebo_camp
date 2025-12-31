@@ -9,10 +9,13 @@ import { AppContext } from '..'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './generic/types'
 import { AuthenticatedUser } from '../middlewares/auth'
+import { getPermissionsForRole, PermissionsSchema, Role } from '../lib/permissions'
+import { permission } from 'process'
 
 const userMeta = {
   collection: 'User' as const,
   responseSchema: responseBodies.user,
+  permission: 'user:manage' as const,
 }
 
 export class CreateUserEndpoint extends OpenAPIEndpoint {
@@ -109,6 +112,9 @@ export class GetCurrentUserEndpoint extends OpenAPIEndpoint {
   meta = {
     ...userMeta,
     requestSchema: null,
+    responseSchema: responseBodies.user.extend({
+      permissions: PermissionsSchema.array(),
+    }),
   }
 
   async action(c: AppContext & { user?: AuthenticatedUser }) {
@@ -116,9 +122,19 @@ export class GetCurrentUserEndpoint extends OpenAPIEndpoint {
       throw new Error('Unauthorized')
     }
 
-    return c.env.PRISMA.user.findUnique({
+    const user = await c.env.PRISMA.user.findUnique({
       where: { id: c.user.sub },
+      omit: { password: true },
     })
+
+    if (!user) {
+      throw new Error('Unauthorized')
+    }
+
+    return {
+      ...user,
+      permissions: getPermissionsForRole(user.role as Role),
+    }
   }
 }
 

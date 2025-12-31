@@ -693,6 +693,7 @@ export interface operations {
                              */
                             updated_at: string;
                             token: string;
+                            permissions: string[];
                         };
                     };
                 };
@@ -818,6 +819,7 @@ export interface operations {
                              */
                             updated_at: string;
                             token: string;
+                            permissions: string[];
                         };
                     };
                 };
@@ -1059,9 +1061,7 @@ export interface operations {
                 page?: number;
                 /** @description Number of records per page. */
                 per_page?: number;
-                orderBy?: {
-                    [key: string]: "asc" | "desc";
-                }[];
+                orderBy?: string;
                 filter?: string;
             };
             header?: never;
@@ -1168,9 +1168,7 @@ export interface operations {
                 page?: number;
                 /** @description Number of records per page. */
                 per_page?: number;
-                orderBy?: {
-                    [key: string]: "asc" | "desc";
-                }[];
+                orderBy?: string;
                 filter?: string;
             };
             header?: never;
@@ -1806,6 +1804,7 @@ export interface operations {
                              * @example 2025-01-01T00:00:00Z
                              */
                             updated_at: string;
+                            permissions: ("dashboard:view" | "camp:view" | "camp:create" | "camp:update" | "camp:delete" | "campite:view" | "campite:create" | "campite:update" | "campite:delete" | "camp-allocation:view" | "camp-allocation:create" | "camp-allocation:update" | "camp-allocation:delete" | "district:view" | "district:create" | "district:update" | "district:delete" | "entity:view" | "entity:create" | "entity:update" | "entity:delete" | "payment:view" | "analytics:view" | "user:manage" | "settings:manage")[];
                         };
                     };
                 };
@@ -1867,9 +1866,7 @@ export interface operations {
                 page?: number;
                 /** @description Number of records per page. */
                 per_page?: number;
-                orderBy?: {
-                    [key: string]: "asc" | "desc";
-                }[];
+                orderBy?: string;
                 filter?: string;
             };
             header?: never;
@@ -2760,9 +2757,7 @@ export interface operations {
                 page?: number;
                 /** @description Number of records per page. */
                 per_page?: number;
-                orderBy?: {
-                    [key: string]: "asc" | "desc";
-                }[];
+                orderBy?: string;
                 filter?: string;
             };
             header?: never;
@@ -3114,9 +3109,7 @@ export interface operations {
                 page?: number;
                 /** @description Number of records per page. */
                 per_page?: number;
-                orderBy?: {
-                    [key: string]: "asc" | "desc";
-                }[];
+                orderBy?: string;
                 filter?: string;
             };
             header?: never;
@@ -3631,9 +3624,7 @@ export interface operations {
                 page?: number;
                 /** @description Number of records per page. */
                 per_page?: number;
-                orderBy?: {
-                    [key: string]: "asc" | "desc";
-                }[];
+                orderBy?: string;
                 filter?: string;
             };
             header?: never;
@@ -4268,9 +4259,7 @@ export interface operations {
                 page?: number;
                 /** @description Number of records per page. */
                 per_page?: number;
-                orderBy?: {
-                    [key: string]: "asc" | "desc";
-                }[];
+                orderBy?: string;
                 filter?: string;
             };
             header?: never;

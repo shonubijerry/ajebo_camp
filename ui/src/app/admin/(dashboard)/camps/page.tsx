@@ -2,7 +2,7 @@
 
 import CRUDPage from "@/components/admin/CRUDPage";
 import CampForm from "@/components/forms/CampForm";
-import { ColumnDef, sortingFns } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { Button, Box } from "@mui/material";
 import {
@@ -10,9 +10,12 @@ import {
   Group as CampitesIcon,
 } from "@mui/icons-material";
 import { Camp } from "@/interfaces";
+import { useAuth } from "@/hooks/useAuth";
+import { TableCellGetter } from "@/components/dashboard/DataTable";
 
 const CampsPageContent = () => {
   const router = useRouter();
+  const { hasPermission } = useAuth();
 
   const columns: ColumnDef<Camp>[] = [
     {
@@ -24,25 +27,30 @@ const CampsPageContent = () => {
       header: "Year",
     },
     {
-      accessorKey: "fee",
-      header: "Fee",
-      cell: ({ getValue }) => `₦${Number(getValue()).toLocaleString()}`,
+      accessorKey: "theme",
+      header: "Theme",
     },
-    {
-      accessorKey: "start_date",
-      header: "Start Date",
-      cell: ({ getValue }) => new Date(String(getValue())).toLocaleDateString(),
-    },
-    {
-      accessorKey: "end_date",
-      header: "End Date",
-      cell: ({ getValue }) => new Date(String(getValue())).toLocaleDateString(),
-    },
-    {
-      accessorKey: "created_at",
-      header: "Created",
-      cell: ({ getValue }) => new Date(String(getValue())).toLocaleDateString(),
-    },
+    ...((hasPermission("camp:update") && [
+      {
+        accessorKey: "fee",
+        header: "Fee",
+        cell: ({ getValue }: TableCellGetter) =>
+          `₦${Number(getValue()).toLocaleString()}`,
+      },
+      {
+        accessorKey: "start_date",
+        header: "Start Date",
+        cell: ({ getValue }: TableCellGetter) =>
+          new Date(String(getValue())).toLocaleDateString(),
+      },
+      {
+        accessorKey: "end_date",
+        header: "End Date",
+        cell: ({ getValue }: TableCellGetter) =>
+          new Date(String(getValue())).toLocaleDateString(),
+      },
+    ]) ||
+      []),
     {
       enableSorting: false,
       accessorKey: " ",
@@ -53,14 +61,18 @@ const CampsPageContent = () => {
           <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
             <span>{getValue<string>()}</span>
             <Box sx={{ display: "flex", gap: 0.5 }}>
-              <Button
-                size="small"
-                variant="outlined"
-                startIcon={<AnalyticsIcon />}
-                onClick={() => router.push(`/admin/camps/${campId}/analytics`)}
-              >
-                Analytics
-              </Button>
+              {hasPermission("analytics:view") && (
+                <Button
+                  size="small"
+                  variant="outlined"
+                  startIcon={<AnalyticsIcon />}
+                  onClick={() =>
+                    router.push(`/admin/camps/${campId}/analytics`)
+                  }
+                >
+                  Analytics
+                </Button>
+              )}
               <Button
                 size="small"
                 variant="outlined"

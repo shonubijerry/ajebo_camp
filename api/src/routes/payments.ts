@@ -5,10 +5,12 @@ import { responseBodies } from '../schemas'
 import { AppContext } from '..'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './generic/types'
+import { permission } from 'process'
 
 const paymentMeta = {
   collection: 'Payment' as const,
   responseSchema: responseBodies.payment,
+    permission: 'payment:view' as const,
 }
 
 export class ListPaymentsEndpoint extends ListEndpoint<

@@ -20,6 +20,7 @@ export class CreateCampAllocationEndpoint extends OpenAPIEndpoint {
     requestSchema: z.object({
       body: requestBodies.camp_Allocation,
     }),
+    permission: 'camp-allocation:create' as const,
   }
 
   async action(c: AppContext, { body }: typeof this.meta.requestSchema._type) {
@@ -34,6 +35,7 @@ export class ListCampAllocationsEndpoint extends ListEndpoint<
   meta = {
     ...campAllocationMeta,
     requestSchema: listRequestQuerySchema,
+    permission: 'camp-allocation:view' as const,
   }
   protected pageSize = 25
 
@@ -64,6 +66,7 @@ export class GetCampAllocationEndpoint extends GetEndpoint {
         id: true,
       }),
     }),
+    permission: 'camp-allocation:view' as const,
   }
 
   action(c: AppContext, { params }: typeof this.meta.requestSchema._type) {
@@ -78,6 +81,7 @@ export class UpdateCampAllocationEndpoint extends UpdateEndpoint {
       params: responseBodies.camp_Allocation.pick({ id: true }),
       body: requestBodies.camp_Allocation.partial(),
     }),
+    permission: 'camp-allocation:update' as const,
   }
 
   async action(
@@ -100,6 +104,7 @@ export class DeleteCampAllocationEndpoint extends DeleteEndpoint {
         soft: z.boolean().optional(),
       }),
     }),
+    permission: 'camp-allocation:delete' as const,
   }
 
   action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {

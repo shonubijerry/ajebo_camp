@@ -3,7 +3,6 @@
 import React from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
-  CssBaseline,
   Box,
   Typography,
   Button,
@@ -16,12 +15,12 @@ import {
   useTheme,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import AppTheme from "@/components/theme/AppTheme";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import DataTable from "@/components/dashboard/DataTable";
 import SlideInDrawer from "@/components/dashboard/SlideInDrawer";
 import { useApi } from "@/lib/api/useApi";
 import { ColumnDef } from "@tanstack/react-table";
+import { useAuth } from "@/hooks/useAuth";
+import { Permission } from "@/interfaces";
 
 interface CRUDPageProps<T extends { id?: string }> {
   title: string;
@@ -70,6 +69,7 @@ export default function CRUDPage<
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { $api } = useApi();
+  const { hasPermission, isLoading: authIsLoading } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -89,7 +89,24 @@ export default function CRUDPage<
   });
 
   const entities = result.data?.success ? result.data.data : [];
-  const isLoading = result.isLoading;
+  const isLoading = result.isLoading || authIsLoading;
+
+  // Permission checks based on entity name
+  const canCreate =
+    hasPermission(`${entityName}:create` as Permission) ||
+    hasPermission(`${entityName}:manage` as Permission);
+
+  const canView =
+    hasPermission(`${entityName}:view` as Permission) ||
+    hasPermission(`${entityName}:manage` as Permission);
+
+  const canUpdate =
+    hasPermission(`${entityName}:update` as Permission) ||
+    hasPermission(`${entityName}:manage` as Permission);
+
+  const canDelete =
+    hasPermission(`${entityName}:delete` as Permission) ||
+    hasPermission(`${entityName}:manage` as Permission);
 
   // Handle URL params for direct access
   React.useEffect(() => {
@@ -171,6 +188,21 @@ export default function CRUDPage<
     return `Are you sure you want to delete ${name}? This action cannot be undone.`;
   };
 
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <Typography>Loading...</Typography>
+      </Box>
+    );
+  }
+
   return (
     <>
       <Box
@@ -196,6 +228,7 @@ export default function CRUDPage<
           startIcon={!isMobile && <AddIcon />}
           onClick={handleCreateNew}
           fullWidth={isMobile}
+          disabled={!canCreate}
           sx={{ 
             whiteSpace: "nowrap",
             flexShrink: 0,
@@ -210,9 +243,9 @@ export default function CRUDPage<
         data={entities}
         columns={columns}
         isLoading={isLoading}
-        onView={handleView}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
+        onView={canView ? handleView : undefined}
+        onEdit={canUpdate ? handleEdit : undefined}
+        onDelete={canDelete ? handleDelete : undefined}
       />
 
       <SlideInDrawer

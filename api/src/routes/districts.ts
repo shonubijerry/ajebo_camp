@@ -20,6 +20,7 @@ export class CreateDistrictEndpoint extends OpenAPIEndpoint {
     requestSchema: z.object({
       body: requestBodies.district,
     }),
+    permission: 'district:create' as const,
   }
 
   async action(c: AppContext, { body }: typeof this.meta.requestSchema._type) {
@@ -34,6 +35,7 @@ export class ListDistrictsEndpoint extends ListEndpoint<
   meta = {
     ...districtMeta,
     requestSchema: listRequestQuerySchema,
+    permission: 'district:view' as const,
   }
   protected pageSize = 25
 
@@ -72,6 +74,7 @@ export class GetDistrictEndpoint extends GetEndpoint {
         id: true,
       }),
     }),
+    permission: 'district:view' as const,
   }
 
   action(c: AppContext, { params }: typeof this.meta.requestSchema._type) {
@@ -86,6 +89,7 @@ export class UpdateDistrictEndpoint extends UpdateEndpoint {
       params: responseBodies.district.pick({ id: true }),
       body: requestBodies.district.partial(),
     }),
+    permission: 'district:update' as const,
   }
 
   async action(
@@ -108,6 +112,7 @@ export class DeleteDistrictEndpoint extends DeleteEndpoint {
         soft: z.boolean().optional(),
       }),
     }),
+    permission: 'district:delete' as const,
   }
 
   action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {

@@ -14,8 +14,8 @@ export abstract class UpdateEndpoint extends OpenAPIEndpoint {
         `Endpoint to update ${this.meta.collection?.toLowerCase()}`,
       security: this.meta.security ?? [{ bearer: [] }],
       request: {
-        ...this.meta.requestSchema.shape,
-        body: contentJson(this.meta.requestSchema.shape.body),
+        ...this.meta.requestSchema?.shape,
+        body: contentJson(this.meta.requestSchema?.shape?.body),
       },
       responses: {
         '200': {

@@ -5,6 +5,8 @@ import { AppContext } from '../..'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './types'
 import { successRes } from '../../lib/response'
+import { requirePermissions } from '../../middlewares/authorize'
+import { Permission } from '../../lib/permissions'
 
 /**
  * Generic CreateEndpoint for streamlined resource creation.
@@ -23,6 +25,7 @@ export abstract class OpenAPIEndpoint extends OpenAPIRoute {
     description?: string
     collection?: Prisma.ModelName
     security?: Array<{ bearer: [] }>
+    permission?: Permission | Permission[]
   }
 
   /**
@@ -88,6 +91,7 @@ export abstract class OpenAPIEndpoint extends OpenAPIRoute {
   }
 
   async handle(c: AppContext) {
+    requirePermissions(c, this.meta.permission)
     const data = await this.preAction()
 
     const result = await this.action(c, data)

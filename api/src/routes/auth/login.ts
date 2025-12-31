@@ -6,6 +6,7 @@ import { sign } from 'hono/jwt'
 import { compare } from '../../lib/encrypt'
 import { schemas, userResponse } from '../../schemas'
 import { errorRes, successRes } from '../../lib/response'
+import { getPermissionsForRole, Role } from '../../lib/permissions'
 
 export class LoginEndpoint extends OpenAPIEndpoint {
   meta = {
@@ -15,6 +16,7 @@ export class LoginEndpoint extends OpenAPIEndpoint {
     security: [],
     responseSchema: userResponse.extend({
       token: z.string(),
+      permissions: z.array(z.string()),
     }),
     requestSchema: z.object({
       body: z.object({
@@ -51,6 +53,7 @@ export class LoginEndpoint extends OpenAPIEndpoint {
       return errorRes(c, 'Invalid Credentials', 401)
     }
 
+    const permissions = getPermissionsForRole(user.role as Role)
     const payload = { sub: user.id, email: user.email, role: user.role }
 
     const token = await sign(payload, c.env.JWT_SECRET)
@@ -59,6 +62,7 @@ export class LoginEndpoint extends OpenAPIEndpoint {
       ...user,
       password: undefined,
       token,
+      permissions,
     }
   }
 }

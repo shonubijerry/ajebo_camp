@@ -28,6 +28,9 @@ import {
 } from "@mui/icons-material";
 import Link from "next/link";
 import Image from "next/image";
+import { useAuth } from "@/hooks/useAuth";
+import { Permission } from "@/interfaces";
+import { usePathname } from "next/navigation";
 
 const drawerWidth = 260;
 
@@ -35,6 +38,7 @@ export interface NavItem {
   label: string;
   href: string;
   icon: React.ReactNode;
+  requiredPermissions?: Permission[];
 }
 
 interface SidebarProps {
@@ -45,16 +49,62 @@ interface SidebarProps {
 }
 
 const defaultNavItems: NavItem[] = [
-  { label: "Dashboard", href: "/admin/dashboard", icon: <DashboardIcon /> },
-  { label: "Campites", href: "/admin/campites", icon: <Groups3Icon /> },
-  { label: "Users", href: "/admin/users", icon: <PeopleIcon /> },
-  { label: "Entities", href: "/admin/entities", icon: <Groups2Icon /> },
-  { label: "Camps", href: "/admin/camps", icon: <CampingIcon /> },
-  { label: "Districts", href: "/admin/districts", icon: <MapIcon /> },
-  { label: "Camp Allocations", href: "/admin/camp-allocations", icon: <ReceiptLongIcon /> },
+  {
+    label: "Dashboard",
+    href: "/admin/dashboard",
+    icon: <DashboardIcon />,
+    requiredPermissions: ["dashboard:view"],
+  },
+  {
+    label: "Campites",
+    href: "/admin/campites",
+    icon: <Groups3Icon />,
+    requiredPermissions: ["campite:view"],
+  },
+  {
+    label: "Users",
+    href: "/admin/users",
+    icon: <PeopleIcon />,
+    requiredPermissions: ["user:manage"],
+  },
+  {
+    label: "Entities",
+    href: "/admin/entities",
+    icon: <Groups2Icon />,
+    requiredPermissions: ["entity:view"],
+  },
+  {
+    label: "Camps",
+    href: "/admin/camps",
+    icon: <CampingIcon />,
+    requiredPermissions: ["camp:view"],
+  },
+  {
+    label: "Districts",
+    href: "/admin/districts",
+    icon: <MapIcon />,
+    requiredPermissions: ["district:view"],
+  },
+  {
+    label: "Camp Allocations",
+    href: "/admin/camp-allocations",
+    icon: <ReceiptLongIcon />,
+    requiredPermissions: ["camp-allocation:view"],
+  },
 ];
 
-function DrawerContent({ onLogout, image }: Pick<SidebarProps, "onLogout" | "image">) {
+function DrawerContent({
+  onLogout,
+  image,
+}: Pick<SidebarProps, "onLogout" | "image">) {
+  const { hasPermission, isLoading } = useAuth();
+  const pathname = usePathname();
+  const navItems = defaultNavItems.filter(
+    (item) =>
+      !item.requiredPermissions ||
+      (hasPermission && hasPermission(item.requiredPermissions))
+  );
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Toolbar sx={{ px: 2, py: 3, gap: 1.5, minHeight: "auto" }}>
@@ -84,7 +134,10 @@ function DrawerContent({ onLogout, image }: Pick<SidebarProps, "onLogout" | "ima
           </Box>
         )}
         <Box>
-          <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: -0.5 }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 700, letterSpacing: -0.5 }}
+          >
             Admin
           </Typography>
           <Typography variant="caption" color="text.secondary">
@@ -94,29 +147,43 @@ function DrawerContent({ onLogout, image }: Pick<SidebarProps, "onLogout" | "ima
       </Toolbar>
       <Divider sx={{ my: 1 }} />
       <List sx={{ flex: 1, px: 1 }}>
-        {defaultNavItems.map((item) => (
-          <ListItem key={item.href} disablePadding sx={{ mb: 0.5 }}>
-            <ListItemButton
-              component={Link}
-              href={item.href}
-              sx={{
-                borderRadius: 1,
-                "&.active": {
-                  bgcolor: "primary.main",
-                  color: "white",
-                  "& .MuiListItemIcon-root": { color: "white" },
-                },
-                transition: "all 0.2s",
-                "&:hover": {
-                  bgcolor: "action.hover",
-                },
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.label} primaryTypographyProps={{ variant: "body2", fontWeight: 500 }} />
+        {isLoading && navItems.length === 0 && (
+          <ListItem disablePadding sx={{ mb: 0.5 }}>
+            <ListItemButton disabled sx={{ borderRadius: 1 }}>
+              <ListItemText primary="Loading..." />
             </ListItemButton>
           </ListItem>
-        ))}
+        )}
+        {navItems.map((item) => {
+          const isActive = pathname?.startsWith(item.href);
+          return (
+            <ListItem key={item.href} disablePadding sx={{ mb: 0.5 }}>
+              <ListItemButton
+                component={Link}
+                href={item.href}
+                sx={{
+                  borderRadius: 1,
+                  bgcolor: isActive ? "primary.main" : "transparent",
+                  color: isActive ? "white" : "inherit",
+                  "&.MuiSvgIcon-root": {
+                    color: isActive ? "white" : "inherit",
+                  },
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: "primary.light",
+                  color: "inherit",
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{ variant: "body2", fontWeight: 500 }}
+                />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
       </List>
       <Divider sx={{ my: 1 }} />
       <Box sx={{ p: 1.5 }}>

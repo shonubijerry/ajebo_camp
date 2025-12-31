@@ -51,3 +51,5 @@ export type ChangePasswordRequest = NonNullable<
 >["content"]["application/json"];
 export type DetailedAnalytics =
   paths["/api/v1/analytics/detailed"]["get"]["responses"]["200"]["content"]["application/json"]["data"];
+export type Permission = paths["/api/v1/users/me"]["get"]["responses"]["200"]["content"]["application/json"]["data"]["permissions"][number];
+export type UserRole = paths["/api/v1/users/me"]["get"]["responses"]["200"]["content"]["application/json"]["data"]["role"];

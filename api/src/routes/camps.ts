@@ -20,6 +20,7 @@ export class CreateCampEndpoint extends OpenAPIEndpoint {
     requestSchema: z.object({
       body: requestBodies.camp,
     }),
+    permission: 'camp:create' as const,
   }
 
   async action(c: AppContext, payload: typeof this.meta.requestSchema._type) {
@@ -85,6 +86,7 @@ export class ListCampsEndpoint extends ListEndpoint<
   meta = {
     ...campMeta,
     requestSchema: listRequestQuerySchema,
+    permission: 'camp:view' as const,
   }
   protected pageSize = 25
 
@@ -114,6 +116,7 @@ export class GetCampEndpoint extends GetEndpoint {
         id: true,
       }),
     }),
+    permission: 'camp:view' as const,
   }
 
   action(c: AppContext, { params }: typeof this.meta.requestSchema._type) {
@@ -128,6 +131,7 @@ export class UpdateCampEndpoint extends UpdateEndpoint {
       params: responseBodies.camp.pick({ id: true }),
       body: requestBodies.camp.partial(),
     }),
+    permission: 'camp:update' as const,
   }
 
   async action(
@@ -150,6 +154,7 @@ export class DeleteCampEndpoint extends DeleteEndpoint {
         soft: z.boolean().optional(),
       }),
     }),
+    permission: 'camp:delete' as const,
   }
 
   action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {

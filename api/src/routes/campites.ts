@@ -6,6 +6,7 @@ import { UpdateEndpoint } from './generic/update'
 import { DeleteEndpoint } from './generic/delete'
 import { requestBodies, responseBodies } from '../schemas'
 import { AppContext } from '..'
+import { AuthenticatedUser } from '../middlewares/auth'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './generic/types'
 
@@ -65,9 +66,14 @@ export class ListCampitesEndpoint extends ListEndpoint<
   protected pageSize = 25
 
   async action(
-    c: AppContext,
+    c: AppContext & { user?: AuthenticatedUser },
     params: AwaitedReturnType<typeof this.preAction>,
   ) {
+    // Scope regular users to their own campites
+    if (c.user?.role === 'user') {
+      params.where = { ...(params.where || {}), user_id: c.user.sub }
+    }
+
     const [data, total] = await Promise.all([
       c.env.PRISMA.campite.findMany({
         where: params.where,
@@ -93,8 +99,18 @@ export class GetCampiteEndpoint extends GetEndpoint {
     }),
   }
 
-  action(c: AppContext, { params }: typeof this.meta.requestSchema._type) {
-    return c.env.PRISMA.campite.findFirst({ where: { id: params.id } })
+  action(
+    c: AppContext & { user?: AuthenticatedUser },
+    { params }: typeof this.meta.requestSchema._type,
+  ) {
+    const where: Prisma.CampiteWhereInput = { id: params.id }
+
+    // Scope regular users to their own campites
+    if (c.user?.role === 'user') {
+      where.user_id = c.user.sub
+    }
+
+    return c.env.PRISMA.campite.findFirst({ where })
   }
 }
 

@@ -5,6 +5,7 @@ import { sign } from 'hono/jwt'
 import { requestBodies, userResponse } from '../../schemas'
 import { errorRes, successRes } from '../../lib/response'
 import { hash } from '../../lib/encrypt'
+import { getPermissionsForRole, Role } from '../../lib/permissions'
 
 export class SignupEndpoint extends OpenAPIEndpoint {
   meta = {
@@ -14,6 +15,7 @@ export class SignupEndpoint extends OpenAPIEndpoint {
     security: [],
     responseSchema: userResponse.extend({
       token: z.string(),
+      permissions: z.array(z.string()),
     }),
     requestSchema: z.object({
       body: requestBodies.user.extend({
@@ -39,6 +41,7 @@ export class SignupEndpoint extends OpenAPIEndpoint {
 
     const user = await c.env.PRISMA.user.create({ data: rest })
 
+    const permissions = getPermissionsForRole(user.role as Role)
     const payload = { sub: user.id, email: user.email, role: user.role }
 
     const token = await sign(payload, c.env.JWT_SECRET)
@@ -47,6 +50,7 @@ export class SignupEndpoint extends OpenAPIEndpoint {
       ...user,
       password: undefined,
       token,
+      permissions,
     }
   }
 }

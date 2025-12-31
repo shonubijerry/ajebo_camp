@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Toolbar } from "@mui/material";
 import Sidebar, { drawerWidth } from "./Sidebar";
 import DashboardAppBar from "./DashboardAppBar";
+import { useAuth } from "@/hooks/useAuth";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

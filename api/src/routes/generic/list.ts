@@ -6,6 +6,8 @@ import { GenericError, parseQuerySort, queryStringToPrismaWhere } from './query'
 import { OpenAPIEndpoint } from './create'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './types'
+import { requirePermissions } from '../../middlewares/authorize'
+import { Permission } from '../../lib/permissions'
 
 /* ---------------------------------------------
  * List request query schema
@@ -73,6 +75,7 @@ export abstract class ListEndpoint<
     description?: string
     collection?: Prisma.ModelName
     security?: Array<{ bearer: [] }>
+    permission?: Permission | Permission[]
   }
 
   /** Default page size */
@@ -156,6 +159,7 @@ export abstract class ListEndpoint<
   }
 
   async handle(c: AppContext) {
+    requirePermissions(c, this.meta.permission)
     const params = await this.preAction()
 
     const result = await this.action(c, params)

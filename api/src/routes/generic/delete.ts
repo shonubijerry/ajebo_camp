@@ -1,10 +1,8 @@
 import { contentJson, OpenAPIRoute, OpenAPIRouteSchema } from 'chanfana'
 import { GenericError } from './query'
-import { z } from 'zod'
-import { OpenAPIEndpoint, Prisma } from '@ajebo_camp/database'
+import { OpenAPIEndpoint } from '@ajebo_camp/database'
 import { AppContext } from '../..'
 import { AwaitedReturnType } from './types'
-import { successRes } from '../../lib/response'
 
 export abstract class DeleteEndpoint extends OpenAPIEndpoint {
   /**
@@ -27,7 +25,7 @@ export abstract class DeleteEndpoint extends OpenAPIEndpoint {
 
   getSchema(): OpenAPIRouteSchema {
     return {
-      request: this.meta.requestSchema.shape,
+      request: this.meta.requestSchema?.shape,
       tags: this.meta.tag ? [this.meta.tag] : [String(this.meta.collection)],
       summary:
         this.meta.summary ?? `Delete ${this.meta.collection?.toLowerCase()}`,

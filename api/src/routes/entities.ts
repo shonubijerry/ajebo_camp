@@ -8,6 +8,7 @@ import { requestBodies, responseBodies } from '../schemas'
 import { AppContext } from '..'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './generic/types'
+import { permission } from 'process'
 
 const entityMeta = {
   collection: 'Entity' as const,
@@ -20,6 +21,7 @@ export class CreateEntityEndpoint extends OpenAPIEndpoint {
     requestSchema: z.object({
       body: requestBodies.entity,
     }),
+    permission: 'entity:create' as const,
   }
 
   async action(c: AppContext, { body }: typeof this.meta.requestSchema._type) {
@@ -34,6 +36,7 @@ export class ListEntitiesEndpoint extends ListEndpoint<
   meta = {
     ...entityMeta,
     requestSchema: listRequestQuerySchema,
+    permission: 'entity:view' as const,
   }
   protected pageSize = 25
 
@@ -63,6 +66,7 @@ export class GetEntityEndpoint extends GetEndpoint {
         id: true,
       }),
     }),
+    permission: 'entity:view' as const,
   }
 
   action(c: AppContext, { params }: typeof this.meta.requestSchema._type) {
@@ -77,6 +81,7 @@ export class UpdateEntityEndpoint extends UpdateEndpoint {
       params: responseBodies.entity.pick({ id: true }),
       body: requestBodies.entity.partial(),
     }),
+    permission: 'entity:update' as const,
   }
 
   async action(
@@ -99,6 +104,7 @@ export class DeleteEntityEndpoint extends DeleteEndpoint {
         soft: z.boolean().optional(),
       }),
     }),
+    permission: 'entity:delete' as const,
   }
 
   action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {

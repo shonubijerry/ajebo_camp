@@ -1,7 +1,8 @@
 import { verify } from 'hono/jwt'
+import { z } from 'zod'
 import { AppContext } from '..'
 import { userResponse } from '../schemas'
-import { z } from 'zod'
+import { getPermissionsForRole, Role } from '../lib/permissions'
 
 const auth = userResponse
   .pick({
@@ -12,7 +13,11 @@ const auth = userResponse
     sub: z.string(),
   })
 
-export type AuthenticatedUser = typeof auth._type
+type BaseAuthenticatedUser = typeof auth._type
+
+export type AuthenticatedUser = BaseAuthenticatedUser & {
+  permissions: ReturnType<typeof getPermissionsForRole>
+}
 
 export const authMiddleware = async (
   c: AppContext & {
@@ -42,9 +47,13 @@ export const authMiddleware = async (
       )
     }
     // verify token — consumer may need to adjust depending on `hono/jwt` version
-    const payload = (await verify(token, c.env.JWT_SECRET)) as AuthenticatedUser
+    const payload = (await verify(token, c.env.JWT_SECRET)) as BaseAuthenticatedUser
+    const permissions = getPermissionsForRole(payload.role as Role)
 
-    c.user = payload
+    c.user = {
+      ...payload,
+      permissions,
+    }
     await next()
   } catch (err) {
     return c.json(

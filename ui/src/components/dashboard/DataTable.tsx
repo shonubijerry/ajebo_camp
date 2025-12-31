@@ -8,6 +8,7 @@ import {
   flexRender,
   ColumnDef,
   SortingState,
+  Getter,
 } from "@tanstack/react-table";
 import {
   Box,
@@ -46,6 +47,8 @@ interface DataTableProps<T> {
   isLoading?: boolean;
   pageSize?: number;
 }
+
+export type TableCellGetter = { getValue: Getter<unknown>}
 
 export default function DataTable<T>({
   data,

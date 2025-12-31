@@ -10,6 +10,13 @@ export default function DashboardRoutesLayout({
 }) {
   const router = useRouter();
 
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/admin");
+    }
+  }
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     router.push("/admin");

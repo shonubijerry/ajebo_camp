@@ -42,6 +42,8 @@ import {
 import StatCard from "@/components/dashboard/StatCard";
 import { useApi } from "@/lib/api/useApi";
 import { DetailedAnalytics } from "@/interfaces";
+import { useAuth } from "@/hooks/useAuth";
+import { ForbiddenPage } from "@/components/permissions/ForbiddenPage";
 
 const PERIODS: {
   label: string;
@@ -157,6 +159,7 @@ export default function CampAnalyticsPage() {
   const params = useParams();
   const campId = params?.id as string;
   const { $api } = useApi();
+  const { hasPermission, isLoading: isAuthLoading } = useAuth();
   const [period, setPeriod] =
     useState<(typeof PERIODS)[number]["value"]>("month");
 
@@ -207,6 +210,14 @@ export default function CampAnalyticsPage() {
   const districtBreakdown = analytics?.campites?.by_district ?? [];
   const timelineDaily = analytics?.timeline?.daily ?? [];
   const recentRegs = analytics?.recent_activity?.recent_registrations ?? [];
+
+  if (isAuthLoading) {
+    return <Skeleton variant="rounded" height={320} />;
+  }
+
+  if (!hasPermission(["analytics:view"])) {
+    return <ForbiddenPage message="You do not have permission to view analytics." />;
+  }
 
   return (
     <Stack spacing={3}>
