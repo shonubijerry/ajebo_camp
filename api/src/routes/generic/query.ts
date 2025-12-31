@@ -175,6 +175,40 @@ export function queryStringToPrismaWhere<T = PrismaWhere>(queryString: string) {
   return queryParamsToPrismaWhere<T>(queryParams)
 }
 
+/**
+ * Parse query string sort parameters to an object  * in the format { field: direction }
+ * @param queryString 
+ * @returns
+ * Example:
+ * ```
+  const queryString = '[firstname]=desc&[created_at]=asc';
+  const sort = parseQuerySort(queryString);
+  // Result: { firstname: 'desc', created_at: 'asc' }
+  ```
+ */
+export function parseQuerySort<T = Record<string, 'asc' | 'desc'>>(
+  queryString: string,
+): T {
+  if (!queryString) return {} as T
+
+  const result: Record<string, 'asc' | 'desc'>[] = []
+
+  // Split by & to get individual parameters
+  const params = queryString.split('&')
+
+  for (const param of params) {
+    // Match pattern: [key]=value
+    const match = param.match(/\[([^\]]+)\]=(asc|desc)/)
+    if (match) {
+      const key = match[1]
+      const value = match[2].replace(/'/g, '') as 'asc' | 'desc'
+      result.push({ [key]: value })
+    }
+  }
+
+  return result as T
+}
+
 export const GenericError = z.object({
   success: z.literal(false),
   errors: z.array(

@@ -65,6 +65,7 @@ const CampCampitesPageContent = () => {
         `Are you sure you want to delete ${campite?.firstname} ${campite?.lastname}?`
       }
       filter={`[camp_id][equals]=${campId}`}
+      orderBy='[created_at]=desc'
     />
   );
 };

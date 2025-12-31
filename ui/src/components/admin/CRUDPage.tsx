@@ -46,6 +46,7 @@ interface CRUDPageProps<T extends { id?: string }> {
   formPropName?: string; // name of the prop to pass entity to form, defaults to entityName
   getDeleteMessage?: (entity: T) => string;
   filter?: string;
+  orderBy?: string;
 }
 
 export default function CRUDPage<
@@ -63,6 +64,7 @@ export default function CRUDPage<
   formPropName,
   getDeleteMessage,
   filter,
+  orderBy
 }: CRUDPageProps<T>) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -83,7 +85,7 @@ export default function CRUDPage<
   const propName = formPropName || entityName;
   const deleteMutation = $api.useMutation("delete", deleteEndpoint);
   const result = $api.useQuery("get", listEndpoint, {
-    params: { query: { page: 1, per_page: 100, filter } },
+    params: { query: { page: 1, per_page: 100, filter, orderBy } },
   });
 
   const entities = result.data?.success ? result.data.data : [];

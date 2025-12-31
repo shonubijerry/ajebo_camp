@@ -40,7 +40,10 @@ export class CreateUserEndpoint extends OpenAPIEndpoint {
   }
 }
 
-export class ListUsersEndpoint extends ListEndpoint<Prisma.UserWhereInput> {
+export class ListUsersEndpoint extends ListEndpoint<
+  Prisma.UserWhereInput,
+  Prisma.UserOrderByWithRelationInput
+> {
   meta = {
     ...userMeta,
     requestSchema: listRequestQuerySchema,

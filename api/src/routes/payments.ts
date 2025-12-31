@@ -11,7 +11,10 @@ const paymentMeta = {
   responseSchema: responseBodies.payment,
 }
 
-export class ListPaymentsEndpoint extends ListEndpoint<Prisma.PaymentWhereInput> {
+export class ListPaymentsEndpoint extends ListEndpoint<
+  Prisma.PaymentWhereInput,
+  Prisma.PaymentOrderByWithRelationInput
+> {
   meta = {
     ...paymentMeta,
     requestSchema: listRequestQuerySchema,

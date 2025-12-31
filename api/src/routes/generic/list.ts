@@ -2,7 +2,7 @@ import { OpenAPIRoute, OpenAPIRouteSchema, contentJson } from 'chanfana'
 import { z } from '@hono/zod-openapi'
 import { AppContext } from '../..'
 import { Env } from '../../env'
-import { GenericError, queryStringToPrismaWhere } from './query'
+import { GenericError, parseQuerySort, queryStringToPrismaWhere } from './query'
 import { OpenAPIEndpoint } from './create'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './types'
@@ -25,7 +25,10 @@ export const listRequestQuerySchema = z.object({
     .max(100)
     .default(20)
     .describe('Number of records per page.'),
-  orderBy: z.array(z.record(z.enum(['asc', 'desc']))).optional(),
+  orderBy: z.string().optional().openapi({
+    example: '[firstname]=desc&[created_at]=desc',
+    description: 'Filter criteria in Prisma-like format',
+  }),
   filter: z.string().optional().openapi({
     example: '[firstname][contains]=string',
     description: 'Filter criteria in Prisma-like format',
@@ -57,7 +60,10 @@ export const responseListSchema = <T extends z.ZodTypeAny>(itemSchema: T) =>
  * @template TWhereInput     Prisma where input type
  * @template TOrderByInput   Prisma orderBy input type
  */
-export abstract class ListEndpoint<TWhereInput> extends OpenAPIEndpoint {
+export abstract class ListEndpoint<
+  TWhereInput,
+  TOrderByInput,
+> extends OpenAPIEndpoint {
   /** Zod schema for query parameters */
   abstract meta: {
     requestSchema: typeof listRequestQuerySchema
@@ -92,7 +98,7 @@ export abstract class ListEndpoint<TWhereInput> extends OpenAPIEndpoint {
       return {
         page: 0,
         where,
-        orderBy: query.orderBy,
+        orderBy: parseQuerySort<TOrderByInput>(query.orderBy),
       }
     }
 
@@ -105,7 +111,7 @@ export abstract class ListEndpoint<TWhereInput> extends OpenAPIEndpoint {
       take: per_page,
       skip,
       where,
-      orderBy: query.orderBy,
+      orderBy: parseQuerySort<TOrderByInput>(query.orderBy),
     }
   }
 

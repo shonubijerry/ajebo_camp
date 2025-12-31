@@ -27,7 +27,10 @@ export class CreateEntityEndpoint extends OpenAPIEndpoint {
   }
 }
 
-export class ListEntitiesEndpoint extends ListEndpoint<Prisma.EntityWhereInput> {
+export class ListEntitiesEndpoint extends ListEndpoint<
+  Prisma.EntityWhereInput,
+  Prisma.EntityOrderByWithRelationInput
+> {
   meta = {
     ...entityMeta,
     requestSchema: listRequestQuerySchema,

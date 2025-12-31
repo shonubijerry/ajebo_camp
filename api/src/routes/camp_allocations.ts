@@ -27,7 +27,10 @@ export class CreateCampAllocationEndpoint extends OpenAPIEndpoint {
   }
 }
 
-export class ListCampAllocationsEndpoint extends ListEndpoint<Prisma.Camp_AllocationWhereInput> {
+export class ListCampAllocationsEndpoint extends ListEndpoint<
+  Prisma.Camp_AllocationWhereInput,
+  Prisma.Camp_AllocationOrderByWithRelationInput
+> {
   meta = {
     ...campAllocationMeta,
     requestSchema: listRequestQuerySchema,

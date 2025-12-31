@@ -78,7 +78,10 @@ export class CreateCampEndpoint extends OpenAPIEndpoint {
   }
 }
 
-export class ListCampsEndpoint extends ListEndpoint<Prisma.CampWhereInput> {
+export class ListCampsEndpoint extends ListEndpoint<
+  Prisma.CampWhereInput,
+  Prisma.CampOrderByWithRelationInput
+> {
   meta = {
     ...campMeta,
     requestSchema: listRequestQuerySchema,

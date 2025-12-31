@@ -46,6 +46,7 @@ export default function UsersPage() {
       getDeleteMessage={(user) =>
         `Are you sure you want to delete ${user?.firstname} ${user?.lastname}? This action cannot be undone.`
       }
+      orderBy='[created_at]=desc'
     />
   );
 }

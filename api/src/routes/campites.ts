@@ -25,7 +25,9 @@ export class CreateCampiteEndpoint extends OpenAPIEndpoint {
   async action(c: AppContext, { body }: typeof this.meta.requestSchema._type) {
     const [camp, allocations] = await Promise.all([
       c.env.PRISMA.camp.findUnique({ where: { id: body.camp_id } }),
-      c.env.PRISMA.camp_Allocation.findMany({ where: { camp_id: body.camp_id } }),
+      c.env.PRISMA.camp_Allocation.findMany({
+        where: { camp_id: body.camp_id },
+      }),
     ])
 
     if (!camp) {
@@ -52,7 +54,10 @@ export class CreateCampiteEndpoint extends OpenAPIEndpoint {
   }
 }
 
-export class ListCampitesEndpoint extends ListEndpoint<Prisma.CampiteWhereInput> {
+export class ListCampitesEndpoint extends ListEndpoint<
+  Prisma.CampiteWhereInput,
+  Prisma.CampiteOrderByWithRelationInput
+> {
   meta = {
     ...campiteMeta,
     requestSchema: listRequestQuerySchema,

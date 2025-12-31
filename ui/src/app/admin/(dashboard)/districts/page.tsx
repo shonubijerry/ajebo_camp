@@ -30,6 +30,7 @@ export default function DistrictsPage() {
       getDeleteMessage={(district) =>
         `Are you sure you want to delete ${district?.name}? This action cannot be undone.`
       }
+      orderBy='[created_at]=desc'
     />
   );
 }

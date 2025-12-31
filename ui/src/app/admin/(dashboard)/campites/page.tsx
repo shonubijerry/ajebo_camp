@@ -61,6 +61,7 @@ const CampitesPageContent = () => {
       getDeleteMessage={(campite) =>
         `Are you sure you want to delete ${campite?.firstname} ${campite?.lastname}? This action cannot be undone.`
       }
+      orderBy='[created_at]=desc'
     />
   );
 };

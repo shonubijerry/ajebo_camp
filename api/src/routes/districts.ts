@@ -27,7 +27,10 @@ export class CreateDistrictEndpoint extends OpenAPIEndpoint {
   }
 }
 
-export class ListDistrictsEndpoint extends ListEndpoint<Prisma.DistrictWhereInput> {
+export class ListDistrictsEndpoint extends ListEndpoint<
+  Prisma.DistrictWhereInput,
+  Prisma.DistrictOrderByWithRelationInput
+> {
   meta = {
     ...districtMeta,
     requestSchema: listRequestQuerySchema,
@@ -46,7 +49,7 @@ export class ListDistrictsEndpoint extends ListEndpoint<Prisma.DistrictWhereInpu
 
       return { data: result }
     }
-    
+
     const [data, total] = await Promise.all([
       c.env.PRISMA.district.findMany({
         where: params.where,

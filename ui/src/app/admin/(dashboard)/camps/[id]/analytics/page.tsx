@@ -144,7 +144,10 @@ const CustomTooltip = ({
       style={{ visibility: isVisible ? "visible" : "hidden" }}
     >
       {isVisible && (
-        <span className="label" style={{ background: 'white', padding: '10px' }}>{`${payload[0].name} : ${payload[0]?.payload?.currency ?? payload[0].value}`}</span>
+        <span
+          className="label"
+          style={{ background: "white", padding: "10px" }}
+        >{`${payload[0].name} : ${payload[0]?.payload?.currency ?? payload[0].value}`}</span>
       )}
     </div>
   );
@@ -314,13 +317,16 @@ export default function CampAnalyticsPage() {
                   tooltipType="none"
                 >
                   {typeBreakdown.map((_, idx) => (
-                    <>
-                      <Cell
-                        key={idx}
-                        fill={pieColors[(idx + 3) % pieColors.length]}
+                    <Cell
+                      key={idx}
+                      fill={pieColors[(idx + 3) % pieColors.length]}
+                    >
+                      <Tooltip
+                        key={`tooltip-${idx}`}
+                        content={CustomTooltip}
+                        defaultIndex={idx}
                       />
-                      <Tooltip key={`tooltip-${idx}`} content={CustomTooltip} defaultIndex={idx} />
-                    </>
+                    </Cell>
                   ))}
                 </Pie>
                 <Tooltip />

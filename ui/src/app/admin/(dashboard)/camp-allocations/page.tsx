@@ -67,6 +67,7 @@ function CampAllocationsPageContent() {
       getDeleteMessage={(campAllocation) =>
         `Are you sure you want to delete ${campAllocation?.name}? This action cannot be undone.`
       }
+      orderBy='[created_at]=desc'
     />
   );
 }
