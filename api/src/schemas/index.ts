@@ -5,6 +5,12 @@ const isoDate = z
   .datetime()
   .openapi({ example: '2025-01-01T00:00:00Z', format: 'date-time' })
 
+const basedSchemas = {
+  id: z.string(),
+  created_at: isoDate,
+  updated_at: isoDate,
+}
+
 // User
 export const userCreate = z.object({
   firstname: z.string().min(1).max(100).openapi({ example: 'Ada' }),
@@ -16,11 +22,7 @@ export const userCreate = z.object({
     .min(1)
     .transform((v) => v.toLowerCase())
     .openapi({ example: 'ada.okafor@example.com' }),
-  phone: z
-    .string()
-    .optional()
-    .nullable()
-    .openapi({ example: '+2348012345678' }),
+  phone: z.string().nullish().openapi({ example: '+2348012345678' }),
   role: z
     .enum(['user', 'staff', 'admin'])
     .optional()
@@ -28,21 +30,13 @@ export const userCreate = z.object({
     .openapi({ example: 'user' }),
 })
 
-export const userResponse = userCreate.extend({
-  id: z.string(),
-  created_at: isoDate,
-  updated_at: isoDate,
-})
+export const userResponse = userCreate.extend(basedSchemas)
 
 // Entity
 export const entityCreate = z.object({
   name: z.string().min(1).openapi({ example: 'Lagos Mainland' }),
 })
-export const entityResponse = entityCreate.extend({
-  id: z.string(),
-  created_at: isoDate,
-  updated_at: isoDate,
-})
+export const entityResponse = entityCreate.extend(basedSchemas)
 
 // District
 export const districtCreate = z.object({
@@ -53,30 +47,17 @@ export const districtCreate = z.object({
     .default([])
     .openapi({ example: ['Zone A', 'Zone B'] }),
 })
-export const districtResponse = districtCreate.extend({
-  id: z.string(),
-  created_at: isoDate,
-  updated_at: isoDate,
-})
+export const districtResponse = districtCreate.extend(basedSchemas)
 
 // Camp
 export const campCreate = z.object({
   title: z.string().min(1).openapi({ example: 'Summer Camp 2025' }),
-  theme: z
-    .string()
-    .optional()
-    .nullable()
-    .openapi({ example: 'Faith and Fire' }),
-  verse: z
-    .string()
-    .optional()
-    .nullable()
-    .openapi({ example: 'Jeremiah 29:11' }),
+  theme: z.string().nullish().openapi({ example: 'Faith and Fire' }),
+  verse: z.string().nullish().openapi({ example: 'Jeremiah 29:11' }),
   entity_id: z.string().openapi({ example: 'entity_123' }),
   banner: z
     .string()
-    .optional()
-    .nullable()
+    .nullish()
     .openapi({ example: 'https://example.com/banner.jpg' }),
   year: z.number().int().openapi({ example: 2025 }),
   fee: z.number().int().openapi({ example: 15000 }),
@@ -87,10 +68,7 @@ export const campCreate = z.object({
   start_date: isoDate,
   end_date: isoDate,
 })
-export const campResponse = campCreate.extend({
-  id: z.string(),
-  created_at: isoDate,
-  updated_at: isoDate,
+export const campResponse = campCreate.extend(basedSchemas).extend({  
   is_active: z.boolean(),
   is_coming_soon: z.boolean(),
 })
@@ -110,11 +88,7 @@ export const campAllocationCreate = z.object({
     .default('random')
     .openapi({ example: 'random' }),
 })
-export const campAllocationResponse = campAllocationCreate.extend({
-  id: z.string(),
-  created_at: isoDate,
-  updated_at: isoDate,
-})
+export const campAllocationResponse = campAllocationCreate.extend(basedSchemas)
 
 // Campite
 export const campiteCreate = z
@@ -124,8 +98,7 @@ export const campiteCreate = z
     email: z
       .string()
       .email()
-      .optional()
-      .nullable()
+      .nullish()
       .openapi({ example: 'john.doe@example.com' }),
     phone: z.string().min(1).openapi({ example: '+2348012345678' }),
     age_group: z.string().min(1).openapi({ example: '21-30' }),
@@ -133,23 +106,19 @@ export const campiteCreate = z
     camp_id: z.string().openapi({ example: 'camp_123' }),
     user_id: z.string().openapi({ example: 'user_456' }),
     district_id: z.string().optional().openapi({ example: 'district_789' }),
-    payment_ref: z
-      .string()
-      .optional()
-      .nullable()
-      .openapi({ example: 'pay_ref_001' }),
+    payment_ref: z.string().nullish().openapi({ example: 'pay_ref_001' }),
     type: z
       .enum(['regular', 'premium'])
       .optional()
       .default('regular')
       .openapi({ example: 'regular' }),
-    amount: z.number().int().optional().nullable().openapi({ example: 5000 }),
+    amount: z.number().int().openapi({ example: 5000 }),
     allocated_items: z
       .string()
       .optional()
       .default('')
       .openapi({ example: 'Boot 1' }),
-    checkin_at: isoDate.optional().nullable(),
+    checkin_at: isoDate.nullish(),
   })
   .superRefine((data, ctx) => {
     if (
@@ -164,11 +133,7 @@ export const campiteCreate = z
     }
   })
 
-export const campiteResponse = campiteCreate._def.schema.extend({
-  id: z.string(),
-  created_at: isoDate,
-  updated_at: isoDate,
-})
+export const campiteResponse = campiteCreate._def.schema.extend(basedSchemas)
 
 // Payment
 export const paymentCreate = z.object({
@@ -177,11 +142,7 @@ export const paymentCreate = z.object({
   user_id: z.string().openapi({ example: 'user_456' }),
   camp_id: z.string().openapi({ example: 'camp_123' }),
 })
-export const paymentResponse = paymentCreate.extend({
-  id: z.string(),
-  created_at: isoDate,
-  updated_at: isoDate,
-})
+export const paymentResponse = paymentCreate.extend(basedSchemas)
 
 // Exports grouped for convenience
 export const schemas = {
