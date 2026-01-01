@@ -1,5 +1,6 @@
 "use client";
 
+import { Camp } from "@/interfaces";
 import {
   Box,
   Button,
@@ -13,21 +14,6 @@ import {
   Typography,
 } from "@mui/material";
 
-type Camp = {
-  id: string;
-  title: string;
-  theme?: string | null;
-  verse?: string | null;
-  banner?: string | null;
-  fee: number;
-  start_date: string;
-  end_date: string;
-};
-
-interface CampsDisplayProps {
-  camps: Camp[];
-}
-
 const colors = {
   red: "#c8102e",
   blue: "#0033a0",
@@ -37,13 +23,12 @@ const colors = {
 };
 
 function getCampStatus(camp: Camp) {
-  const now = new Date();
-  const start = new Date(camp.start_date);
-  const end = new Date(camp.end_date);
+  if (camp.is_active)
+    return { label: "Active", color: "success", isActive: true };
 
-  if (now > end)
-    return { label: "Completed", color: "default", isActive: false };
-  if (now < start) return { label: "Upcoming", color: "info", isActive: false };
+  if (camp.is_coming_soon)
+    return { label: "Upcoming", color: "info", isActive: false };
+
   return { label: "Active", color: "success", isActive: true };
 }
 
@@ -51,9 +36,7 @@ function formatMoney(amount: number) {
   return amount <= 0 ? "Free" : `₦${amount.toLocaleString()}`;
 }
 
-export default function CampsDisplay({
-  camps,
-}: CampsDisplayProps) {
+export default function CampsDisplay({ camps }: { camps: Camp[] }) {
   const activeCamps = camps.filter((c) => getCampStatus(c).isActive);
   const upcomingCamps = camps.filter(
     (c) => getCampStatus(c).label === "Upcoming"
@@ -317,13 +300,10 @@ export default function CampsDisplay({
                         color={colors.navy}
                         sx={{ opacity: 0.7 }}
                       >
-                        {new Date(camp.start_date).toLocaleDateString(
-                          "en-US",
-                          {
-                            month: "short",
-                            day: "numeric",
-                          }
-                        )}{" "}
+                        {new Date(camp.start_date).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })}{" "}
                         -{" "}
                         {new Date(camp.end_date).toLocaleDateString("en-US", {
                           month: "short",

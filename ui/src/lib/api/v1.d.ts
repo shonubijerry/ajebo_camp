@@ -1230,6 +1230,8 @@ export interface operations {
                              * @example 2025-01-01T00:00:00Z
                              */
                             updated_at: string;
+                            is_active: boolean;
+                            is_coming_soon: boolean;
                         }[];
                         meta: {
                             page: number;
@@ -1354,6 +1356,8 @@ export interface operations {
                              * @example 2025-01-01T00:00:00Z
                              */
                             updated_at: string;
+                            is_active: boolean;
+                            is_coming_soon: boolean;
                         };
                     };
                 };
@@ -1579,6 +1583,8 @@ export interface operations {
                              * @example 2025-01-01T00:00:00Z
                              */
                             updated_at: string;
+                            is_active: boolean;
+                            is_coming_soon: boolean;
                         };
                     };
                 };
@@ -4771,6 +4777,8 @@ export interface operations {
                              * @example 2025-01-01T00:00:00Z
                              */
                             updated_at: string;
+                            is_active: boolean;
+                            is_coming_soon: boolean;
                         };
                     };
                 };

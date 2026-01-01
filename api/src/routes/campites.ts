@@ -35,6 +35,10 @@ export class CreateCampiteEndpoint extends OpenAPIEndpoint {
       throw new Error('Camp not found')
     }
 
+    if (!camp.is_active) {
+      throw new Error('Camp not found')
+    }
+
     const availableItems = allocations.map((allocation) => {
       if (!allocation.items || !Array.isArray(allocation.items))
         return [] as string[]

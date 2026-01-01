@@ -1,4 +1,4 @@
-import { PrismaClient } from '@ajebo_camp/database'
+import { Prisma, PrismaExtendedClient } from '@ajebo_camp/database'
 import { ApiException, fromHono, MultiException } from 'chanfana'
 import { Context, Hono } from 'hono'
 import { Env } from './env'
@@ -130,7 +130,7 @@ baseApp.onError((err, c) => {
 })
 
 baseApp.use(async (c, next) => {
-  c.env.PRISMA = c.env.DATABASE.prisma() as PrismaClient
+  c.env.PRISMA = c.env.DATABASE.prisma() as unknown as PrismaExtendedClient;
   await next()
 })
 

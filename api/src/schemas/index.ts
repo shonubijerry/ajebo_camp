@@ -2,21 +2,13 @@ import { z } from '@hono/zod-openapi'
 
 const isoDate = z
   .string()
-  .refine((v) => !Number.isNaN(Date.parse(v)), { message: 'Invalid ISO date' })
+  .datetime()
   .openapi({ example: '2025-01-01T00:00:00Z', format: 'date-time' })
 
 // User
 export const userCreate = z.object({
-  firstname: z
-    .string()
-    .min(1)
-    .max(100)
-    .openapi({ example: 'Ada' }),
-  lastname: z
-    .string()
-    .min(1)
-    .max(100)
-    .openapi({ example: 'Okafor' }),
+  firstname: z.string().min(1).max(100).openapi({ example: 'Ada' }),
+  lastname: z.string().min(1).max(100).openapi({ example: 'Okafor' }),
   email: z
     .string()
     .trim()
@@ -24,7 +16,11 @@ export const userCreate = z.object({
     .min(1)
     .transform((v) => v.toLowerCase())
     .openapi({ example: 'ada.okafor@example.com' }),
-  phone: z.string().optional().nullable().openapi({ example: '+2348012345678' }),
+  phone: z
+    .string()
+    .optional()
+    .nullable()
+    .openapi({ example: '+2348012345678' }),
   role: z
     .enum(['user', 'staff', 'admin'])
     .optional()
@@ -51,7 +47,11 @@ export const entityResponse = entityCreate.extend({
 // District
 export const districtCreate = z.object({
   name: z.string().min(1).openapi({ example: 'Yaba' }),
-  zones: z.array(z.string()).optional().default([]).openapi({ example: ['Zone A', 'Zone B'] }),
+  zones: z
+    .array(z.string())
+    .optional()
+    .default([])
+    .openapi({ example: ['Zone A', 'Zone B'] }),
 })
 export const districtResponse = districtCreate.extend({
   id: z.string(),
@@ -62,10 +62,22 @@ export const districtResponse = districtCreate.extend({
 // Camp
 export const campCreate = z.object({
   title: z.string().min(1).openapi({ example: 'Summer Camp 2025' }),
-  theme: z.string().optional().nullable().openapi({ example: 'Faith and Fire' }),
-  verse: z.string().optional().nullable().openapi({ example: 'Jeremiah 29:11' }),
+  theme: z
+    .string()
+    .optional()
+    .nullable()
+    .openapi({ example: 'Faith and Fire' }),
+  verse: z
+    .string()
+    .optional()
+    .nullable()
+    .openapi({ example: 'Jeremiah 29:11' }),
   entity_id: z.string().openapi({ example: 'entity_123' }),
-  banner: z.string().optional().nullable().openapi({ example: 'https://example.com/banner.jpg' }),
+  banner: z
+    .string()
+    .optional()
+    .nullable()
+    .openapi({ example: 'https://example.com/banner.jpg' }),
   year: z.number().int().openapi({ example: 2025 }),
   fee: z.number().int().openapi({ example: 15000 }),
   premium_fees: z
@@ -79,6 +91,8 @@ export const campResponse = campCreate.extend({
   id: z.string(),
   created_at: isoDate,
   updated_at: isoDate,
+  is_active: z.boolean(),
+  is_coming_soon: z.boolean(),
 })
 
 // Camp Allocation
@@ -130,17 +144,24 @@ export const campiteCreate = z
       .default('regular')
       .openapi({ example: 'regular' }),
     amount: z.number().int().optional().nullable().openapi({ example: 5000 }),
-    allocated_items: z.string().optional().default('').openapi({ example: 'Boot 1' }),
+    allocated_items: z
+      .string()
+      .optional()
+      .default('')
+      .openapi({ example: 'Boot 1' }),
     checkin_at: isoDate.optional().nullable(),
   })
   .superRefine((data, ctx) => {
-  if (data.type === 'premium' && (data.amount === null || data.amount === undefined)) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: 'Amount is required for premium campites',
-      path: ['amount'],
-    })
-  }
+    if (
+      data.type === 'premium' &&
+      (data.amount === null || data.amount === undefined)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Amount is required for premium campites',
+        path: ['amount'],
+      })
+    }
   })
 
 export const campiteResponse = campiteCreate._def.schema.extend({
