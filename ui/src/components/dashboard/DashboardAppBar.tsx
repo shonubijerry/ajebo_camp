@@ -16,6 +16,7 @@ import {
 } from "@mui/icons-material";
 import ColorModeSelect from "@/components/theme/ColorModeSelect";
 import { drawerWidth } from "./Sidebar";
+import { useRouter } from "next/navigation";
 
 interface DashboardAppBarProps {
   onMenuClick?: () => void;
@@ -28,6 +29,7 @@ export default function DashboardAppBar({
   onLogout,
   userName = "Admin User",
 }: DashboardAppBarProps) {
+  const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const menuOpen = Boolean(anchorEl);
 
@@ -37,6 +39,11 @@ export default function DashboardAppBar({
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleProfile = () => {
+    handleMenuClose();
+    router.push("/admin/profile");
   };
 
   const handleLogout = () => {
@@ -104,7 +111,7 @@ export default function DashboardAppBar({
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           transformOrigin={{ vertical: "top", horizontal: "right" }}
         >
-          <MenuItem onClick={handleMenuClose}>
+          <MenuItem onClick={handleProfile}>
             <AccountCircleIcon fontSize="small" sx={{ mr: 1.5 }} />
             <Typography variant="body2">Profile</Typography>
           </MenuItem>
