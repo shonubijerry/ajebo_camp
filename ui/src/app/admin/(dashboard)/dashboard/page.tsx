@@ -1,44 +1,54 @@
 "use client";
 
 import React from "react";
-import { Grid, Typography, Box, Stack, Skeleton, List, ListItem, ListItemText, Divider, Card, CardContent } from "@mui/material";
+import { Grid, Typography, Box, Stack, Skeleton } from "@mui/material";
 import StatCard from "@/components/dashboard/StatCard";
-import { HouseOutlined as CampIcon, Map as MapIcon, People as UsersIcon, Business as EntityIcon } from "@mui/icons-material";
+import {
+  HouseOutlined as CampIcon,
+  Map as MapIcon,
+  People as UsersIcon,
+  Business as EntityIcon,
+} from "@mui/icons-material";
 import { useApi } from "@/lib/api/useApi";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { ChartCard, pieColors, renderCustomizedLabel } from "@/lib/chart";
 
 export default function AdminDashboard() {
   const { $api } = useApi();
 
   const dashboardQuery = $api.useQuery("get", "/api/v1/analytics/dashboard");
 
-  const overview = dashboardQuery.data?.data?.overview;
-  const recentActivity = dashboardQuery.data?.data?.recent_activity || [];
+  const overview = dashboardQuery.data?.data;
+
+  const genderData = React.useMemo(
+    () =>
+      (overview?.by_gender ?? []).map((g) => ({
+        name: g.gender || "Unknown",
+        value: (g as any).count ?? (g as any)._count?.id ?? 0,
+      })),
+    [overview?.by_gender],
+  );
+
+  const ageGroupData = React.useMemo(
+    () =>
+      (overview?.by_age_group ?? []).map((a) => ({
+        name: a.age_group || "Unknown",
+        value: (a as any).count ?? (a as any)._count?.id ?? 0,
+      })),
+    [overview?.by_age_group],
+  );
 
   const statCards = [
     {
-      label: "Total Camps",
-      value: overview?.total_camps ?? 0,
-      delta: "–",
-      isPositive: true,
-      icon: <CampIcon />,
-    },
-    {
-      label: "Total Districts",
-      value: overview?.total_districts ?? 0,
-      delta: "–",
-      isPositive: true,
-      icon: <MapIcon />,
-    },
-    {
-      label: "Total Users",
-      value: overview?.total_users ?? 0,
-      delta: "–",
-      isPositive: true,
-      icon: <UsersIcon />,
-    },
-    {
-      label: "Total Entities",
-      value: overview?.total_entities ?? 0,
+      label: "Total Campites",
+      value: overview?.total_campites ?? 0,
       delta: "–",
       isPositive: true,
       icon: <EntityIcon />,
@@ -58,7 +68,7 @@ export default function AdminDashboard() {
 
       <Grid container spacing={3}>
         {statCards.map((card) => (
-          <Grid sx={{ xs: 12, sm: 6, md: 3 }} key={card.label}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={card.label}>
             {dashboardQuery.isLoading ? (
               <Skeleton variant="rounded" height={134} />
             ) : (
@@ -68,42 +78,63 @@ export default function AdminDashboard() {
         ))}
       </Grid>
 
-      <Card variant="outlined">
-        <CardContent>
-          <Typography variant="h6" gutterBottom sx={{ fontWeight: 700 }}>
-            Recent Activity
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Latest registrations across all camps.
-          </Typography>
 
-          {dashboardQuery.isLoading ? (
-            <Stack spacing={1.5}>
-              <Skeleton variant="rounded" height={50} />
-              <Skeleton variant="rounded" height={50} />
-              <Skeleton variant="rounded" height={50} />
-            </Stack>
-          ) : recentActivity.length ? (
-            <List>
-              {recentActivity.map((entry: any) => (
-                <React.Fragment key={entry.id}>
-                  <ListItem disableGutters>
-                    <ListItemText
-                      primary={`${entry.firstname} ${entry.lastname}`}
-                      secondary={`${entry.camp_title} • ${new Date(entry.created_at).toLocaleString()}`}
-                    />
-                  </ListItem>
-                  <Divider component="li" />
-                </React.Fragment>
-              ))}
-            </List>
-          ) : (
-            <Typography variant="body2" color="text.secondary">
-              No recent activities yet.
-            </Typography>
-          )}
-        </CardContent>
-      </Card>
+      
+            <Grid container spacing={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+                <ChartCard
+                  title="Campites by Gender"
+                  loading={dashboardQuery.isLoading}
+                >
+                  <ResponsiveContainer width="100%" height={240}>
+                    <PieChart>
+                      <Pie
+                        dataKey="value"
+                        data={genderData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        labelLine={false}
+                        label={renderCustomizedLabel}
+                      >
+                        {genderData.map((_, idx) => (
+                          <Cell key={idx} fill={pieColors[idx % pieColors.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </ChartCard>
+              </Grid>
+      
+              <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+                <ChartCard
+                  title="Campites by Age Group"
+                  loading={dashboardQuery.isLoading}
+                >
+                  <ResponsiveContainer width="100%" height={240}>
+                    <PieChart>
+                      <Pie
+                        dataKey="value"
+                        data={ageGroupData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        labelLine={false}
+                        label={renderCustomizedLabel}
+                      >
+                        {ageGroupData.map((_, idx) => (
+                          <Cell key={idx} fill={pieColors[idx % pieColors.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </ChartCard>
+              </Grid>
+            </Grid>
     </Stack>
   );
 }

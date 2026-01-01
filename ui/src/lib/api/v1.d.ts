@@ -4844,18 +4844,14 @@ export interface operations {
                 content: {
                     "application/json": {
                         data: {
-                            overview: {
-                                total_camps: number;
-                                total_users: number;
-                                total_districts: number;
-                                total_entities: number;
-                            };
-                            recent_activity: {
-                                id: string;
-                                firstname: string;
-                                lastname: string;
-                                camp_title: string;
-                                created_at: string;
+                            total_campites: number;
+                            by_gender: {
+                                gender: string;
+                                count: number;
+                            }[];
+                            by_age_group: {
+                                age_group: string;
+                                count: number;
                             }[];
                         };
                     };

@@ -223,12 +223,11 @@ export default function CRUDPage<
             {description}
           </Typography>
         </Box>
-        <Button
+        {canCreate && (<Button
           variant="contained"
           startIcon={!isMobile && <AddIcon />}
           onClick={handleCreateNew}
           fullWidth={isMobile}
-          disabled={!canCreate}
           sx={{ 
             whiteSpace: "nowrap",
             flexShrink: 0,
@@ -236,7 +235,7 @@ export default function CRUDPage<
           }}
         >
           {isMobile ? "+ Create" : "Create New"}
-        </Button>
+        </Button>)}
       </Box>
 
       <DataTable

@@ -6,6 +6,7 @@ import {
   CampDetailedAnalytics,
   CampDetailedAnalyticsSchema,
 } from '../schemas/stats'
+import { AuthenticatedUser } from '../middlewares/auth'
 
 // Time periods for filtering
 const TIME_PERIODS = ['today', 'week', 'month', 'year', 'all'] as const
@@ -76,19 +77,17 @@ export class GetDashboardAnalyticsEndpoint extends OpenAPIRoute {
           'application/json': {
             schema: z.object({
               data: z.object({
-                overview: z.object({
-                  total_camps: z.number(),
-                  total_users: z.number(),
-                  total_districts: z.number(),
-                  total_entities: z.number(),
-                }),
-                recent_activity: z.array(
+                total_campites: z.number(),
+                by_gender: z.array(
                   z.object({
-                    id: z.string(),
-                    firstname: z.string(),
-                    lastname: z.string(),
-                    camp_title: z.string(),
-                    created_at: z.string(),
+                    gender: z.string(),
+                    count: z.number(),
+                  }),
+                ),
+                by_age_group: z.array(
+                  z.object({
+                    age_group: z.string(),
+                    count: z.number(),
                   }),
                 ),
               }),
@@ -99,53 +98,39 @@ export class GetDashboardAnalyticsEndpoint extends OpenAPIRoute {
     },
   }
 
-  async handle(c: AppContext) {
+  async handle(c: AppContext & { user: AuthenticatedUser }) {
     const cache = caches.default
-    const cacheKey = new Request(c.req.url, { method: 'GET' })
+    const cacheKey = new Request(`${c.req.url}?user_id=${c.user?.sub}`, {
+      method: 'GET',
+    })
     const cachedResponse = await cache.match(cacheKey)
     if (cachedResponse) {
       return cachedResponse.json()
     }
+    let where: Prisma.CampiteWhereInput = {}
 
-    const [
-      totalCamps,
-      totalUsers,
-      totalDistricts,
-      totalEntities,
-      recentCampites,
-    ] = await Promise.all([
-      c.env.PRISMA.camp.count({ where: { deleted_at: null } }),
-      c.env.PRISMA.user.count({ where: { deleted_at: null } }),
-      c.env.PRISMA.district.count({ where: { deleted_at: null } }),
-      c.env.PRISMA.entity.count({ where: { deleted_at: null } }),
-      c.env.PRISMA.campite.findMany({
-        where: { deleted_at: null },
-        take: 5,
-        orderBy: { created_at: 'desc' },
-        select: {
-          id: true,
-          firstname: true,
-          lastname: true,
-          created_at: true,
-          camp: { select: { title: true } },
-        },
+    if (c.user?.role === 'user') {
+      where = { ...(where || {}), user_id: c.user.sub }
+    }
+
+    const [totalCampites, genderStats, ageGroupStats] = await Promise.all([
+      c.env.PRISMA.campite.count({ where }),
+      c.env.PRISMA.campite.groupBy({
+        by: ['gender'],
+        where: where,
+        _count: { id: true },
+      }),
+      c.env.PRISMA.campite.groupBy({
+        by: ['age_group'],
+        where: where,
+        _count: { id: true },
       }),
     ])
 
     const data = {
-      overview: {
-        total_camps: totalCamps,
-        total_users: totalUsers,
-        total_districts: totalDistricts,
-        total_entities: totalEntities,
-      },
-      recent_activity: recentCampites.map((c) => ({
-        id: c.id,
-        firstname: c.firstname,
-        lastname: c.lastname,
-        camp_title: c.camp?.title || 'Unknown',
-        created_at: c.created_at.toISOString(),
-      })),
+      total_campites: totalCampites,
+      by_gender: genderStats,
+      by_age_group: ageGroupStats,
     }
 
     await cache.put(

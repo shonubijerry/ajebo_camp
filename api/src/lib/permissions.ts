@@ -50,7 +50,6 @@ export const rolePermissions: Record<Role, Permission[]> = {
     'district:update',
     'entity:view',
     'entity:create',
-    'entity:update',
     'payment:view',
     'analytics:view',
   ],
