@@ -21,13 +21,13 @@ import { useRouter } from "next/navigation";
 interface DashboardAppBarProps {
   onMenuClick?: () => void;
   onLogout?: () => void;
-  userName?: string;
+  initials?: string;
 }
 
 export default function DashboardAppBar({
   onMenuClick,
   onLogout,
-  userName = "Admin User",
+  initials = "Admin User",
 }: DashboardAppBarProps) {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -93,7 +93,7 @@ export default function DashboardAppBar({
           }}
         >
           <Avatar
-            alt={userName}
+            alt={initials}
             sx={{
               width: 32,
               height: 32,
@@ -101,7 +101,7 @@ export default function DashboardAppBar({
               fontSize: "0.875rem",
             }}
           >
-            {userName.charAt(0).toUpperCase()}
+            {initials}
           </Avatar>
         </IconButton>
         <Menu

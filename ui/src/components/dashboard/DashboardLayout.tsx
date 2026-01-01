@@ -55,7 +55,7 @@ export default function DashboardLayout({
       <DashboardAppBar
         onMenuClick={handleDrawerToggle}
         onLogout={onLogout}
-        userName={userName}
+        initials={initials}
       />
       <Box
         sx={{
