@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import {
   Dashboard as DashboardIcon,
+  PersonOutline as PersonIcon,
   People as PeopleIcon,
   Terrain as CampingIcon,
   Map as MapIcon,
@@ -54,6 +55,11 @@ const defaultNavItems: NavItem[] = [
     href: "/admin/dashboard",
     icon: <DashboardIcon />,
     requiredPermissions: ["dashboard:view"],
+  },
+  {
+    label: "Profile",
+    href: "/admin/profile",
+    icon: <PersonIcon />,
   },
   {
     label: "Campites",
