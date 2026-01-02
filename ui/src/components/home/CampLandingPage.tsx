@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   Box,
   Button,
+  IconButton,
   Card,
   CardContent,
   Chip,
@@ -29,10 +30,13 @@ import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import InfoIcon from "@mui/icons-material/Info";
+import HomeIcon from "@mui/icons-material/Home";
 import SlideInDrawer from "@/components/dashboard/SlideInDrawer";
 import LoginForm from "@/components/auth/LoginForm";
 import SignupForm from "@/components/auth/SignupForm";
 import IndividualRegistrationForm from "@/components/registration/IndividualRegistrationForm";
+import DonationForm from "@/components/donations/DonationForm";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 const colors = {
   red: "#c8102e",
@@ -101,12 +105,12 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
   const campStatus = camp.is_active ? "Active" : camp.is_coming_soon ? "Upcoming" : "Closed";
   const canRegister = camp.is_active;
   const [registrationType, setRegistrationType] = useState<"individual" | "group">("individual");
-  const [openDrawer, setOpenDrawer] = useState<"login" | "signup" | "register" | null>(null);
+  const [openDrawer, setOpenDrawer] = useState<"login" | "signup" | "register" | "donate" | null>(null);
 
   // Handle URL parameters for opening drawers
   useEffect(() => {
     const action = searchParams.get("action");
-    if (action === "login" || action === "signup" || action === "register") {
+    if (action === "login" || action === "signup" || action === "register" || action === "donate") {
       setOpenDrawer(action);
     }
   }, [searchParams]);
@@ -119,7 +123,7 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
     router.replace(`?${params.toString()}`, { scroll: false });
   };
 
-  const handleOpenDrawer = (type: "login" | "signup" | "register") => {
+  const handleOpenDrawer = (type: "login" | "signup" | "register" | "donate") => {
     setOpenDrawer(type);
     // Add action parameter to URL
     const params = new URLSearchParams(searchParams.toString());
@@ -273,6 +277,27 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
                 href="#details"
               >
                 Learn More
+              </Button>
+
+              <Button
+                onClick={() => handleOpenDrawer("donate")}
+                variant="outlined"
+                size="large"
+                startIcon={<FavoriteBorderIcon />}
+                sx={{
+                  px: 4,
+                  py: 1.8,
+                  borderColor: "white",
+                  color: "white",
+                  fontSize: "1.1rem",
+                  fontWeight: 700,
+                  "&:hover": { 
+                    borderColor: colors.yellow, 
+                    bgcolor: "rgba(255,255,255,0.1)" 
+                  },
+                }}
+              >
+                Donate
               </Button>
             </Stack>
           </Stack>
@@ -685,9 +710,24 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
           borderTop: "1px solid #e2e8f0",
         }}
       >
-        <Typography variant="body2" color={colors.navy} sx={{ opacity: 0.75 }}>
-          Powered by <span style={{ color: "#f00" }}>Foursquare Gospel Church Nigeria</span> • Ajebo Camp Management
-        </Typography>
+        <Stack direction="row" spacing={2} alignItems="center" justifyContent="center">
+          <Typography variant="body2" color={colors.navy} sx={{ opacity: 0.75 }}>
+            Powered by <span style={{ color: "#f00" }}>Foursquare Gospel Church Nigeria</span> • Ajebo Camp Management
+          </Typography>
+          <IconButton
+            href="/"
+            size="small"
+            sx={{
+              color: colors.navy,
+              opacity: 0.7,
+              border: "1px solid rgba(0,0,0,0.08)",
+              transition: "opacity 0.2s ease, transform 0.2s ease",
+              "&:hover": { opacity: 1, transform: "translateY(-1px)" },
+            }}
+          >
+            <HomeIcon fontSize="small" />
+          </IconButton>
+        </Stack>
       </Box>
 
       {/* Slide-in Drawers */}
@@ -724,6 +764,19 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
         <SignupForm
           onSuccess={handleAuthSuccess}
           onLoginClick={() => handleOpenDrawer("login")}
+        />
+      </SlideInDrawer>
+
+      <SlideInDrawer
+        open={openDrawer === "donate"}
+        onClose={handleDrawerClose}
+        title="Make a Donation"
+        width={500}
+      >
+        <DonationForm
+          campTitle={camp.title}
+          onSuccess={handleDrawerClose}
+          onClose={handleDrawerClose}
         />
       </SlideInDrawer>
     </Box>
