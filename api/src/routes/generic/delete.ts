@@ -1,8 +1,8 @@
 import { contentJson, OpenAPIRoute, OpenAPIRouteSchema } from 'chanfana'
 import { GenericError } from './query'
-import { OpenAPIEndpoint } from '@ajebo_camp/database'
-import { AppContext } from '../..'
+import { AppContext } from '../../types'
 import { AwaitedReturnType } from './types'
+import { OpenAPIEndpoint } from './create'
 
 export abstract class DeleteEndpoint extends OpenAPIEndpoint {
   /**

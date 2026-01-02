@@ -1,212 +1,55 @@
-import { Prisma, PrismaExtendedClient } from '@ajebo_camp/database'
-import { ApiException, fromHono, MultiException } from 'chanfana'
-import { Context, Hono } from 'hono'
-import { Env } from './env'
-import {
-  CreateUserEndpoint,
-  GetCurrentUserEndpoint,
-  ListUsersEndpoint,
-  GetUserEndpoint,
-  UpdateUserEndpoint,
-  DeleteUserEndpoint,
-} from './routes/users'
-import LoginEndpoint from './routes/auth/login'
-import {
-  CreateCampEndpoint,
-  DeleteCampEndpoint,
-  GetCampEndpoint,
-  ListCampsEndpoint,
-  UpdateCampEndpoint,
-} from './routes/camps'
-import {
-  CreateCampAllocationEndpoint,
-  DeleteCampAllocationEndpoint,
-  GetCampAllocationEndpoint,
-  ListCampAllocationsEndpoint,
-  UpdateCampAllocationEndpoint,
-} from './routes/camp_allocations'
-import {
-  CreateCampiteEndpoint,
-  BulkCreateCampitesEndpoint,
-  DeleteCampiteEndpoint,
-  GetCampiteEndpoint,
-  ListCampitesEndpoint,
-  UpdateCampiteEndpoint,
-} from './routes/campites'
-import { GetPaymentEndpoint, ListPaymentsEndpoint } from './routes/payments'
-import {
-  CreateEntityEndpoint,
-  DeleteEntityEndpoint,
-  GetEntityEndpoint,
-  ListEntitiesEndpoint,
-  UpdateEntityEndpoint,
-} from './routes/entities'
-import {
-  CreateDistrictEndpoint,
-  DeleteDistrictEndpoint,
-  GetDistrictEndpoint,
-  ListDistrictsEndpoint,
-  UpdateDistrictEndpoint,
-} from './routes/districts'
+import { fromHono } from 'chanfana'
+import { Hono } from 'hono'
+
+// Configuration
+import { createOpenApiApp, registerSecuritySchemes } from './config/openapi'
+import { corsConfig } from './config/cors'
+
+// Types
+import { AppBindings } from './types'
+
+// Middleware
 import { authMiddleware } from './middlewares/auth'
-import { ForgotPassword } from './routes/auth/forgot_pass/forgot_password'
-import { ChangePasswordPublic } from './routes/auth/forgot_pass/change_password'
-import SignupEndpoint from './routes/auth/signup'
-import { cors } from 'hono/cors'
-import { paystackWebhook } from './routes/webhooks/paystack'
-import {
-  GetDashboardAnalyticsEndpoint,
-  GetDetailedAnalyticsEndpoint,
-} from './routes/analytics'
+import { botProtection } from './middlewares/bot-protection'
+import { errorHandler } from './middlewares/error-handler'
+import { prismaMiddleware } from './lib/prisma'
 
-export type AppBindings = {
-  Bindings: Env
-}
-export type AppContext = Context<AppBindings>
+// Route registrations
+import { registerPublicRoutes } from './routes/index.public'
+import { registerWebhookRoutes } from './routes/index.webhooks'
+import { registerProtectedRoutes } from './routes/index.protected'
 
-// Setup OpenAPI registry
-const baseApp = fromHono(new Hono<AppBindings>(), {
-  docs_url: '/api/v1/internal-doc',
-  schema: {
-    info: {
-      title: 'Ajebo Camp Management System',
-      version: '2.0.0',
-      description:
-        'This is the documentation for Ajebo Camp Management System.',
-    },
-  },
-})
+// Initialize OpenAPI app
+const baseApp = createOpenApiApp()
 
-baseApp.use(
-  cors({
-    origin: ['http://localhost:3000'],
-    allowHeaders: [
-      'Content-Type',
-      'Upgrade-Insecure-Requests',
-      'Authorization',
-    ],
-    allowMethods: ['POST', 'GET', 'OPTIONS', 'PATCH', 'DELETE'],
-    exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
-    maxAge: 600,
-    credentials: true,
-  }),
-)
+// Apply global middleware
+baseApp.use(corsConfig)
+baseApp.use(botProtection)
+baseApp.use(prismaMiddleware)
 
-// Bot middleware and reject if score is lower than 30
-baseApp.use(async (c, next) => {
-  const botScore = c.req.header('cf-bot-score')
-  if (botScore && Number(botScore) < 30) {
-    return c.json(
-      {
-        success: false,
-        errors: [{ code: 6001, message: 'Bot traffic is not allowed.' }],
-      },
-      403,
-    )
-  }
-  await next()
-})
+// Register error handler
+baseApp.onError(errorHandler)
 
-baseApp.onError((err, c) => {
-  if (err instanceof ApiException) {
-    console.log(err)
-    // If it's a Chanfana ApiException, let Chanfana handle the response
-    return c.json({
-      success: false,
-      errors: err.buildResponse(),
-    })
-  }
+// Register security schemes for OpenAPI
+registerSecuritySchemes(baseApp)
 
-  console.error('Global error caught:', err) // Log the error if it's not known
-
-  // For other errors, return a generic 500 response
-  return c.json(
-    {
-      success: false,
-      errors: [{ code: 7000, message: 'Internal Server Error' }],
-    },
-    500,
-  )
-})
-
-baseApp.use(async (c, next) => {
-  c.env.PRISMA = c.env.DATABASE.prisma() as unknown as PrismaExtendedClient;
-  await next()
-})
-
-baseApp.registry.registerComponent('securitySchemes', 'bearer', {
-  type: 'http',
-  scheme: 'bearer',
-  bearerFormat: 'JWT',
-})
-
+// Create API routes app
 const app = fromHono(new Hono<AppBindings>())
 
-// Public routes
-app.post('/auth/login', LoginEndpoint)
-app.post('/auth/signup', SignupEndpoint)
+// Register public routes (no authentication)
+registerPublicRoutes(app)
 
-app.post('/forgot', ForgotPassword)
-app.post('/forgot/change-password/:code', ChangePasswordPublic)
+// Register webhook routes (no authentication)
+registerWebhookRoutes(app)
 
-// Webhooks (no auth required)
-app.post('/webhooks/paystack', paystackWebhook)
-
-app.get('/districts/list', ListDistrictsEndpoint)
-app.get('/camps/list', ListCampsEndpoint)
-app.get('/camps/:id', GetCampEndpoint)
-
-// Authenticate all subsequent requests using JWT in Authorization header
+// Apply authentication middleware for protected routes
 app.use(authMiddleware)
 
-app.post('/users', CreateUserEndpoint)
-app.get('/users/me', GetCurrentUserEndpoint)
-app.get('/users/list', ListUsersEndpoint)
-app.get('/users/:id', GetUserEndpoint)
-app.patch('/users/:id', UpdateUserEndpoint)
-app.delete('/users/:id', DeleteUserEndpoint)
+// Register protected routes (require authentication)
+registerProtectedRoutes(app)
 
-// // Districts
-app.post('/districts', CreateDistrictEndpoint)
-app.get('/districts/:id', GetDistrictEndpoint)
-app.patch('/districts/:id', UpdateDistrictEndpoint)
-app.delete('/districts/:id', DeleteDistrictEndpoint)
-
-// Entities
-app.post('/entities', CreateEntityEndpoint)
-app.get('/entities/list', ListEntitiesEndpoint)
-app.get('/entities/:id', GetEntityEndpoint)
-app.patch('/entities/:id', UpdateEntityEndpoint)
-app.delete('/entities/:id', DeleteEntityEndpoint)
-
-// Payments
-app.get('/payments/list', ListPaymentsEndpoint)
-app.get('/payments/:id', GetPaymentEndpoint)
-
-// Campites
-app.post('/campites', CreateCampiteEndpoint)
-app.post('/campites/bulk', BulkCreateCampitesEndpoint)
-app.get('/campites/list', ListCampitesEndpoint)
-app.get('/campites/:id', GetCampiteEndpoint)
-app.patch('/campites/:id', UpdateCampiteEndpoint)
-app.delete('/campites/:id', DeleteCampiteEndpoint)
-
-// Camp Allocations
-app.post('/camp-allocations', CreateCampAllocationEndpoint)
-app.get('/camp-allocations/list', ListCampAllocationsEndpoint)
-app.get('/camp-allocations/:id', GetCampAllocationEndpoint)
-app.patch('/camp-allocations/:id', UpdateCampAllocationEndpoint)
-app.delete('/camp-allocations/:id', DeleteCampAllocationEndpoint)
-
-// Camps
-app.post('/camps', CreateCampEndpoint)
-app.patch('/camps/:id', UpdateCampEndpoint)
-app.delete('/camps/:id', DeleteCampEndpoint)
-
-// Analytics
-app.get('/analytics/dashboard', GetDashboardAnalyticsEndpoint)
-app.get('/analytics/detailed', GetDetailedAnalyticsEndpoint)
-
+// Mount API routes under /api/v1
 baseApp.route('/api/v1', app)
 
+// Export the main app
 export default baseApp

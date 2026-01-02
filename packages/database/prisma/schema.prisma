@@ -32,21 +32,27 @@ model District {
 }
 
 model Camp {
-  id           String    @id @default(uuid())
-  title        String
-  theme        String?
-  verse        String?
-  entity_id    String
-  banner       String?
-  year         Int
-  fee          Int
+  id                    String    @id @default(uuid())
+  title                 String
+  theme                 String?
+  verse                 String?
+  entity_id             String
+  banner                String?
+  year                  Int
+  fee                   Int
   /// ![number[]]
-  premium_fees Json      @default("[]")
-  start_date   DateTime
-  end_date     DateTime
-  created_at   DateTime  @default(now())
-  updated_at   DateTime  @updatedAt
-  deleted_at   DateTime?
+  premium_fees          Json      @default("[]")
+  start_date            DateTime
+  end_date              DateTime
+  /// [CampHighlights]
+  highlights            Json      @default("{}")
+  registration_deadline DateTime?
+  user_id               String?
+  contact_email         String?
+  contact_phone         String?
+  created_at            DateTime  @default(now())
+  updated_at            DateTime  @updatedAt
+  deleted_at            DateTime?
 
   entity      Entity            @relation(fields: [entity_id], references: [id])
   allocations Camp_Allocation[]

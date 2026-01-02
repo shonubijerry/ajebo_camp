@@ -9,7 +9,7 @@ import { styled } from "@mui/material/styles";
 
 import ColorModeSelect from "@/components/theme/ColorModeSelect";
 import { SitemarkIcon } from "@/components/auth/CustomIcons";
-import LoginForm from "@/components/auth/LoginForm";
+import SignupForm from "@/components/auth/SignupForm";
 import { useRouter } from "next/navigation";
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -25,12 +25,12 @@ const Card = styled(MuiCard)(({ theme }) => ({
   },
 }));
 
-const SignInContainer = styled(Stack)(({ theme }) => ({
+const SignUpContainer = styled(Stack)(({ theme }) => ({
   height: "100dvh",
   padding: theme.spacing(2),
 }));
 
-export default function SignIn(props: { disableCustomTheme?: boolean }) {
+export default function SignUp(props: { disableCustomTheme?: boolean }) {
   const router = useRouter();
 
   const handleSuccess = (token: string) => {
@@ -38,14 +38,14 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
   };
 
   return (
-    <SignInContainer direction="column">
+    <SignUpContainer direction="column">
       <CssBaseline />
       <ColorModeSelect sx={{ position: "fixed", top: 16, right: 16 }} />
 
       <Card variant="outlined">
         <SitemarkIcon />
-        <LoginForm onSuccess={handleSuccess} />
+        <SignupForm onSuccess={handleSuccess} />
       </Card>
-    </SignInContainer>
+    </SignUpContainer>
   );
 }

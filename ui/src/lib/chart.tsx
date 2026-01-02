@@ -1,8 +1,5 @@
 import { Card, CardContent, Skeleton, Typography } from "@mui/material";
-import {
-  PieLabelRenderProps,
-  TooltipContentProps,
-} from "recharts";
+import { PieLabelRenderProps, TooltipContentProps } from "recharts";
 
 export const PERIODS: {
   label: string;
@@ -97,7 +94,6 @@ export const CustomTooltip = ({
   }
 
   const isVisible = active && payload && payload.length;
-  console.log({ active, payload, label });
 
   return (
     <div

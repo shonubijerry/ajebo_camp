@@ -94,7 +94,7 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
             <Stack direction="row" spacing={2} flexWrap="wrap">
               {primaryCta ? (
                 <Button
-                  href={`/${primaryCta.id}/register`}
+                  href={`/${primaryCta.id}`}
                   variant="contained"
                   size="large"
                   sx={{
@@ -104,7 +104,7 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
                     "&:hover": { bgcolor: "#a70f29" },
                   }}
                 >
-                  Register for {primaryCta.title}
+                  View {primaryCta.title}
                 </Button>
               ) : (
                 <Button
@@ -313,19 +313,18 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
 
                       <Box sx={{ mt: "auto" }}>
                         <Button
-                          href={`/${camp.id}/register`}
+                          href={`/${camp.id}`}
                           variant="contained"
                           fullWidth
-                          disabled={!status.isActive}
                           sx={{
-                            bgcolor: status.isActive ? colors.red : "#cbd5e1",
-                            color: status.isActive ? "white" : colors.navy,
-                            "&:hover": status.isActive
-                              ? { bgcolor: "#a70f29" }
-                              : undefined,
+                            bgcolor: status.isActive ? colors.red : colors.blue,
+                            color: "white",
+                            "&:hover": {
+                              bgcolor: status.isActive ? "#a70f29" : "#002a80",
+                            },
                           }}
                         >
-                          {status.isActive ? "Register" : status.label}
+                          View Details
                         </Button>
                       </Box>
                     </CardContent>

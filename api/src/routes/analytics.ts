@@ -1,12 +1,12 @@
 import { z } from 'zod'
 import { OpenAPIRoute } from 'chanfana'
-import { AppContext } from '..'
 import { Prisma } from '@ajebo_camp/database'
 import {
   CampDetailedAnalytics,
   CampDetailedAnalyticsSchema,
 } from '../schemas/stats'
 import { AuthenticatedUser } from '../middlewares/auth'
+import { AppContext } from '../types'
 
 // Time periods for filtering
 const TIME_PERIODS = ['today', 'week', 'month', 'year', 'all'] as const

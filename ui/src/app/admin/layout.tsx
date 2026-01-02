@@ -15,7 +15,7 @@ export default function AdminLayout({
       <AdminAuthProvider>
         <AppTheme>
           <CssBaseline enableColorScheme />
-          {children}
+          <QueryProviders> {children}</QueryProviders>
         </AppTheme>
       </AdminAuthProvider>
     </QueryProviders>

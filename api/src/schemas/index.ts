@@ -67,6 +67,29 @@ export const campCreate = z.object({
     .openapi({ example: [20000, 30000] }),
   start_date: isoDate,
   end_date: isoDate,
+  description: z
+    .string()
+    .nullish()
+    .openapi({ example: 'An amazing spiritual gathering for youth and adults' }),
+  location: z.string().nullish().openapi({ example: 'Lagos, Nigeria' }),
+  venue: z
+    .string()
+    .nullish()
+    .openapi({ example: 'Foursquare Camp Ground, Ajebo' }),
+  highlights: z
+    .array(z.string())
+    .default([])
+    .openapi({
+      example: ['Powerful worship sessions', 'Inspiring teachings', 'Fellowship'],
+    }),
+  registration_deadline: isoDate.nullish(),
+  capacity: z.number().int().nullish().openapi({ example: 500 }),
+  contact_email: z
+    .string()
+    .email()
+    .nullish()
+    .openapi({ example: 'camp@foursquare.org' }),
+  contact_phone: z.string().nullish().openapi({ example: '+2348012345678' }),
 })
 export const campResponse = campCreate.extend(basedSchemas).extend({  
   is_active: z.boolean(),

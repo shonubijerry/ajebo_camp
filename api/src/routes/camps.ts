@@ -5,7 +5,7 @@ import { GetEndpoint } from './generic/get'
 import { UpdateEndpoint } from './generic/update'
 import { DeleteEndpoint } from './generic/delete'
 import { requestBodies, responseBodies } from '../schemas'
-import { AppContext } from '..'
+import { AppContext } from '../types'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './generic/types'
 
@@ -119,7 +119,7 @@ export class GetCampEndpoint extends GetEndpoint {
     permission: 'camp:view' as const,
   }
 
-  action(c: AppContext, { params }: typeof this.meta.requestSchema._type) {
+  async action(c: AppContext, { params }: typeof this.meta.requestSchema._type) {
     return c.env.PRISMA.camp.findFirst({ where: { id: params.id } })
   }
 }

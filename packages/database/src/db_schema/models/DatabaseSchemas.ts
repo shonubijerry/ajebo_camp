@@ -1,3 +1,4 @@
+import { act } from "react";
 import { z } from "zod";
 
 export const DefaultSchema = z.object({
@@ -36,6 +37,18 @@ export const CampSchema = z.object({
   premium_fees: z.array(z.number().int()).default([]),
   start_date: z.coerce.date(),
   end_date: z.coerce.date(),
+  highlights: z.object({
+    location: z.string().optional(),
+    description: z.string().optional(),
+    ministers: z.object({
+      name: z.string(),
+      designation: z.string(),
+    }).array().default([]),
+    activities: z.array(z.string()).default([]),
+  }).default({}),
+  registration_deadline: z.coerce.date().nullable(),
+  contact_email: z.string().nullable(),
+  contact_phone: z.string().nullable(),
   ...DefaultSchema.shape,
 });
 

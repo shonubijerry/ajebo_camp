@@ -1,10 +1,12 @@
-import dbService, { PrismaExtendedClient } from '@ajebo_camp/database'
+import dbService from '@ajebo_camp/database'
+import { prismaExtension } from './lib/prisma'
 
 export type Env = {
   ENVIRONMENT: 'staging' | 'production' | 'development'
+  DB: D1Database
   SENTRY_RELEASE: string
   DATABASE: Service<dbService>
-  PRISMA: PrismaExtendedClient
+  PRISMA: ReturnType<typeof prismaExtension>
   JWT_SECRET: string
   SALT_ROUND: string
   RESEND_API_KEY: string

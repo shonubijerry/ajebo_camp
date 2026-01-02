@@ -1,7 +1,7 @@
 import { OpenAPIRoute, OpenAPIRouteSchema, contentJson } from 'chanfana'
 import { z } from 'zod'
 import { GenericError } from './query'
-import { AppContext } from '../..'
+import { AppContext } from '../../types'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './types'
 import { successRes } from '../../lib/response'

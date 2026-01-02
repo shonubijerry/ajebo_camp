@@ -31,6 +31,13 @@
       "bucket_name": "ajebo-camp-media"
     }
   ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ajebo-camp-dev-db",
+      "database_id": "278a51bc-9100-4a51-bc44-41ba0152f561",
+    }
+  ],
   "env": {
     "staging": {
       "name": "ajebo_camp_api_staging",

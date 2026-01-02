@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"build": "wrangler deploy --dry-run --outdir dist --env staging",
-		"dev": "wrangler dev --port 6001 --test-scheduled",
+		"dev": "wrangler dev --port 6001 --test-scheduled  --persist-to ../packages/database/.local_db",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"lint": "eslint . --max-warnings 0 --fix --ext .js,.jsx,.ts,.tsx",
 		"migration": "cd ../packages/database && npm run migration:apply",
@@ -14,6 +14,7 @@
 	"dependencies": {
 		"@ajebo_camp/database": "*",
 		"@hono/zod-openapi": "^0.9.10",
+		"@prisma/adapter-d1": "^7.2.0",
 		"chanfana": "2.8.3",
 		"hono": "4.10.7",
 		"prettier-plugin-organize-imports": "^4.3.0",
