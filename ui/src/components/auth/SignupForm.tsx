@@ -150,6 +150,7 @@ export default function SignupForm({
           type="submit"
           fullWidth
           variant="contained"
+          color="secondary"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Creating account..." : "Sign up"}

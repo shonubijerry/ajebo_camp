@@ -98,11 +98,11 @@ export const inputsCustomizations: Components<Theme> = {
               boxShadow: `inset 0 2px 0 ${alpha(brand[200], 0.2)}, inset 0 -2px 0 ${alpha(brand[700], 0.4)}`,
               border: `1px solid ${brand[500]}`,
               "&:hover": {
-                backgroundColor: brand[700],
+                backgroundColor: brand[500],
                 boxShadow: "none",
               },
               "&:active": {
-                backgroundColor: brand[700],
+                backgroundColor: brand[500],
                 backgroundImage: "none",
               },
             },
@@ -300,10 +300,10 @@ export const inputsCustomizations: Components<Theme> = {
         borderRadius: "10px",
         fontWeight: 500,
         ...theme.applyStyles("dark", {
-          color: gray[400],
-          boxShadow: "0 4px 16px rgba(0, 0, 0, 0.5)",
+          color: "#fff",
+          boxShadow: "0 4px 16px rgba(255, 255, 255, 0.5)",
           [`&.${toggleButtonClasses.selected}`]: {
-            color: brand[300],
+            color: brand[50],
           },
         }),
       }),

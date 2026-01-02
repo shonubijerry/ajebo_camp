@@ -24,10 +24,10 @@ interface LoginFormProps {
   showDivider?: boolean;
 }
 
-export default function LoginForm({ 
-  onSuccess, 
+export default function LoginForm({
+  onSuccess,
   onSignupClick,
-  showDivider = true 
+  showDivider = true,
 }: LoginFormProps) {
   const [open, setOpen] = React.useState(false);
   const { $api } = useApi();
@@ -117,12 +117,11 @@ export default function LoginForm({
           />
         </FormControl>
 
-        <FormControlLabel control={<Checkbox />} label="Remember me" />
-
         <Button
           type="submit"
-          fullWidth
+          color="secondary"
           variant="contained"
+          fullWidth
           disabled={isSubmitting}
         >
           {isSubmitting ? "Signing in..." : "Sign in"}

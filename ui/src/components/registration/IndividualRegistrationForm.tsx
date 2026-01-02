@@ -357,9 +357,7 @@ export default function IndividualRegistrationForm({
                   options={filteredDistricts}
                   getOptionLabel={(option) => option.name}
                   loading={districtsLoading}
-                  value={
-                    filteredDistricts.find((d) => d.id === value) || null
-                  }
+                  value={filteredDistricts.find((d) => d.id === value) || null}
                   inputValue={districtSearchValue}
                   onChange={(_, data) => onChange(data?.id || "")}
                   onInputChange={(_, newValue) =>
@@ -371,8 +369,7 @@ export default function IndividualRegistrationForm({
                       label="District"
                       error={!!errors.district_id}
                       helperText={
-                        errors.district_id?.message ||
-                        "Search by district name"
+                        errors.district_id?.message || "Search by district name"
                       }
                       slotProps={{
                         input: {
@@ -464,6 +461,7 @@ export default function IndividualRegistrationForm({
             <Button
               type="submit"
               variant="contained"
+              color="secondary"
               fullWidth
               size="large"
               disabled={submitting || !paystackReady}

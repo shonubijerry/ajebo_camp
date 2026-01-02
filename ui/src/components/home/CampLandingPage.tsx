@@ -155,25 +155,28 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
       : "Registration Closed";
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: colors.light }}>
-      {/* Hero Section */}
-      <Box
-        sx={{
-          position: "relative",
-          minHeight: "70vh",
-          display: "flex",
-          alignItems: "center",
-          overflow: "hidden",
-          backgroundImage: camp.banner
-            ? `linear-gradient(rgba(11, 28, 63, 0.75), rgba(11, 28, 63, 0.85)), url(${camp.banner})`
-            : `linear-gradient(135deg, ${colors.blue} 0%, ${colors.navy} 50%, ${colors.red} 100%)`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          color: "white",
-        }}
-      >
-        <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1, py: 8 }}>
-          <Stack spacing={3} sx={{ maxWidth: 800 }}>
+    <Box sx={{ bgcolor: colors.light }}>
+      {/* Hero + Quick Info occupy full viewport height */}
+      <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+        {/* Hero Section */}
+        <Box
+          sx={{
+            position: "relative",
+            flex: 1,
+            minHeight: 0,
+            display: "flex",
+            alignItems: "center",
+            overflow: "hidden",
+            backgroundImage: camp.banner
+              ? `linear-gradient(rgba(11, 28, 63, 0.75), rgba(11, 28, 63, 0.85)), url(${camp.banner})`
+              : `linear-gradient(135deg, ${colors.blue} 0%, ${colors.navy} 50%, ${colors.red} 100%)`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            color: "white",
+          }}
+        >
+          <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1, py: 8 }}>
+            <Stack spacing={3} sx={{ maxWidth: 800 }}>
             <Stack direction="row" spacing={2} flexWrap="wrap">
               <Chip
                 label={campStatus}
@@ -182,12 +185,7 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
               />
               <Chip
                 label={camp.year}
-                sx={{ 
-                  bgcolor: "rgba(255,255,255,0.2)", 
-                  color: "white", 
-                  fontWeight: 700,
-                  fontSize: "0.9rem" 
-                }}
+                color="secondary"
               />
             </Stack>
 
@@ -246,13 +244,12 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
                 variant="contained"
                 size="large"
                 disabled={!canRegister}
+                color="secondary"
                 sx={{
                   px: 4,
                   py: 1.8,
-                  bgcolor: canRegister ? colors.red : "rgba(255,255,255,0.3)",
                   fontSize: "1.1rem",
                   fontWeight: 700,
-                  "&:hover": canRegister ? { bgcolor: "#a70f29" } : undefined,
                 }}
               >
                 {heroPrimaryLabel}
@@ -282,76 +279,78 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
         </Container>
       </Box>
 
-      {/* Quick Info Bar */}
-      <Box
-        sx={{
-          bgcolor: colors.navy,
-          color: "white",
-          py: 3,
-          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-        }}
-      >
-        <Container maxWidth="lg">
-          <Grid container spacing={3} justifyContent="center">
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="center">
-                <CalendarTodayIcon />
-                <Box>
-                  <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                    Dates
-                  </Typography>
-                  <Typography variant="body2" fontWeight={700}>
-                    {formatDateShort(camp.start_date)} - {formatDateShort(camp.end_date)}
-                  </Typography>
-                </Box>
-              </Stack>
-            </Grid>
-
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="center">
-                <EventAvailableIcon />
-                <Box>
-                  <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                    Duration
-                  </Typography>
-                  <Typography variant="body2" fontWeight={700}>
-                    {getCampDuration(camp.start_date, camp.end_date)}
-                  </Typography>
-                </Box>
-              </Stack>
-            </Grid>
-
-            {camp.location && (
+        {/* Quick Info Bar */}
+        <Box
+          sx={{
+            bgcolor: 'blue.main',
+            color: "white",
+            py: 3,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            flexShrink: 0,
+          }}
+        >
+          <Container maxWidth="lg">
+            <Grid container spacing={3} justifyContent="center">
               <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="center">
-                  <LocationOnIcon />
+                  <CalendarTodayIcon />
                   <Box>
                     <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                      Location
+                      Dates
                     </Typography>
                     <Typography variant="body2" fontWeight={700}>
-                      {camp.location}
+                      {formatDateShort(camp.start_date)} - {formatDateShort(camp.end_date)}
                     </Typography>
                   </Box>
                 </Stack>
               </Grid>
-            )}
 
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="center">
-                <InfoIcon />
-                <Box>
-                  <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                    Fee
-                  </Typography>
-                  <Typography variant="body2" fontWeight={700}>
-                    {formatMoney(camp.fee)}
-                  </Typography>
-                </Box>
-              </Stack>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="center">
+                  <EventAvailableIcon />
+                  <Box>
+                    <Typography variant="caption" sx={{ opacity: 0.8 }}>
+                      Duration
+                    </Typography>
+                    <Typography variant="body2" fontWeight={700}>
+                      {getCampDuration(camp.start_date, camp.end_date)}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Grid>
+
+              {camp.location && (
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                  <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="center">
+                    <LocationOnIcon />
+                    <Box>
+                      <Typography variant="caption" sx={{ opacity: 0.8 }}>
+                        Location
+                      </Typography>
+                      <Typography variant="body2" fontWeight={700}>
+                        {camp.location}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Grid>
+              )}
+
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="center">
+                  <InfoIcon />
+                  <Box>
+                    <Typography variant="caption" sx={{ opacity: 0.8 }}>
+                      Fee
+                    </Typography>
+                    <Typography variant="body2" fontWeight={700}>
+                      {formatMoney(camp.fee)}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Grid>
             </Grid>
-          </Grid>
-        </Container>
+          </Container>
+        </Box>
       </Box>
 
       {/* Main Content */}
@@ -518,11 +517,10 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
                     fullWidth
                     size="large"
                     disabled={!canRegister}
+                    color="secondary"
                     sx={{
                       py: 1.5,
-                      bgcolor: canRegister ? colors.red : "#cbd5e1",
                       fontWeight: 700,
-                      "&:hover": canRegister ? { bgcolor: "#a70f29" } : undefined,
                     }}
                   >
                     {canRegister ? registrationButtonLabel : "Registration Closed"}
@@ -623,7 +621,7 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
       {canRegister && (
         <Box
           sx={{
-            bgcolor: colors.navy,
+            bgcolor: 'blue.dark',
             color: "white",
             py: 8,
             textAlign: "center",
@@ -643,6 +641,9 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
                 exclusive
                 onChange={(_, value) => value && setRegistrationType(value as "individual" | "group")}
                 color="primary"
+                sx={{
+                  background: '#ffffffda'
+                }}
               >
                 <ToggleButton value="individual" sx={{ fontWeight: 700 }}>
                   Individual
@@ -659,6 +660,7 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
               onClick={handleRegistrationClick}
               variant="contained"
               size="large"
+              color="secondary"
               sx={{
                 px: 5,
                 py: 2,
@@ -684,7 +686,7 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
         }}
       >
         <Typography variant="body2" color={colors.navy} sx={{ opacity: 0.75 }}>
-          Powered by Foursquare Gospel Church Nigeria • Ajebo Camp Management
+          Powered by <span style={{ color: "#f00" }}>Foursquare Gospel Church Nigeria</span> • Ajebo Camp Management
         </Typography>
       </Box>
 
