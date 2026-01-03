@@ -1,0 +1,45 @@
+name: Deploy Database Worker (Cloudflare Workers)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/database/**'
+      - 'package-lock.json'
+      - 'package.json'
+  workflow_dispatch:
+    inputs:
+      wrangler_env:
+        description: "Wrangler environment name (leave empty to deploy the default/production config)"
+        required: false
+        default: "staging"
+
+concurrency: database-${{ github.ref }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      WRANGLER_ENV: ${{ github.event_name == 'workflow_dispatch' && inputs.wrangler_env || '' }}
+    environment: ${{ (github.event_name == 'workflow_dispatch' && inputs.wrangler_env != '' && inputs.wrangler_env) || 'production' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deploy database worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: packages/database
+          command: deploy${{ env.WRANGLER_ENV != '' && format(' --env {0}', env.WRANGLER_ENV) || '' }}

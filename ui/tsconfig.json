@@ -26,10 +26,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "**/*.mts",
     "src/lib/api/v1.d.ts",
+    "worker-configuration.d.ts"
   ],
   "exclude": ["node_modules"]
 }

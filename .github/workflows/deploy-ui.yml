@@ -1,0 +1,52 @@
+name: Deploy UI (Cloudflare Pages)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ui/**'
+      - 'package-lock.json'
+      - 'package.json'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment environment name for GitHub (e.g. production, staging)"
+        required: false
+        default: "production"
+
+concurrency: ui-${{ github.ref }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
+      NEXT_TELEMETRY_DISABLED: 1
+    environment: ${{ (github.event_name == 'workflow_dispatch' && inputs.environment != '' && inputs.environment) || 'production' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --force
+
+      - name: Build Next.js app
+        run: npm run build --workspace ui
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: ${{ secrets.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY }}
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: ui
+          command: pages deploy public --project-name=${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}
