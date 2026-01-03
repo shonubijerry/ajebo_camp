@@ -57,7 +57,7 @@ export default function DataTable<T>({
   onEdit,
   onDelete,
   isLoading = false,
-  pageSize = 10,
+  pageSize = 25,
 }: DataTableProps<T>) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
