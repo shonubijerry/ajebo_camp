@@ -26,13 +26,17 @@ export default function DashboardLayout({
   children,
   userName,
   onLogout,
-  sidebarImage,
+  sidebarImage = {
+    src: "/logo/logo.png",
+    width: 60,
+    height: 60,
+  },
 }: DashboardLayoutProps) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const { user, isLoading: authLoading } = useAuth();
   const pathname = usePathname();
 
-  const showProfileSummary = pathname?.startsWith("/admin/profile") || pathname?.startsWith("/admin/dashboard");
+  const showProfileSummary = pathname?.startsWith("/portal/profile") || pathname?.startsWith("/portal/dashboard");
 
   const profile = user?.data;
 
@@ -142,7 +146,7 @@ export default function DashboardLayout({
 
             <Button
               component={Link}
-              href="/admin/profile"
+              href="/portal/profile"
               variant="contained"
               size="small"
               sx={{ borderRadius: 2, px: 2.5, whiteSpace: "nowrap" }}

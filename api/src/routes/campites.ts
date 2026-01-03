@@ -5,7 +5,7 @@ import { GetEndpoint } from './generic/get'
 import { UpdateEndpoint } from './generic/update'
 import { DeleteEndpoint } from './generic/delete'
 import { requestBodies, responseBodies } from '../schemas'
-import { AppContext } from '..'
+import { AppContext } from '../types'
 import { AuthenticatedUser } from '../middlewares/auth'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './generic/types'
@@ -21,6 +21,7 @@ export class CreateCampiteEndpoint extends OpenAPIEndpoint {
     requestSchema: z.object({
       body: requestBodies.campite,
     }),
+    permission: 'campite:create' as const,
   }
 
   async action(c: AppContext, { body }: typeof this.meta.requestSchema._type) {
@@ -66,6 +67,7 @@ export class ListCampitesEndpoint extends ListEndpoint<
   meta = {
     ...campiteMeta,
     requestSchema: listRequestQuerySchema,
+    permission: 'campite:view' as const,
   }
   protected pageSize = 25
 
@@ -101,6 +103,7 @@ export class GetCampiteEndpoint extends GetEndpoint {
         id: true,
       }),
     }),
+    permission: 'campite:view' as const,
   }
 
   action(
@@ -125,6 +128,7 @@ export class UpdateCampiteEndpoint extends UpdateEndpoint {
       params: responseBodies.campite.pick({ id: true }),
       body: requestBodies.campite._def.schema.partial(),
     }),
+    permission: 'campite:update' as const,
   }
 
   async action(
@@ -147,6 +151,7 @@ export class DeleteCampiteEndpoint extends DeleteEndpoint {
         soft: z.boolean().optional(),
       }),
     }),
+    permission: 'campite:delete' as const,
   }
 
   action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {
@@ -180,6 +185,7 @@ export class BulkCreateCampitesEndpoint extends OpenAPIEndpoint {
         ),
       }),
     }),
+    permission: 'campite:create' as const,
   }
 
   async action(c: AppContext, { body }: typeof this.meta.requestSchema._type) {
@@ -244,5 +250,70 @@ export class BulkCreateCampitesEndpoint extends OpenAPIEndpoint {
       count: createdCampites.length,
       data: createdCampites,
     }
+  }
+}
+
+export class ExportCampitesEndpoint extends OpenAPIEndpoint {
+  meta = {
+    ...campiteMeta,
+    requestSchema: z.object({
+      query: z.object({
+        camp_id: z.string().min(1),
+      }),
+      body: z.nullable(z.any()),
+    }),
+    responseSchema: z.string().describe('CSV content as string'),
+    permissions: 'campite:export' as const,
+  }
+
+  async action(
+    c: AppContext & { user?: AuthenticatedUser },
+    { query }: typeof this.meta.requestSchema._type,
+  ) {
+    const campites = await c.env.PRISMA.campite.findMany({
+      where: { camp_id: query.camp_id },
+      orderBy: { created_at: 'desc' },
+    })
+
+    const headers = [
+      'First Name',
+      'Last Name',
+      'Phone',
+      'Email',
+      'Gender',
+      'Amount',
+      'Created At',
+    ]
+
+    const escapeCsv = (value: unknown) => {
+      if (value === null || value === undefined) return ''
+      const str = String(value)
+      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        return '"' + str.replace(/"/g, '""') + '"'
+      }
+      return str
+    }
+
+    const rows = campites.map((c) => [
+      c.firstname,
+      c.lastname,
+      c.phone,
+      c.email ?? '',
+      c.gender,
+      c.amount ?? '',
+      c.created_at ? new Date(c.created_at).toISOString() : '',
+    ])
+
+    const csv = [headers, ...rows]
+      .map((row) => row.map(escapeCsv).join(','))
+      .join('\n')
+
+    return c.newResponse(csv, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/csv',
+        'Content-Disposition': `attachment; filename="campites-${query.camp_id}-${Date.now()}.xlsx"`,
+      },
+    })
   }
 }

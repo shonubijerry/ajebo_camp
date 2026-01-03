@@ -19,7 +19,7 @@ import { Permission } from '../../lib/permissions'
 export abstract class OpenAPIEndpoint extends OpenAPIRoute {
   abstract meta: {
     requestSchema: z.AnyZodObject | null
-    responseSchema: z.AnyZodObject
+    responseSchema: z.AnyZodObject | z.ZodString
     tag?: string
     summary?: string
     description?: string

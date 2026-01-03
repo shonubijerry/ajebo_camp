@@ -390,8 +390,8 @@ export const inputsCustomizations: Components<Theme> = {
       input: {
         padding: 0,
         "&:-webkit-autofill": {
-          WebkitBoxShadow: "0 0 0 100px #269831 inset",
-          WebkitTextFillColor: "#fff",
+          WebkitBoxShadow: "0 0 0 100px #fffff00 inset",
+          WebkitTextFillColor: "#1d1d1d",
           caretColor: "#fff",
         },
       },

@@ -148,7 +148,7 @@ export default function LoginForm({
                 Sign up
               </Link>
             ) : (
-              <Link href="/admin/signup">Sign up</Link>
+              <Link href="/portal/signup">Sign up</Link>
             )}
           </Typography>
         </>

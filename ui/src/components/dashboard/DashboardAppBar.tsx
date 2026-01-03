@@ -43,7 +43,7 @@ export default function DashboardAppBar({
 
   const handleProfile = () => {
     handleMenuClose();
-    router.push("/admin/profile");
+    router.push("/portal/profile");
   };
 
   const handleLogout = () => {

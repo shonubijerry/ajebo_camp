@@ -141,7 +141,7 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
 
   const handleAuthSuccess = (token: string) => {
     handleDrawerClose();
-    router.push("/admin/dashboard");
+    router.push("/portal/dashboard");
   };
 
   const handleRegistrationSuccess = () => {

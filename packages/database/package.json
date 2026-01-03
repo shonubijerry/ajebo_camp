@@ -11,7 +11,7 @@
     "prisma:generate": "prisma generate",
     "migration:create": "wrangler d1 migrations create ajebo-camp-dev-db $NAME",
     "migration:list": "wrangler d1 migrations list ajebo-camp-dev-db --local",
-    "migration:apply": "echo y | wrangler d1 migrations apply ajebo-camp-dev-db --persist-to .-local_db --local",
+    "migration:apply": "echo y | wrangler d1 migrations apply ajebo-camp-dev-db --persist-to .local_db --local",
     "migrate:prisma-first": "npx prisma migrate diff --from-empty --to-schema ./prisma/schema.prisma --script --output",
     "migrate:prisma-afterwards": "npx prisma migrate diff --from-config-datasource --to-schema ./prisma/schema.prisma --script --output",
     "test": "vitest",

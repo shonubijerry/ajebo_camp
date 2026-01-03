@@ -24,6 +24,7 @@ import {
 import {
   CreateCampiteEndpoint,
   BulkCreateCampitesEndpoint,
+  ExportCampitesEndpoint,
   DeleteCampiteEndpoint,
   GetCampiteEndpoint,
   ListCampitesEndpoint,
@@ -81,6 +82,7 @@ export const registerProtectedRoutes = (app: ReturnType<typeof fromHono<Hono<App
   // Campite routes
   app.post('/campites', CreateCampiteEndpoint)
   app.post('/campites/bulk', BulkCreateCampitesEndpoint)
+  app.get('/campites/export', ExportCampitesEndpoint)
   app.get('/campites/list', ListCampitesEndpoint)
   app.get('/campites/:id', GetCampiteEndpoint)
   app.patch('/campites/:id', UpdateCampiteEndpoint)

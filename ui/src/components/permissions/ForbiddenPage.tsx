@@ -17,10 +17,10 @@ export function ForbiddenPage({ message = "You do not have permission to view th
         {message}
       </Typography>
       <Box sx={{ display: "flex", gap: 1 }}>
-        <Button component={Link} href="/admin/dashboard" variant="contained" color="primary">
+        <Button component={Link} href="/portal/dashboard" variant="contained" color="primary">
           Go to Dashboard
         </Button>
-        <Button component={Link} href="/admin" variant="outlined" color="primary">
+        <Button component={Link} href="/portal/" variant="outlined" color="primary">
           Admin Home
         </Button>
       </Box>

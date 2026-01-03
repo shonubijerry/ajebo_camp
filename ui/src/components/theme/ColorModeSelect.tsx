@@ -1,6 +1,7 @@
-import { useColorScheme } from '@mui/material/styles';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectProps } from '@mui/material/Select';
+import { useColorScheme } from "@mui/material/styles";
+import MenuItem from "@mui/material/MenuItem";
+import Select, { SelectProps } from "@mui/material/Select";
+import { IconButton } from "@mui/material";
 
 export default function ColorModeSelect(props: SelectProps) {
   const { mode, setMode } = useColorScheme();
@@ -9,13 +10,14 @@ export default function ColorModeSelect(props: SelectProps) {
   }
   return (
     <Select
+      
       value={mode}
       onChange={(event) =>
-        setMode(event.target.value as 'system' | 'light' | 'dark')
+        setMode(event.target.value as "system" | "light" | "dark")
       }
       SelectDisplayProps={{
         // @ts-ignore
-        'data-screenshot': 'toggle-mode',
+        "data-screenshot": "toggle-mode",
       }}
       {...props}
     >

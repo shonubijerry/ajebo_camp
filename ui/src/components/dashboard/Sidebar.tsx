@@ -52,48 +52,48 @@ interface SidebarProps {
 const defaultNavItems: NavItem[] = [
   {
     label: "Dashboard",
-    href: "/admin/dashboard",
+    href: "/portal/dashboard",
     icon: <DashboardIcon />,
     requiredPermissions: ["dashboard:view"],
   },
   {
     label: "Profile",
-    href: "/admin/profile",
+    href: "/portal/profile",
     icon: <PersonIcon />,
   },
   {
     label: "Campites",
-    href: "/admin/campites",
+    href: "/portal/campites",
     icon: <Groups3Icon />,
     requiredPermissions: ["campite:view"],
   },
   {
     label: "Users",
-    href: "/admin/users",
+    href: "/portal/users",
     icon: <PeopleIcon />,
     requiredPermissions: ["user:manage"],
   },
   {
     label: "Entities",
-    href: "/admin/entities",
+    href: "/portal/entities",
     icon: <Groups2Icon />,
     requiredPermissions: ["entity:view"],
   },
   {
     label: "Camps",
-    href: "/admin/camps",
+    href: "/portal/camps",
     icon: <CampingIcon />,
     requiredPermissions: ["camp:view"],
   },
   {
     label: "Districts",
-    href: "/admin/districts",
+    href: "/portal/districts",
     icon: <MapIcon />,
     requiredPermissions: ["district:view"],
   },
   {
     label: "Camp Allocations",
-    href: "/admin/camp-allocations",
+    href: "/portal/camp-allocations",
     icon: <ReceiptLongIcon />,
     requiredPermissions: ["camp-allocation:view"],
   },
@@ -144,10 +144,10 @@ function DrawerContent({
             variant="h6"
             sx={{ fontWeight: 700, letterSpacing: -0.5 }}
           >
-            Admin
+            Ajebo
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            Panel
+            Portal
           </Typography>
         </Box>
       </Toolbar>
