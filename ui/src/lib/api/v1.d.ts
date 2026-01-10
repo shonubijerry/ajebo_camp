@@ -4,4945 +4,5393 @@
  */
 
 export interface paths {
-    "/api/v1/auth/login": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Login
-         * @description Login with email and password
-         */
-        post: operations["post_LoginEndpoint"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/signup": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Sign up
-         * @description Sign up to gain authentication with the system
-         */
-        post: operations["post_SignupEndpoint"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/forgot": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Forgot Password
-         * @description Endpoint to create undefined
-         */
-        post: operations["post_ForgotPassword"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/forgot/change-password/{code}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Change password for user who has a forgot token
-         * @description Endpoint to create undefined
-         */
-        post: operations["post_ChangePasswordPublic"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/webhooks/paystack": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["post_paystackWebhook"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/districts/list": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List district
-         * @description Endpoint to list district
-         */
-        get: operations["get_ListDistrictsEndpoint"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/camps/list": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List camp
-         * @description Endpoint to list camp
-         */
-        get: operations["get_ListCampsEndpoint"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/camps/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get camp
-         * @description Endpoint to get camp
-         */
-        get: operations["get_GetCampEndpoint"];
-        put?: never;
-        post?: never;
-        /**
-         * Delete camp
-         * @description Endpoint to delete camp
-         */
-        delete: operations["delete_DeleteCampEndpoint"];
-        options?: never;
-        head?: never;
-        /**
-         * Update camp
-         * @description Endpoint to update camp
-         */
-        patch: operations["patch_UpdateCampEndpoint"];
-        trace?: never;
-    };
-    "/api/v1/users": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Create user
-         * @description Endpoint to create user
-         */
-        post: operations["post_CreateUserEndpoint"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/users/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Create user
-         * @description Endpoint to create user
-         */
-        get: operations["get_GetCurrentUserEndpoint"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/users/list": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List user
-         * @description Endpoint to list user
-         */
-        get: operations["get_ListUsersEndpoint"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/users/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get user
-         * @description Endpoint to get user
-         */
-        get: operations["get_GetUserEndpoint"];
-        put?: never;
-        post?: never;
-        /**
-         * Delete user
-         * @description Endpoint to delete user
-         */
-        delete: operations["delete_DeleteUserEndpoint"];
-        options?: never;
-        head?: never;
-        /**
-         * Update user
-         * @description Endpoint to update user
-         */
-        patch: operations["patch_UpdateUserEndpoint"];
-        trace?: never;
-    };
-    "/api/v1/districts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Create district
-         * @description Endpoint to create district
-         */
-        post: operations["post_CreateDistrictEndpoint"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/districts/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get district
-         * @description Endpoint to get district
-         */
-        get: operations["get_GetDistrictEndpoint"];
-        put?: never;
-        post?: never;
-        /**
-         * Delete district
-         * @description Endpoint to delete district
-         */
-        delete: operations["delete_DeleteDistrictEndpoint"];
-        options?: never;
-        head?: never;
-        /**
-         * Update district
-         * @description Endpoint to update district
-         */
-        patch: operations["patch_UpdateDistrictEndpoint"];
-        trace?: never;
-    };
-    "/api/v1/entities": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Create entity
-         * @description Endpoint to create entity
-         */
-        post: operations["post_CreateEntityEndpoint"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/entities/list": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List entity
-         * @description Endpoint to list entity
-         */
-        get: operations["get_ListEntitiesEndpoint"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/entities/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get entity
-         * @description Endpoint to get entity
-         */
-        get: operations["get_GetEntityEndpoint"];
-        put?: never;
-        post?: never;
-        /**
-         * Delete entity
-         * @description Endpoint to delete entity
-         */
-        delete: operations["delete_DeleteEntityEndpoint"];
-        options?: never;
-        head?: never;
-        /**
-         * Update entity
-         * @description Endpoint to update entity
-         */
-        patch: operations["patch_UpdateEntityEndpoint"];
-        trace?: never;
-    };
-    "/api/v1/payments/list": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List payment
-         * @description Endpoint to list payment
-         */
-        get: operations["get_ListPaymentsEndpoint"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/payments/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get payment
-         * @description Endpoint to get payment
-         */
-        get: operations["get_GetPaymentEndpoint"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/campites": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Create campite
-         * @description Endpoint to create campite
-         */
-        post: operations["post_CreateCampiteEndpoint"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/campites/bulk": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Create campite
-         * @description Endpoint to create campite
-         */
-        post: operations["post_BulkCreateCampitesEndpoint"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/campites/list": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List campite
-         * @description Endpoint to list campite
-         */
-        get: operations["get_ListCampitesEndpoint"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/campites/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get campite
-         * @description Endpoint to get campite
-         */
-        get: operations["get_GetCampiteEndpoint"];
-        put?: never;
-        post?: never;
-        /**
-         * Delete campite
-         * @description Endpoint to delete campite
-         */
-        delete: operations["delete_DeleteCampiteEndpoint"];
-        options?: never;
-        head?: never;
-        /**
-         * Update campite
-         * @description Endpoint to update campite
-         */
-        patch: operations["patch_UpdateCampiteEndpoint"];
-        trace?: never;
-    };
-    "/api/v1/camp-allocations": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Create camp_allocation
-         * @description Endpoint to create camp_allocation
-         */
-        post: operations["post_CreateCampAllocationEndpoint"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/camp-allocations/list": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List camp_allocation
-         * @description Endpoint to list camp_allocation
-         */
-        get: operations["get_ListCampAllocationsEndpoint"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/camp-allocations/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get camp_allocation
-         * @description Endpoint to get camp_allocation
-         */
-        get: operations["get_GetCampAllocationEndpoint"];
-        put?: never;
-        post?: never;
-        /**
-         * Delete camp_allocation
-         * @description Endpoint to delete camp_allocation
-         */
-        delete: operations["delete_DeleteCampAllocationEndpoint"];
-        options?: never;
-        head?: never;
-        /**
-         * Update camp_allocation
-         * @description Endpoint to update camp_allocation
-         */
-        patch: operations["patch_UpdateCampAllocationEndpoint"];
-        trace?: never;
-    };
-    "/api/v1/camps": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Create camp
-         * @description Endpoint to create camp
-         */
-        post: operations["post_CreateCampEndpoint"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/analytics/dashboard": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get simple dashboard stats */
-        get: operations["get_GetDashboardAnalyticsEndpoint"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/analytics/detailed": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get detailed analytics with breakdown */
-        get: operations["get_GetDetailedAnalyticsEndpoint"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+  '/api/v1/auth/login': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Login
+     * @description Login with email and password
+     */
+    post: operations['post_LoginEndpoint']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/auth/signup': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Sign up
+     * @description Sign up to gain authentication with the system
+     */
+    post: operations['post_SignupEndpoint']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/forgot': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Forgot Password
+     * @description Endpoint to create undefined
+     */
+    post: operations['post_ForgotPassword']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/forgot/change-password/{code}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Change password for user who has a forgot token
+     * @description Endpoint to create undefined
+     */
+    post: operations['post_ChangePasswordPublic']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/districts/list': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List district
+     * @description Endpoint to list district
+     */
+    get: operations['get_ListDistrictsEndpoint']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/camps/list': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List camp
+     * @description Endpoint to list camp
+     */
+    get: operations['get_ListCampsEndpoint']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/camps/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get camp
+     * @description Endpoint to get camp
+     */
+    get: operations['get_GetCampEndpoint']
+    put?: never
+    post?: never
+    /**
+     * Delete camp
+     * @description Endpoint to delete camp
+     */
+    delete: operations['delete_DeleteCampEndpoint']
+    options?: never
+    head?: never
+    /**
+     * Update camp
+     * @description Endpoint to update camp
+     */
+    patch: operations['patch_UpdateCampEndpoint']
+    trace?: never
+  }
+  '/api/v1/webhooks/paystack': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['post_paystackWebhook']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/users': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create user
+     * @description Endpoint to create user
+     */
+    post: operations['post_CreateUserEndpoint']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/users/me': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Create user
+     * @description Endpoint to create user
+     */
+    get: operations['get_GetCurrentUserEndpoint']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/users/list': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List user
+     * @description Endpoint to list user
+     */
+    get: operations['get_ListUsersEndpoint']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/users/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get user
+     * @description Endpoint to get user
+     */
+    get: operations['get_GetUserEndpoint']
+    put?: never
+    post?: never
+    /**
+     * Delete user
+     * @description Endpoint to delete user
+     */
+    delete: operations['delete_DeleteUserEndpoint']
+    options?: never
+    head?: never
+    /**
+     * Update user
+     * @description Endpoint to update user
+     */
+    patch: operations['patch_UpdateUserEndpoint']
+    trace?: never
+  }
+  '/api/v1/districts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create district
+     * @description Endpoint to create district
+     */
+    post: operations['post_CreateDistrictEndpoint']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/districts/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get district
+     * @description Endpoint to get district
+     */
+    get: operations['get_GetDistrictEndpoint']
+    put?: never
+    post?: never
+    /**
+     * Delete district
+     * @description Endpoint to delete district
+     */
+    delete: operations['delete_DeleteDistrictEndpoint']
+    options?: never
+    head?: never
+    /**
+     * Update district
+     * @description Endpoint to update district
+     */
+    patch: operations['patch_UpdateDistrictEndpoint']
+    trace?: never
+  }
+  '/api/v1/entities': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create entity
+     * @description Endpoint to create entity
+     */
+    post: operations['post_CreateEntityEndpoint']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/entities/list': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List entity
+     * @description Endpoint to list entity
+     */
+    get: operations['get_ListEntitiesEndpoint']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/entities/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get entity
+     * @description Endpoint to get entity
+     */
+    get: operations['get_GetEntityEndpoint']
+    put?: never
+    post?: never
+    /**
+     * Delete entity
+     * @description Endpoint to delete entity
+     */
+    delete: operations['delete_DeleteEntityEndpoint']
+    options?: never
+    head?: never
+    /**
+     * Update entity
+     * @description Endpoint to update entity
+     */
+    patch: operations['patch_UpdateEntityEndpoint']
+    trace?: never
+  }
+  '/api/v1/payments/list': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List payment
+     * @description Endpoint to list payment
+     */
+    get: operations['get_ListPaymentsEndpoint']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/payments/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get payment
+     * @description Endpoint to get payment
+     */
+    get: operations['get_GetPaymentEndpoint']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/campites': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create campite
+     * @description Endpoint to create campite
+     */
+    post: operations['post_CreateCampiteEndpoint']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/campites/bulk': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create campite
+     * @description Endpoint to create campite
+     */
+    post: operations['post_BulkCreateCampitesEndpoint']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/campites/export': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Create campite
+     * @description Endpoint to create campite
+     */
+    get: operations['get_ExportCampitesEndpoint']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/campites/list': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List campite
+     * @description Endpoint to list campite
+     */
+    get: operations['get_ListCampitesEndpoint']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/campites/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get campite
+     * @description Endpoint to get campite
+     */
+    get: operations['get_GetCampiteEndpoint']
+    put?: never
+    post?: never
+    /**
+     * Delete campite
+     * @description Endpoint to delete campite
+     */
+    delete: operations['delete_DeleteCampiteEndpoint']
+    options?: never
+    head?: never
+    /**
+     * Update campite
+     * @description Endpoint to update campite
+     */
+    patch: operations['patch_UpdateCampiteEndpoint']
+    trace?: never
+  }
+  '/api/v1/camp-allocations': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create camp_allocation
+     * @description Endpoint to create camp_allocation
+     */
+    post: operations['post_CreateCampAllocationEndpoint']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/camp-allocations/list': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List camp_allocation
+     * @description Endpoint to list camp_allocation
+     */
+    get: operations['get_ListCampAllocationsEndpoint']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/camp-allocations/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get camp_allocation
+     * @description Endpoint to get camp_allocation
+     */
+    get: operations['get_GetCampAllocationEndpoint']
+    put?: never
+    post?: never
+    /**
+     * Delete camp_allocation
+     * @description Endpoint to delete camp_allocation
+     */
+    delete: operations['delete_DeleteCampAllocationEndpoint']
+    options?: never
+    head?: never
+    /**
+     * Update camp_allocation
+     * @description Endpoint to update camp_allocation
+     */
+    patch: operations['patch_UpdateCampAllocationEndpoint']
+    trace?: never
+  }
+  '/api/v1/camps': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create camp
+     * @description Endpoint to create camp
+     */
+    post: operations['post_CreateCampEndpoint']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/analytics/dashboard': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get simple dashboard stats */
+    get: operations['get_GetDashboardAnalyticsEndpoint']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/analytics/detailed': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get detailed analytics with breakdown */
+    get: operations['get_GetDetailedAnalyticsEndpoint']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
-export type webhooks = Record<string, never>;
+export type webhooks = Record<string, never>
 export interface components {
-    schemas: never;
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+  schemas: never
+  responses: never
+  parameters: never
+  requestBodies: never
+  headers: never
+  pathItems: never
 }
-export type $defs = Record<string, never>;
+export type $defs = Record<string, never>
 export interface operations {
-    post_LoginEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /**
-                     * Format: email
-                     * @example ada.okafor@example.com
-                     */
-                    email: string;
-                    password: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Ada */
-                            firstname: string;
-                            /** @example Okafor */
-                            lastname: string;
-                            /**
-                             * Format: email
-                             * @example ada.okafor@example.com
-                             */
-                            email: string;
-                            /** @example +2348012345678 */
-                            phone?: string | null;
-                            /**
-                             * @default user
-                             * @example user
-                             * @enum {string}
-                             */
-                            role: "user" | "staff" | "admin";
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                            token: string;
-                            permissions: string[];
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    post_SignupEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @example Ada */
-                    firstname: string;
-                    /** @example Okafor */
-                    lastname: string;
-                    /**
-                     * Format: email
-                     * @example ada.okafor@example.com
-                     */
-                    email: string;
-                    /** @example +2348012345678 */
-                    phone?: string | null;
-                    /**
-                     * @default user
-                     * @example user
-                     * @enum {string}
-                     */
-                    role?: "user" | "staff" | "admin";
-                    password?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Ada */
-                            firstname: string;
-                            /** @example Okafor */
-                            lastname: string;
-                            /**
-                             * Format: email
-                             * @example ada.okafor@example.com
-                             */
-                            email: string;
-                            /** @example +2348012345678 */
-                            phone?: string | null;
-                            /**
-                             * @default user
-                             * @example user
-                             * @enum {string}
-                             */
-                            role: "user" | "staff" | "admin";
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                            token: string;
-                            permissions: string[];
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    post_ForgotPassword: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** Format: email */
-                    email: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: Record<string, never>;
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    post_ChangePasswordPublic: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                code: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    password: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** Format: cuid2 */
-                            id: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    post_paystackWebhook: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_ListDistrictsEndpoint: {
-        parameters: {
-            query?: {
-                /** @description The page number to retrieve. If set to 0, all records are returned. */
-                page?: number;
-                /** @description Number of records per page. */
-                per_page?: number;
-                orderBy?: string;
-                filter?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Yaba */
-                            name: string;
-                            /**
-                             * @default []
-                             * @example [
-                             *       "Zone A",
-                             *       "Zone B"
-                             *     ]
-                             */
-                            zones: string[];
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        }[];
-                        meta: {
-                            page: number;
-                            per_page: number;
-                            total: number;
-                            total_pages: number;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_ListCampsEndpoint: {
-        parameters: {
-            query?: {
-                /** @description The page number to retrieve. If set to 0, all records are returned. */
-                page?: number;
-                /** @description Number of records per page. */
-                per_page?: number;
-                orderBy?: string;
-                filter?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Summer Camp 2025 */
-                            title: string;
-                            /** @example Faith and Fire */
-                            theme?: string | null;
-                            /** @example Jeremiah 29:11 */
-                            verse?: string | null;
-                            /** @example entity_123 */
-                            entity_id: string;
-                            /** @example https://example.com/banner.jpg */
-                            banner?: string | null;
-                            /** @example 2025 */
-                            year: number;
-                            /** @example 15000 */
-                            fee: number;
-                            /**
-                             * @default []
-                             * @example [
-                             *       20000,
-                             *       30000
-                             *     ]
-                             */
-                            premium_fees: number[];
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            start_date: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            end_date: string;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                            is_active: boolean;
-                            is_coming_soon: boolean;
-                        }[];
-                        meta: {
-                            page: number;
-                            per_page: number;
-                            total: number;
-                            total_pages: number;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_GetCampEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Summer Camp 2025 */
-                            title: string;
-                            /** @example Faith and Fire */
-                            theme?: string | null;
-                            /** @example Jeremiah 29:11 */
-                            verse?: string | null;
-                            /** @example entity_123 */
-                            entity_id: string;
-                            /** @example https://example.com/banner.jpg */
-                            banner?: string | null;
-                            /** @example 2025 */
-                            year: number;
-                            /** @example 15000 */
-                            fee: number;
-                            /**
-                             * @default []
-                             * @example [
-                             *       20000,
-                             *       30000
-                             *     ]
-                             */
-                            premium_fees: number[];
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            start_date: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            end_date: string;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                            is_active: boolean;
-                            is_coming_soon: boolean;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    delete_DeleteCampEndpoint: {
-        parameters: {
-            query?: {
-                soft?: boolean;
-            };
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    patch_UpdateCampEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @example Summer Camp 2025 */
-                    title?: string;
-                    /** @example Faith and Fire */
-                    theme?: string | null;
-                    /** @example Jeremiah 29:11 */
-                    verse?: string | null;
-                    /** @example entity_123 */
-                    entity_id?: string;
-                    /** @example https://example.com/banner.jpg */
-                    banner?: string | null;
-                    /** @example 2025 */
-                    year?: number;
-                    /** @example 15000 */
-                    fee?: number;
-                    /**
-                     * @default []
-                     * @example [
-                     *       20000,
-                     *       30000
-                     *     ]
-                     */
-                    premium_fees?: number[];
-                    /**
-                     * Format: date-time
-                     * @example 2025-01-01T00:00:00Z
-                     */
-                    start_date?: string;
-                    /**
-                     * Format: date-time
-                     * @example 2025-01-01T00:00:00Z
-                     */
-                    end_date?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Summer Camp 2025 */
-                            title: string;
-                            /** @example Faith and Fire */
-                            theme?: string | null;
-                            /** @example Jeremiah 29:11 */
-                            verse?: string | null;
-                            /** @example entity_123 */
-                            entity_id: string;
-                            /** @example https://example.com/banner.jpg */
-                            banner?: string | null;
-                            /** @example 2025 */
-                            year: number;
-                            /** @example 15000 */
-                            fee: number;
-                            /**
-                             * @default []
-                             * @example [
-                             *       20000,
-                             *       30000
-                             *     ]
-                             */
-                            premium_fees: number[];
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            start_date: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            end_date: string;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                            is_active: boolean;
-                            is_coming_soon: boolean;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    post_CreateUserEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @example Ada */
-                    firstname: string;
-                    /** @example Okafor */
-                    lastname: string;
-                    /**
-                     * Format: email
-                     * @example ada.okafor@example.com
-                     */
-                    email: string;
-                    /** @example +2348012345678 */
-                    phone?: string | null;
-                    /**
-                     * @default user
-                     * @example user
-                     * @enum {string}
-                     */
-                    role?: "user" | "staff" | "admin";
-                    password?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Ada */
-                            firstname: string;
-                            /** @example Okafor */
-                            lastname: string;
-                            /**
-                             * Format: email
-                             * @example ada.okafor@example.com
-                             */
-                            email: string;
-                            /** @example +2348012345678 */
-                            phone?: string | null;
-                            /**
-                             * @default user
-                             * @example user
-                             * @enum {string}
-                             */
-                            role: "user" | "staff" | "admin";
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_GetCurrentUserEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Ada */
-                            firstname: string;
-                            /** @example Okafor */
-                            lastname: string;
-                            /**
-                             * Format: email
-                             * @example ada.okafor@example.com
-                             */
-                            email: string;
-                            /** @example +2348012345678 */
-                            phone?: string | null;
-                            /**
-                             * @default user
-                             * @example user
-                             * @enum {string}
-                             */
-                            role: "user" | "staff" | "admin";
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                            permissions: ("dashboard:view" | "camp:view" | "camp:create" | "camp:update" | "camp:delete" | "campite:view" | "campite:create" | "campite:update" | "campite:delete" | "camp-allocation:view" | "camp-allocation:create" | "camp-allocation:update" | "camp-allocation:delete" | "district:view" | "district:create" | "district:update" | "district:delete" | "entity:view" | "entity:create" | "entity:update" | "entity:delete" | "payment:view" | "analytics:view" | "user:manage" | "settings:manage")[];
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_ListUsersEndpoint: {
-        parameters: {
-            query?: {
-                /** @description The page number to retrieve. If set to 0, all records are returned. */
-                page?: number;
-                /** @description Number of records per page. */
-                per_page?: number;
-                orderBy?: string;
-                filter?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Ada */
-                            firstname: string;
-                            /** @example Okafor */
-                            lastname: string;
-                            /**
-                             * Format: email
-                             * @example ada.okafor@example.com
-                             */
-                            email: string;
-                            /** @example +2348012345678 */
-                            phone?: string | null;
-                            /**
-                             * @default user
-                             * @example user
-                             * @enum {string}
-                             */
-                            role: "user" | "staff" | "admin";
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        }[];
-                        meta: {
-                            page: number;
-                            per_page: number;
-                            total: number;
-                            total_pages: number;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_GetUserEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Ada */
-                            firstname: string;
-                            /** @example Okafor */
-                            lastname: string;
-                            /**
-                             * Format: email
-                             * @example ada.okafor@example.com
-                             */
-                            email: string;
-                            /** @example +2348012345678 */
-                            phone?: string | null;
-                            /**
-                             * @default user
-                             * @example user
-                             * @enum {string}
-                             */
-                            role: "user" | "staff" | "admin";
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    delete_DeleteUserEndpoint: {
-        parameters: {
-            query?: {
-                soft?: boolean;
-            };
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    patch_UpdateUserEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @example Ada */
-                    firstname?: string;
-                    /** @example Okafor */
-                    lastname?: string;
-                    /**
-                     * Format: email
-                     * @example ada.okafor@example.com
-                     */
-                    email?: string;
-                    /** @example +2348012345678 */
-                    phone?: string | null;
-                    /**
-                     * @default user
-                     * @example user
-                     * @enum {string}
-                     */
-                    role?: "user" | "staff" | "admin";
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Ada */
-                            firstname: string;
-                            /** @example Okafor */
-                            lastname: string;
-                            /**
-                             * Format: email
-                             * @example ada.okafor@example.com
-                             */
-                            email: string;
-                            /** @example +2348012345678 */
-                            phone?: string | null;
-                            /**
-                             * @default user
-                             * @example user
-                             * @enum {string}
-                             */
-                            role: "user" | "staff" | "admin";
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    post_CreateDistrictEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @example Yaba */
-                    name: string;
-                    /**
-                     * @default []
-                     * @example [
-                     *       "Zone A",
-                     *       "Zone B"
-                     *     ]
-                     */
-                    zones?: string[];
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Yaba */
-                            name: string;
-                            /**
-                             * @default []
-                             * @example [
-                             *       "Zone A",
-                             *       "Zone B"
-                             *     ]
-                             */
-                            zones: string[];
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_GetDistrictEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Yaba */
-                            name: string;
-                            /**
-                             * @default []
-                             * @example [
-                             *       "Zone A",
-                             *       "Zone B"
-                             *     ]
-                             */
-                            zones: string[];
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    delete_DeleteDistrictEndpoint: {
-        parameters: {
-            query?: {
-                soft?: boolean;
-            };
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    patch_UpdateDistrictEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @example Yaba */
-                    name?: string;
-                    /**
-                     * @default []
-                     * @example [
-                     *       "Zone A",
-                     *       "Zone B"
-                     *     ]
-                     */
-                    zones?: string[];
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Yaba */
-                            name: string;
-                            /**
-                             * @default []
-                             * @example [
-                             *       "Zone A",
-                             *       "Zone B"
-                             *     ]
-                             */
-                            zones: string[];
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    post_CreateEntityEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @example Lagos Mainland */
-                    name: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Lagos Mainland */
-                            name: string;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_ListEntitiesEndpoint: {
-        parameters: {
-            query?: {
-                /** @description The page number to retrieve. If set to 0, all records are returned. */
-                page?: number;
-                /** @description Number of records per page. */
-                per_page?: number;
-                orderBy?: string;
-                filter?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Lagos Mainland */
-                            name: string;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        }[];
-                        meta: {
-                            page: number;
-                            per_page: number;
-                            total: number;
-                            total_pages: number;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_GetEntityEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Lagos Mainland */
-                            name: string;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    delete_DeleteEntityEndpoint: {
-        parameters: {
-            query?: {
-                soft?: boolean;
-            };
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    patch_UpdateEntityEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @example Lagos Mainland */
-                    name?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Lagos Mainland */
-                            name: string;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_ListPaymentsEndpoint: {
-        parameters: {
-            query?: {
-                /** @description The page number to retrieve. If set to 0, all records are returned. */
-                page?: number;
-                /** @description Number of records per page. */
-                per_page?: number;
-                orderBy?: string;
-                filter?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example pay_123 */
-                            reference: string;
-                            /** @example 15000 */
-                            amount: number;
-                            /** @example user_456 */
-                            user_id: string;
-                            /** @example camp_123 */
-                            camp_id: string;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        }[];
-                        meta: {
-                            page: number;
-                            per_page: number;
-                            total: number;
-                            total_pages: number;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_GetPaymentEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example pay_123 */
-                            reference: string;
-                            /** @example 15000 */
-                            amount: number;
-                            /** @example user_456 */
-                            user_id: string;
-                            /** @example camp_123 */
-                            camp_id: string;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    post_CreateCampiteEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @example John */
-                    firstname: string;
-                    /** @example Doe */
-                    lastname: string;
-                    /**
-                     * Format: email
-                     * @example john.doe@example.com
-                     */
-                    email?: string | null;
-                    /** @example +2348012345678 */
-                    phone: string;
-                    /** @example 21-30 */
-                    age_group: string;
-                    /** @example male */
-                    gender: string;
-                    /** @example camp_123 */
-                    camp_id: string;
-                    /** @example user_456 */
-                    user_id: string;
-                    /** @example district_789 */
-                    district_id?: string;
-                    /** @example pay_ref_001 */
-                    payment_ref?: string | null;
-                    /**
-                     * @default regular
-                     * @example regular
-                     * @enum {string}
-                     */
-                    type?: "regular" | "premium";
-                    /** @example 5000 */
-                    amount?: number | null;
-                    /**
-                     * @default
-                     * @example Boot 1
-                     */
-                    allocated_items?: string;
-                    /**
-                     * Format: date-time
-                     * @example 2025-01-01T00:00:00Z
-                     */
-                    checkin_at?: string | null;
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example John */
-                            firstname: string;
-                            /** @example Doe */
-                            lastname: string;
-                            /**
-                             * Format: email
-                             * @example john.doe@example.com
-                             */
-                            email?: string | null;
-                            /** @example +2348012345678 */
-                            phone: string;
-                            /** @example 21-30 */
-                            age_group: string;
-                            /** @example male */
-                            gender: string;
-                            /** @example camp_123 */
-                            camp_id: string;
-                            /** @example user_456 */
-                            user_id: string;
-                            /** @example district_789 */
-                            district_id?: string;
-                            /** @example pay_ref_001 */
-                            payment_ref?: string | null;
-                            /**
-                             * @default regular
-                             * @example regular
-                             * @enum {string}
-                             */
-                            type: "regular" | "premium";
-                            /** @example 5000 */
-                            amount?: number | null;
-                            /**
-                             * @default
-                             * @example Boot 1
-                             */
-                            allocated_items: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            checkin_at?: string | null;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    post_BulkCreateCampitesEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @description User ID for all campites */
-                    user_id: string;
-                    /** @description Camp ID for all campites */
-                    camp_id: string;
-                    /** @description District ID for all campites */
-                    district_id: string;
-                    /** @description Payment reference for all campites */
-                    payment_ref?: string | null;
-                    campites: {
-                        firstname: string;
-                        lastname: string;
-                        phone: string;
-                        age_group: string;
-                        gender: string;
-                    }[];
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example John */
-                            firstname: string;
-                            /** @example Doe */
-                            lastname: string;
-                            /**
-                             * Format: email
-                             * @example john.doe@example.com
-                             */
-                            email?: string | null;
-                            /** @example +2348012345678 */
-                            phone: string;
-                            /** @example 21-30 */
-                            age_group: string;
-                            /** @example male */
-                            gender: string;
-                            /** @example camp_123 */
-                            camp_id: string;
-                            /** @example user_456 */
-                            user_id: string;
-                            /** @example district_789 */
-                            district_id?: string;
-                            /** @example pay_ref_001 */
-                            payment_ref?: string | null;
-                            /**
-                             * @default regular
-                             * @example regular
-                             * @enum {string}
-                             */
-                            type: "regular" | "premium";
-                            /** @example 5000 */
-                            amount?: number | null;
-                            /**
-                             * @default
-                             * @example Boot 1
-                             */
-                            allocated_items: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            checkin_at?: string | null;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_ListCampitesEndpoint: {
-        parameters: {
-            query?: {
-                /** @description The page number to retrieve. If set to 0, all records are returned. */
-                page?: number;
-                /** @description Number of records per page. */
-                per_page?: number;
-                orderBy?: string;
-                filter?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example John */
-                            firstname: string;
-                            /** @example Doe */
-                            lastname: string;
-                            /**
-                             * Format: email
-                             * @example john.doe@example.com
-                             */
-                            email?: string | null;
-                            /** @example +2348012345678 */
-                            phone: string;
-                            /** @example 21-30 */
-                            age_group: string;
-                            /** @example male */
-                            gender: string;
-                            /** @example camp_123 */
-                            camp_id: string;
-                            /** @example user_456 */
-                            user_id: string;
-                            /** @example district_789 */
-                            district_id?: string;
-                            /** @example pay_ref_001 */
-                            payment_ref?: string | null;
-                            /**
-                             * @default regular
-                             * @example regular
-                             * @enum {string}
-                             */
-                            type: "regular" | "premium";
-                            /** @example 5000 */
-                            amount?: number | null;
-                            /**
-                             * @default
-                             * @example Boot 1
-                             */
-                            allocated_items: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            checkin_at?: string | null;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        }[];
-                        meta: {
-                            page: number;
-                            per_page: number;
-                            total: number;
-                            total_pages: number;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_GetCampiteEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example John */
-                            firstname: string;
-                            /** @example Doe */
-                            lastname: string;
-                            /**
-                             * Format: email
-                             * @example john.doe@example.com
-                             */
-                            email?: string | null;
-                            /** @example +2348012345678 */
-                            phone: string;
-                            /** @example 21-30 */
-                            age_group: string;
-                            /** @example male */
-                            gender: string;
-                            /** @example camp_123 */
-                            camp_id: string;
-                            /** @example user_456 */
-                            user_id: string;
-                            /** @example district_789 */
-                            district_id?: string;
-                            /** @example pay_ref_001 */
-                            payment_ref?: string | null;
-                            /**
-                             * @default regular
-                             * @example regular
-                             * @enum {string}
-                             */
-                            type: "regular" | "premium";
-                            /** @example 5000 */
-                            amount?: number | null;
-                            /**
-                             * @default
-                             * @example Boot 1
-                             */
-                            allocated_items: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            checkin_at?: string | null;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    delete_DeleteCampiteEndpoint: {
-        parameters: {
-            query?: {
-                soft?: boolean;
-            };
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    patch_UpdateCampiteEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @example John */
-                    firstname?: string;
-                    /** @example Doe */
-                    lastname?: string;
-                    /**
-                     * Format: email
-                     * @example john.doe@example.com
-                     */
-                    email?: string | null;
-                    /** @example +2348012345678 */
-                    phone?: string;
-                    /** @example 21-30 */
-                    age_group?: string;
-                    /** @example male */
-                    gender?: string;
-                    /** @example camp_123 */
-                    camp_id?: string;
-                    /** @example user_456 */
-                    user_id?: string;
-                    /** @example district_789 */
-                    district_id?: string;
-                    /** @example pay_ref_001 */
-                    payment_ref?: string | null;
-                    /**
-                     * @default regular
-                     * @example regular
-                     * @enum {string}
-                     */
-                    type?: "regular" | "premium";
-                    /** @example 5000 */
-                    amount?: number | null;
-                    /**
-                     * @default
-                     * @example Boot 1
-                     */
-                    allocated_items?: string;
-                    /**
-                     * Format: date-time
-                     * @example 2025-01-01T00:00:00Z
-                     */
-                    checkin_at?: string | null;
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example John */
-                            firstname: string;
-                            /** @example Doe */
-                            lastname: string;
-                            /**
-                             * Format: email
-                             * @example john.doe@example.com
-                             */
-                            email?: string | null;
-                            /** @example +2348012345678 */
-                            phone: string;
-                            /** @example 21-30 */
-                            age_group: string;
-                            /** @example male */
-                            gender: string;
-                            /** @example camp_123 */
-                            camp_id: string;
-                            /** @example user_456 */
-                            user_id: string;
-                            /** @example district_789 */
-                            district_id?: string;
-                            /** @example pay_ref_001 */
-                            payment_ref?: string | null;
-                            /**
-                             * @default regular
-                             * @example regular
-                             * @enum {string}
-                             */
-                            type: "regular" | "premium";
-                            /** @example 5000 */
-                            amount?: number | null;
-                            /**
-                             * @default
-                             * @example Boot 1
-                             */
-                            allocated_items: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            checkin_at?: string | null;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    post_CreateCampAllocationEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @example camp_123 */
-                    camp_id: string;
-                    /** @example Prayer Boot */
-                    name: string;
-                    /**
-                     * @default []
-                     * @example [
-                     *       "Boot 1",
-                     *       "Boot 2",
-                     *       "Boot 3"
-                     *     ]
-                     */
-                    items?: string[];
-                    /**
-                     * @default random
-                     * @example random
-                     * @enum {string}
-                     */
-                    allocation_type?: "random" | "definite";
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example camp_123 */
-                            camp_id: string;
-                            /** @example Prayer Boot */
-                            name: string;
-                            /**
-                             * @default []
-                             * @example [
-                             *       "Boot 1",
-                             *       "Boot 2",
-                             *       "Boot 3"
-                             *     ]
-                             */
-                            items: string[];
-                            /**
-                             * @default random
-                             * @example random
-                             * @enum {string}
-                             */
-                            allocation_type: "random" | "definite";
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_ListCampAllocationsEndpoint: {
-        parameters: {
-            query?: {
-                /** @description The page number to retrieve. If set to 0, all records are returned. */
-                page?: number;
-                /** @description Number of records per page. */
-                per_page?: number;
-                orderBy?: string;
-                filter?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example camp_123 */
-                            camp_id: string;
-                            /** @example Prayer Boot */
-                            name: string;
-                            /**
-                             * @default []
-                             * @example [
-                             *       "Boot 1",
-                             *       "Boot 2",
-                             *       "Boot 3"
-                             *     ]
-                             */
-                            items: string[];
-                            /**
-                             * @default random
-                             * @example random
-                             * @enum {string}
-                             */
-                            allocation_type: "random" | "definite";
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        }[];
-                        meta: {
-                            page: number;
-                            per_page: number;
-                            total: number;
-                            total_pages: number;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_GetCampAllocationEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example camp_123 */
-                            camp_id: string;
-                            /** @example Prayer Boot */
-                            name: string;
-                            /**
-                             * @default []
-                             * @example [
-                             *       "Boot 1",
-                             *       "Boot 2",
-                             *       "Boot 3"
-                             *     ]
-                             */
-                            items: string[];
-                            /**
-                             * @default random
-                             * @example random
-                             * @enum {string}
-                             */
-                            allocation_type: "random" | "definite";
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    delete_DeleteCampAllocationEndpoint: {
-        parameters: {
-            query?: {
-                soft?: boolean;
-            };
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Operation successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    patch_UpdateCampAllocationEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @example camp_123 */
-                    camp_id?: string;
-                    /** @example Prayer Boot */
-                    name?: string;
-                    /**
-                     * @default []
-                     * @example [
-                     *       "Boot 1",
-                     *       "Boot 2",
-                     *       "Boot 3"
-                     *     ]
-                     */
-                    items?: string[];
-                    /**
-                     * @default random
-                     * @example random
-                     * @enum {string}
-                     */
-                    allocation_type?: "random" | "definite";
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example camp_123 */
-                            camp_id: string;
-                            /** @example Prayer Boot */
-                            name: string;
-                            /**
-                             * @default []
-                             * @example [
-                             *       "Boot 1",
-                             *       "Boot 2",
-                             *       "Boot 3"
-                             *     ]
-                             */
-                            items: string[];
-                            /**
-                             * @default random
-                             * @example random
-                             * @enum {string}
-                             */
-                            allocation_type: "random" | "definite";
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    post_CreateCampEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @example Summer Camp 2025 */
-                    title: string;
-                    /** @example Faith and Fire */
-                    theme?: string | null;
-                    /** @example Jeremiah 29:11 */
-                    verse?: string | null;
-                    /** @example entity_123 */
-                    entity_id: string;
-                    /** @example https://example.com/banner.jpg */
-                    banner?: string | null;
-                    /** @example 2025 */
-                    year: number;
-                    /** @example 15000 */
-                    fee: number;
-                    /**
-                     * @default []
-                     * @example [
-                     *       20000,
-                     *       30000
-                     *     ]
-                     */
-                    premium_fees?: number[];
-                    /**
-                     * Format: date-time
-                     * @example 2025-01-01T00:00:00Z
-                     */
-                    start_date: string;
-                    /**
-                     * Format: date-time
-                     * @example 2025-01-01T00:00:00Z
-                     */
-                    end_date: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Operation successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        data: {
-                            /** @example Summer Camp 2025 */
-                            title: string;
-                            /** @example Faith and Fire */
-                            theme?: string | null;
-                            /** @example Jeremiah 29:11 */
-                            verse?: string | null;
-                            /** @example entity_123 */
-                            entity_id: string;
-                            /** @example https://example.com/banner.jpg */
-                            banner?: string | null;
-                            /** @example 2025 */
-                            year: number;
-                            /** @example 15000 */
-                            fee: number;
-                            /**
-                             * @default []
-                             * @example [
-                             *       20000,
-                             *       30000
-                             *     ]
-                             */
-                            premium_fees: number[];
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            start_date: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            end_date: string;
-                            id: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            created_at: string;
-                            /**
-                             * Format: date-time
-                             * @example 2025-01-01T00:00:00Z
-                             */
-                            updated_at: string;
-                            is_active: boolean;
-                            is_coming_soon: boolean;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Validation error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: false;
-                        errors: {
-                            code: string;
-                            message: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    get_GetDashboardAnalyticsEndpoint: {
-        parameters: {
-            query?: {
-                camp_id?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Dashboard analytics */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: {
-                            total_campites: number;
-                            by_gender: {
-                                gender: string;
-                                count: number;
-                            }[];
-                            by_age_group: {
-                                age_group: string;
-                                count: number;
-                            }[];
-                        };
-                    };
-                };
-            };
-        };
-    };
-    get_GetDetailedAnalyticsEndpoint: {
-        parameters: {
-            query?: {
-                period?: "today" | "week" | "month" | "year" | "all";
-                camp_id?: string;
-                district_id?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Detailed analytics */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: {
-                            overview: {
-                                total_campites: number;
-                                total_revenue: number;
-                                total_districts: number;
-                                pending_payments: number;
-                            };
-                            campites: {
-                                by_gender: {
-                                    gender: string;
-                                    count: number;
-                                }[];
-                                by_age_group: {
-                                    age_group: string;
-                                    count: number;
-                                }[];
-                                by_type: {
-                                    type: string;
-                                    count: number;
-                                    revenue: number;
-                                }[];
-                                by_district: {
-                                    district_id: string;
-                                    district_name: string;
-                                    count: number;
-                                }[];
-                            };
-                            timeline: {
-                                daily: {
-                                    date: string;
-                                    count: number;
-                                    revenue: number;
-                                }[];
-                                monthly: {
-                                    month: string;
-                                    count: number;
-                                    revenue: number;
-                                }[];
-                            };
-                            revenue: {
-                                total: number;
-                            };
-                            recent_activity: {
-                                recent_registrations: {
-                                    id: string;
-                                    firstname: string;
-                                    lastname: string;
-                                    camp_title: string;
-                                    /** Format: date-time */
-                                    created_at: string;
-                                }[];
-                            };
-                        };
-                    };
-                };
-            };
-        };
-    };
+  post_LoginEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /**
+           * Format: email
+           * @example ada.okafor@example.com
+           */
+          email: string
+          password: string
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Ada */
+              firstname: string
+              /** @example Okafor */
+              lastname: string
+              /**
+               * Format: email
+               * @example ada.okafor@example.com
+               */
+              email: string
+              /** @example +2348012345678 */
+              phone?: string | null
+              /**
+               * @default user
+               * @example user
+               * @enum {string}
+               */
+              role: 'user' | 'staff' | 'admin'
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+              token: string
+              permissions: string[]
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  post_SignupEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** @example Ada */
+          firstname: string
+          /** @example Okafor */
+          lastname: string
+          /**
+           * Format: email
+           * @example ada.okafor@example.com
+           */
+          email: string
+          /** @example +2348012345678 */
+          phone?: string | null
+          /**
+           * @default user
+           * @example user
+           * @enum {string}
+           */
+          role?: 'user' | 'staff' | 'admin'
+          password?: string
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Ada */
+              firstname: string
+              /** @example Okafor */
+              lastname: string
+              /**
+               * Format: email
+               * @example ada.okafor@example.com
+               */
+              email: string
+              /** @example +2348012345678 */
+              phone?: string | null
+              /**
+               * @default user
+               * @example user
+               * @enum {string}
+               */
+              role: 'user' | 'staff' | 'admin'
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+              token: string
+              permissions: string[]
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  post_ForgotPassword: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** Format: email */
+          email: string
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: Record<string, never>
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  post_ChangePasswordPublic: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        code: string
+      }
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          password: string
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** Format: cuid2 */
+              id: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_ListDistrictsEndpoint: {
+    parameters: {
+      query?: {
+        /** @description The page number to retrieve. If set to 0, all records are returned. */
+        page?: number
+        /** @description Number of records per page. */
+        per_page?: number
+        orderBy?: string
+        filter?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Yaba */
+              name: string
+              /**
+               * @default []
+               * @example [
+               *       "Zone A",
+               *       "Zone B"
+               *     ]
+               */
+              zones: string[]
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }[]
+            meta: {
+              page: number
+              per_page: number
+              total: number
+              total_pages: number
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_ListCampsEndpoint: {
+    parameters: {
+      query?: {
+        /** @description The page number to retrieve. If set to 0, all records are returned. */
+        page?: number
+        /** @description Number of records per page. */
+        per_page?: number
+        orderBy?: string
+        filter?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Summer Camp 2025 */
+              title: string
+              /** @example Faith and Fire */
+              theme?: string | null
+              /** @example Jeremiah 29:11 */
+              verse?: string | null
+              /** @example entity_123 */
+              entity_id: string
+              /** @example https://example.com/banner.jpg */
+              banner?: string | null
+              /** @example 2025 */
+              year: number
+              /** @example 15000 */
+              fee: number
+              /**
+               * @default []
+               * @example [
+               *       20000,
+               *       30000
+               *     ]
+               */
+              premium_fees: number[]
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              start_date: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              end_date: string
+              /** @example An amazing spiritual gathering for youth and adults */
+              description?: string | null
+              /** @example Lagos, Nigeria */
+              location?: string | null
+              /** @example Foursquare Camp Ground, Ajebo */
+              venue?: string | null
+              /**
+               * @default {}
+               * @example {
+               *       "location": "Foursquare Camp Ground, Ajebo",
+               *       "description": "Join us for worship, teachings, and fun activities",
+               *       "ministers": [
+               *         {
+               *           "name": "Pastor John Doe",
+               *           "designation": "Senior Pastor"
+               *         },
+               *         {
+               *           "name": "Evangelist Jane Smith",
+               *           "designation": "Guest Speaker"
+               *         }
+               *       ],
+               *       "activities": [
+               *         "Worship Sessions",
+               *         "Workshops",
+               *         "Outdoor Games"
+               *       ]
+               *     }
+               */
+              highlights: {
+                location?: string
+                description?: string
+                /** @default [] */
+                ministers: {
+                  name: string
+                  designation: string
+                }[]
+                /** @default [] */
+                activities: string[]
+              }
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              registration_deadline?: string | null
+              /** @example 500 */
+              capacity?: number | null
+              /**
+               * Format: email
+               * @example camp@foursquare.org
+               */
+              contact_email?: string | null
+              /** @example +2348012345678 */
+              contact_phone?: string | null
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+              is_active: boolean
+              is_coming_soon: boolean
+            }[]
+            meta: {
+              page: number
+              per_page: number
+              total: number
+              total_pages: number
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_GetCampEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Summer Camp 2025 */
+              title: string
+              /** @example Faith and Fire */
+              theme?: string | null
+              /** @example Jeremiah 29:11 */
+              verse?: string | null
+              /** @example entity_123 */
+              entity_id: string
+              /** @example https://example.com/banner.jpg */
+              banner?: string | null
+              /** @example 2025 */
+              year: number
+              /** @example 15000 */
+              fee: number
+              /**
+               * @default []
+               * @example [
+               *       20000,
+               *       30000
+               *     ]
+               */
+              premium_fees: number[]
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              start_date: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              end_date: string
+              /** @example An amazing spiritual gathering for youth and adults */
+              description?: string | null
+              /** @example Lagos, Nigeria */
+              location?: string | null
+              /** @example Foursquare Camp Ground, Ajebo */
+              venue?: string | null
+              /**
+               * @default {}
+               * @example {
+               *       "location": "Foursquare Camp Ground, Ajebo",
+               *       "description": "Join us for worship, teachings, and fun activities",
+               *       "ministers": [
+               *         {
+               *           "name": "Pastor John Doe",
+               *           "designation": "Senior Pastor"
+               *         },
+               *         {
+               *           "name": "Evangelist Jane Smith",
+               *           "designation": "Guest Speaker"
+               *         }
+               *       ],
+               *       "activities": [
+               *         "Worship Sessions",
+               *         "Workshops",
+               *         "Outdoor Games"
+               *       ]
+               *     }
+               */
+              highlights: {
+                location?: string
+                description?: string
+                /** @default [] */
+                ministers: {
+                  name: string
+                  designation: string
+                }[]
+                /** @default [] */
+                activities: string[]
+              }
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              registration_deadline?: string | null
+              /** @example 500 */
+              capacity?: number | null
+              /**
+               * Format: email
+               * @example camp@foursquare.org
+               */
+              contact_email?: string | null
+              /** @example +2348012345678 */
+              contact_phone?: string | null
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+              is_active: boolean
+              is_coming_soon: boolean
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  delete_DeleteCampEndpoint: {
+    parameters: {
+      query?: {
+        soft?: boolean
+      }
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  patch_UpdateCampEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** @example Summer Camp 2025 */
+          title?: string
+          /** @example Faith and Fire */
+          theme?: string | null
+          /** @example Jeremiah 29:11 */
+          verse?: string | null
+          /** @example entity_123 */
+          entity_id?: string
+          /** @example https://example.com/banner.jpg */
+          banner?: string | null
+          /** @example 2025 */
+          year?: number
+          /** @example 15000 */
+          fee?: number
+          /**
+           * @default []
+           * @example [
+           *       20000,
+           *       30000
+           *     ]
+           */
+          premium_fees?: number[]
+          /**
+           * Format: date-time
+           * @example 2025-01-01T00:00:00Z
+           */
+          start_date?: string
+          /**
+           * Format: date-time
+           * @example 2025-01-01T00:00:00Z
+           */
+          end_date?: string
+          /** @example An amazing spiritual gathering for youth and adults */
+          description?: string | null
+          /** @example Lagos, Nigeria */
+          location?: string | null
+          /** @example Foursquare Camp Ground, Ajebo */
+          venue?: string | null
+          /**
+           * @default {}
+           * @example {
+           *       "location": "Foursquare Camp Ground, Ajebo",
+           *       "description": "Join us for worship, teachings, and fun activities",
+           *       "ministers": [
+           *         {
+           *           "name": "Pastor John Doe",
+           *           "designation": "Senior Pastor"
+           *         },
+           *         {
+           *           "name": "Evangelist Jane Smith",
+           *           "designation": "Guest Speaker"
+           *         }
+           *       ],
+           *       "activities": [
+           *         "Worship Sessions",
+           *         "Workshops",
+           *         "Outdoor Games"
+           *       ]
+           *     }
+           */
+          highlights?: {
+            location?: string
+            description?: string
+            /** @default [] */
+            ministers?: {
+              name: string
+              designation: string
+            }[]
+            /** @default [] */
+            activities?: string[]
+          }
+          /**
+           * Format: date-time
+           * @example 2025-01-01T00:00:00Z
+           */
+          registration_deadline?: string | null
+          /** @example 500 */
+          capacity?: number | null
+          /**
+           * Format: email
+           * @example camp@foursquare.org
+           */
+          contact_email?: string | null
+          /** @example +2348012345678 */
+          contact_phone?: string | null
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Summer Camp 2025 */
+              title: string
+              /** @example Faith and Fire */
+              theme?: string | null
+              /** @example Jeremiah 29:11 */
+              verse?: string | null
+              /** @example entity_123 */
+              entity_id: string
+              /** @example https://example.com/banner.jpg */
+              banner?: string | null
+              /** @example 2025 */
+              year: number
+              /** @example 15000 */
+              fee: number
+              /**
+               * @default []
+               * @example [
+               *       20000,
+               *       30000
+               *     ]
+               */
+              premium_fees: number[]
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              start_date: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              end_date: string
+              /** @example An amazing spiritual gathering for youth and adults */
+              description?: string | null
+              /** @example Lagos, Nigeria */
+              location?: string | null
+              /** @example Foursquare Camp Ground, Ajebo */
+              venue?: string | null
+              /**
+               * @default {}
+               * @example {
+               *       "location": "Foursquare Camp Ground, Ajebo",
+               *       "description": "Join us for worship, teachings, and fun activities",
+               *       "ministers": [
+               *         {
+               *           "name": "Pastor John Doe",
+               *           "designation": "Senior Pastor"
+               *         },
+               *         {
+               *           "name": "Evangelist Jane Smith",
+               *           "designation": "Guest Speaker"
+               *         }
+               *       ],
+               *       "activities": [
+               *         "Worship Sessions",
+               *         "Workshops",
+               *         "Outdoor Games"
+               *       ]
+               *     }
+               */
+              highlights: {
+                location?: string
+                description?: string
+                /** @default [] */
+                ministers: {
+                  name: string
+                  designation: string
+                }[]
+                /** @default [] */
+                activities: string[]
+              }
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              registration_deadline?: string | null
+              /** @example 500 */
+              capacity?: number | null
+              /**
+               * Format: email
+               * @example camp@foursquare.org
+               */
+              contact_email?: string | null
+              /** @example +2348012345678 */
+              contact_phone?: string | null
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+              is_active: boolean
+              is_coming_soon: boolean
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  post_paystackWebhook: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  post_CreateUserEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** @example Ada */
+          firstname: string
+          /** @example Okafor */
+          lastname: string
+          /**
+           * Format: email
+           * @example ada.okafor@example.com
+           */
+          email: string
+          /** @example +2348012345678 */
+          phone?: string | null
+          /**
+           * @default user
+           * @example user
+           * @enum {string}
+           */
+          role?: 'user' | 'staff' | 'admin'
+          password?: string
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Ada */
+              firstname: string
+              /** @example Okafor */
+              lastname: string
+              /**
+               * Format: email
+               * @example ada.okafor@example.com
+               */
+              email: string
+              /** @example +2348012345678 */
+              phone?: string | null
+              /**
+               * @default user
+               * @example user
+               * @enum {string}
+               */
+              role: 'user' | 'staff' | 'admin'
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_GetCurrentUserEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Ada */
+              firstname: string
+              /** @example Okafor */
+              lastname: string
+              /**
+               * Format: email
+               * @example ada.okafor@example.com
+               */
+              email: string
+              /** @example +2348012345678 */
+              phone?: string | null
+              /**
+               * @default user
+               * @example user
+               * @enum {string}
+               */
+              role: 'user' | 'staff' | 'admin'
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+              permissions: (
+                | 'dashboard:view'
+                | 'camp:view'
+                | 'camp:create'
+                | 'camp:update'
+                | 'camp:delete'
+                | 'campite:view'
+                | 'campite:create'
+                | 'campite:update'
+                | 'campite:delete'
+                | 'campite:export'
+                | 'camp-allocation:view'
+                | 'camp-allocation:create'
+                | 'camp-allocation:update'
+                | 'camp-allocation:delete'
+                | 'district:view'
+                | 'district:create'
+                | 'district:update'
+                | 'district:delete'
+                | 'entity:view'
+                | 'entity:create'
+                | 'entity:update'
+                | 'entity:delete'
+                | 'payment:view'
+                | 'analytics:view'
+                | 'user:manage'
+                | 'settings:manage'
+              )[]
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_ListUsersEndpoint: {
+    parameters: {
+      query?: {
+        /** @description The page number to retrieve. If set to 0, all records are returned. */
+        page?: number
+        /** @description Number of records per page. */
+        per_page?: number
+        orderBy?: string
+        filter?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Ada */
+              firstname: string
+              /** @example Okafor */
+              lastname: string
+              /**
+               * Format: email
+               * @example ada.okafor@example.com
+               */
+              email: string
+              /** @example +2348012345678 */
+              phone?: string | null
+              /**
+               * @default user
+               * @example user
+               * @enum {string}
+               */
+              role: 'user' | 'staff' | 'admin'
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }[]
+            meta: {
+              page: number
+              per_page: number
+              total: number
+              total_pages: number
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_GetUserEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Ada */
+              firstname: string
+              /** @example Okafor */
+              lastname: string
+              /**
+               * Format: email
+               * @example ada.okafor@example.com
+               */
+              email: string
+              /** @example +2348012345678 */
+              phone?: string | null
+              /**
+               * @default user
+               * @example user
+               * @enum {string}
+               */
+              role: 'user' | 'staff' | 'admin'
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  delete_DeleteUserEndpoint: {
+    parameters: {
+      query?: {
+        soft?: boolean
+      }
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  patch_UpdateUserEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** @example Ada */
+          firstname?: string
+          /** @example Okafor */
+          lastname?: string
+          /**
+           * Format: email
+           * @example ada.okafor@example.com
+           */
+          email?: string
+          /** @example +2348012345678 */
+          phone?: string | null
+          /**
+           * @default user
+           * @example user
+           * @enum {string}
+           */
+          role?: 'user' | 'staff' | 'admin'
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Ada */
+              firstname: string
+              /** @example Okafor */
+              lastname: string
+              /**
+               * Format: email
+               * @example ada.okafor@example.com
+               */
+              email: string
+              /** @example +2348012345678 */
+              phone?: string | null
+              /**
+               * @default user
+               * @example user
+               * @enum {string}
+               */
+              role: 'user' | 'staff' | 'admin'
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  post_CreateDistrictEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** @example Yaba */
+          name: string
+          /**
+           * @default []
+           * @example [
+           *       "Zone A",
+           *       "Zone B"
+           *     ]
+           */
+          zones?: string[]
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Yaba */
+              name: string
+              /**
+               * @default []
+               * @example [
+               *       "Zone A",
+               *       "Zone B"
+               *     ]
+               */
+              zones: string[]
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_GetDistrictEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Yaba */
+              name: string
+              /**
+               * @default []
+               * @example [
+               *       "Zone A",
+               *       "Zone B"
+               *     ]
+               */
+              zones: string[]
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  delete_DeleteDistrictEndpoint: {
+    parameters: {
+      query?: {
+        soft?: boolean
+      }
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  patch_UpdateDistrictEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** @example Yaba */
+          name?: string
+          /**
+           * @default []
+           * @example [
+           *       "Zone A",
+           *       "Zone B"
+           *     ]
+           */
+          zones?: string[]
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Yaba */
+              name: string
+              /**
+               * @default []
+               * @example [
+               *       "Zone A",
+               *       "Zone B"
+               *     ]
+               */
+              zones: string[]
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  post_CreateEntityEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** @example Lagos Mainland */
+          name: string
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Lagos Mainland */
+              name: string
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_ListEntitiesEndpoint: {
+    parameters: {
+      query?: {
+        /** @description The page number to retrieve. If set to 0, all records are returned. */
+        page?: number
+        /** @description Number of records per page. */
+        per_page?: number
+        orderBy?: string
+        filter?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Lagos Mainland */
+              name: string
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }[]
+            meta: {
+              page: number
+              per_page: number
+              total: number
+              total_pages: number
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_GetEntityEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Lagos Mainland */
+              name: string
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  delete_DeleteEntityEndpoint: {
+    parameters: {
+      query?: {
+        soft?: boolean
+      }
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  patch_UpdateEntityEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** @example Lagos Mainland */
+          name?: string
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Lagos Mainland */
+              name: string
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_ListPaymentsEndpoint: {
+    parameters: {
+      query?: {
+        /** @description The page number to retrieve. If set to 0, all records are returned. */
+        page?: number
+        /** @description Number of records per page. */
+        per_page?: number
+        orderBy?: string
+        filter?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example pay_123 */
+              reference: string
+              /** @example 15000 */
+              amount: number
+              /** @example user_456 */
+              user_id: string
+              /** @example camp_123 */
+              camp_id: string
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }[]
+            meta: {
+              page: number
+              per_page: number
+              total: number
+              total_pages: number
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_GetPaymentEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example pay_123 */
+              reference: string
+              /** @example 15000 */
+              amount: number
+              /** @example user_456 */
+              user_id: string
+              /** @example camp_123 */
+              camp_id: string
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  post_CreateCampiteEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** @example John */
+          firstname: string
+          /** @example Doe */
+          lastname: string
+          /**
+           * Format: email
+           * @example john.doe@example.com
+           */
+          email?: string | null
+          /** @example +2348012345678 */
+          phone: string
+          /** @example 21-30 */
+          age_group: string
+          /** @example male */
+          gender: string
+          /** @example camp_123 */
+          camp_id: string
+          /** @example user_456 */
+          user_id: string
+          /** @example district_789 */
+          district_id?: string
+          /** @example pay_ref_001 */
+          payment_ref?: string | null
+          /**
+           * @default regular
+           * @example regular
+           * @enum {string}
+           */
+          type?: 'regular' | 'premium'
+          /** @example 5000 */
+          amount: number
+          /**
+           * @default
+           * @example Boot 1
+           */
+          allocated_items?: string
+          /**
+           * Format: date-time
+           * @example 2025-01-01T00:00:00Z
+           */
+          checkin_at?: string | null
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example John */
+              firstname: string
+              /** @example Doe */
+              lastname: string
+              /**
+               * Format: email
+               * @example john.doe@example.com
+               */
+              email?: string | null
+              /** @example +2348012345678 */
+              phone: string
+              /** @example 21-30 */
+              age_group: string
+              /** @example male */
+              gender: string
+              /** @example camp_123 */
+              camp_id: string
+              /** @example user_456 */
+              user_id: string
+              /** @example district_789 */
+              district_id?: string
+              /** @example pay_ref_001 */
+              payment_ref?: string | null
+              /**
+               * @default regular
+               * @example regular
+               * @enum {string}
+               */
+              type: 'regular' | 'premium'
+              /** @example 5000 */
+              amount: number
+              /**
+               * @default
+               * @example Boot 1
+               */
+              allocated_items: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              checkin_at?: string | null
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  post_BulkCreateCampitesEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** @description User ID for all campites */
+          user_id: string
+          /** @description Camp ID for all campites */
+          camp_id: string
+          /** @description District ID for all campites */
+          district_id: string
+          /** @description Payment reference for all campites */
+          payment_ref?: string | null
+          campites: {
+            firstname: string
+            lastname: string
+            phone: string
+            age_group: string
+            gender: string
+          }[]
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example John */
+              firstname: string
+              /** @example Doe */
+              lastname: string
+              /**
+               * Format: email
+               * @example john.doe@example.com
+               */
+              email?: string | null
+              /** @example +2348012345678 */
+              phone: string
+              /** @example 21-30 */
+              age_group: string
+              /** @example male */
+              gender: string
+              /** @example camp_123 */
+              camp_id: string
+              /** @example user_456 */
+              user_id: string
+              /** @example district_789 */
+              district_id?: string
+              /** @example pay_ref_001 */
+              payment_ref?: string | null
+              /**
+               * @default regular
+               * @example regular
+               * @enum {string}
+               */
+              type: 'regular' | 'premium'
+              /** @example 5000 */
+              amount: number
+              /**
+               * @default
+               * @example Boot 1
+               */
+              allocated_items: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              checkin_at?: string | null
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_ExportCampitesEndpoint: {
+    parameters: {
+      query: {
+        camp_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': unknown
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            /** @description CSV content as string */
+            data: string
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_ListCampitesEndpoint: {
+    parameters: {
+      query?: {
+        /** @description The page number to retrieve. If set to 0, all records are returned. */
+        page?: number
+        /** @description Number of records per page. */
+        per_page?: number
+        orderBy?: string
+        filter?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example John */
+              firstname: string
+              /** @example Doe */
+              lastname: string
+              /**
+               * Format: email
+               * @example john.doe@example.com
+               */
+              email?: string | null
+              /** @example +2348012345678 */
+              phone: string
+              /** @example 21-30 */
+              age_group: string
+              /** @example male */
+              gender: string
+              /** @example camp_123 */
+              camp_id: string
+              /** @example user_456 */
+              user_id: string
+              /** @example district_789 */
+              district_id?: string
+              /** @example pay_ref_001 */
+              payment_ref?: string | null
+              /**
+               * @default regular
+               * @example regular
+               * @enum {string}
+               */
+              type: 'regular' | 'premium'
+              /** @example 5000 */
+              amount: number
+              /**
+               * @default
+               * @example Boot 1
+               */
+              allocated_items: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              checkin_at?: string | null
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }[]
+            meta: {
+              page: number
+              per_page: number
+              total: number
+              total_pages: number
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_GetCampiteEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example John */
+              firstname: string
+              /** @example Doe */
+              lastname: string
+              /**
+               * Format: email
+               * @example john.doe@example.com
+               */
+              email?: string | null
+              /** @example +2348012345678 */
+              phone: string
+              /** @example 21-30 */
+              age_group: string
+              /** @example male */
+              gender: string
+              /** @example camp_123 */
+              camp_id: string
+              /** @example user_456 */
+              user_id: string
+              /** @example district_789 */
+              district_id?: string
+              /** @example pay_ref_001 */
+              payment_ref?: string | null
+              /**
+               * @default regular
+               * @example regular
+               * @enum {string}
+               */
+              type: 'regular' | 'premium'
+              /** @example 5000 */
+              amount: number
+              /**
+               * @default
+               * @example Boot 1
+               */
+              allocated_items: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              checkin_at?: string | null
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  delete_DeleteCampiteEndpoint: {
+    parameters: {
+      query?: {
+        soft?: boolean
+      }
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  patch_UpdateCampiteEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** @example John */
+          firstname?: string
+          /** @example Doe */
+          lastname?: string
+          /**
+           * Format: email
+           * @example john.doe@example.com
+           */
+          email?: string | null
+          /** @example +2348012345678 */
+          phone?: string
+          /** @example 21-30 */
+          age_group?: string
+          /** @example male */
+          gender?: string
+          /** @example camp_123 */
+          camp_id?: string
+          /** @example user_456 */
+          user_id?: string
+          /** @example district_789 */
+          district_id?: string
+          /** @example pay_ref_001 */
+          payment_ref?: string | null
+          /**
+           * @default regular
+           * @example regular
+           * @enum {string}
+           */
+          type?: 'regular' | 'premium'
+          /** @example 5000 */
+          amount?: number
+          /**
+           * @default
+           * @example Boot 1
+           */
+          allocated_items?: string
+          /**
+           * Format: date-time
+           * @example 2025-01-01T00:00:00Z
+           */
+          checkin_at?: string | null
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example John */
+              firstname: string
+              /** @example Doe */
+              lastname: string
+              /**
+               * Format: email
+               * @example john.doe@example.com
+               */
+              email?: string | null
+              /** @example +2348012345678 */
+              phone: string
+              /** @example 21-30 */
+              age_group: string
+              /** @example male */
+              gender: string
+              /** @example camp_123 */
+              camp_id: string
+              /** @example user_456 */
+              user_id: string
+              /** @example district_789 */
+              district_id?: string
+              /** @example pay_ref_001 */
+              payment_ref?: string | null
+              /**
+               * @default regular
+               * @example regular
+               * @enum {string}
+               */
+              type: 'regular' | 'premium'
+              /** @example 5000 */
+              amount: number
+              /**
+               * @default
+               * @example Boot 1
+               */
+              allocated_items: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              checkin_at?: string | null
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  post_CreateCampAllocationEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** @example camp_123 */
+          camp_id: string
+          /** @example Prayer Boot */
+          name: string
+          /**
+           * @default []
+           * @example [
+           *       "Boot 1",
+           *       "Boot 2",
+           *       "Boot 3"
+           *     ]
+           */
+          items?: string[]
+          /**
+           * @default random
+           * @example random
+           * @enum {string}
+           */
+          allocation_type?: 'random' | 'definite'
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example camp_123 */
+              camp_id: string
+              /** @example Prayer Boot */
+              name: string
+              /**
+               * @default []
+               * @example [
+               *       "Boot 1",
+               *       "Boot 2",
+               *       "Boot 3"
+               *     ]
+               */
+              items: string[]
+              /**
+               * @default random
+               * @example random
+               * @enum {string}
+               */
+              allocation_type: 'random' | 'definite'
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_ListCampAllocationsEndpoint: {
+    parameters: {
+      query?: {
+        /** @description The page number to retrieve. If set to 0, all records are returned. */
+        page?: number
+        /** @description Number of records per page. */
+        per_page?: number
+        orderBy?: string
+        filter?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example camp_123 */
+              camp_id: string
+              /** @example Prayer Boot */
+              name: string
+              /**
+               * @default []
+               * @example [
+               *       "Boot 1",
+               *       "Boot 2",
+               *       "Boot 3"
+               *     ]
+               */
+              items: string[]
+              /**
+               * @default random
+               * @example random
+               * @enum {string}
+               */
+              allocation_type: 'random' | 'definite'
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }[]
+            meta: {
+              page: number
+              per_page: number
+              total: number
+              total_pages: number
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_GetCampAllocationEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example camp_123 */
+              camp_id: string
+              /** @example Prayer Boot */
+              name: string
+              /**
+               * @default []
+               * @example [
+               *       "Boot 1",
+               *       "Boot 2",
+               *       "Boot 3"
+               *     ]
+               */
+              items: string[]
+              /**
+               * @default random
+               * @example random
+               * @enum {string}
+               */
+              allocation_type: 'random' | 'definite'
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  delete_DeleteCampAllocationEndpoint: {
+    parameters: {
+      query?: {
+        soft?: boolean
+      }
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Operation successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  patch_UpdateCampAllocationEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** @example camp_123 */
+          camp_id?: string
+          /** @example Prayer Boot */
+          name?: string
+          /**
+           * @default []
+           * @example [
+           *       "Boot 1",
+           *       "Boot 2",
+           *       "Boot 3"
+           *     ]
+           */
+          items?: string[]
+          /**
+           * @default random
+           * @example random
+           * @enum {string}
+           */
+          allocation_type?: 'random' | 'definite'
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example camp_123 */
+              camp_id: string
+              /** @example Prayer Boot */
+              name: string
+              /**
+               * @default []
+               * @example [
+               *       "Boot 1",
+               *       "Boot 2",
+               *       "Boot 3"
+               *     ]
+               */
+              items: string[]
+              /**
+               * @default random
+               * @example random
+               * @enum {string}
+               */
+              allocation_type: 'random' | 'definite'
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  post_CreateCampEndpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** @example Summer Camp 2025 */
+          title: string
+          /** @example Faith and Fire */
+          theme?: string | null
+          /** @example Jeremiah 29:11 */
+          verse?: string | null
+          /** @example entity_123 */
+          entity_id: string
+          /** @example https://example.com/banner.jpg */
+          banner?: string | null
+          /** @example 2025 */
+          year: number
+          /** @example 15000 */
+          fee: number
+          /**
+           * @default []
+           * @example [
+           *       20000,
+           *       30000
+           *     ]
+           */
+          premium_fees?: number[]
+          /**
+           * Format: date-time
+           * @example 2025-01-01T00:00:00Z
+           */
+          start_date: string
+          /**
+           * Format: date-time
+           * @example 2025-01-01T00:00:00Z
+           */
+          end_date: string
+          /** @example An amazing spiritual gathering for youth and adults */
+          description?: string | null
+          /** @example Lagos, Nigeria */
+          location?: string | null
+          /** @example Foursquare Camp Ground, Ajebo */
+          venue?: string | null
+          /**
+           * @default {}
+           * @example {
+           *       "location": "Foursquare Camp Ground, Ajebo",
+           *       "description": "Join us for worship, teachings, and fun activities",
+           *       "ministers": [
+           *         {
+           *           "name": "Pastor John Doe",
+           *           "designation": "Senior Pastor"
+           *         },
+           *         {
+           *           "name": "Evangelist Jane Smith",
+           *           "designation": "Guest Speaker"
+           *         }
+           *       ],
+           *       "activities": [
+           *         "Worship Sessions",
+           *         "Workshops",
+           *         "Outdoor Games"
+           *       ]
+           *     }
+           */
+          highlights?: {
+            location?: string
+            description?: string
+            /** @default [] */
+            ministers?: {
+              name: string
+              designation: string
+            }[]
+            /** @default [] */
+            activities?: string[]
+          }
+          /**
+           * Format: date-time
+           * @example 2025-01-01T00:00:00Z
+           */
+          registration_deadline?: string | null
+          /** @example 500 */
+          capacity?: number | null
+          /**
+           * Format: email
+           * @example camp@foursquare.org
+           */
+          contact_email?: string | null
+          /** @example +2348012345678 */
+          contact_phone?: string | null
+        }
+      }
+    }
+    responses: {
+      /** @description Operation successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            data: {
+              /** @example Summer Camp 2025 */
+              title: string
+              /** @example Faith and Fire */
+              theme?: string | null
+              /** @example Jeremiah 29:11 */
+              verse?: string | null
+              /** @example entity_123 */
+              entity_id: string
+              /** @example https://example.com/banner.jpg */
+              banner?: string | null
+              /** @example 2025 */
+              year: number
+              /** @example 15000 */
+              fee: number
+              /**
+               * @default []
+               * @example [
+               *       20000,
+               *       30000
+               *     ]
+               */
+              premium_fees: number[]
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              start_date: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              end_date: string
+              /** @example An amazing spiritual gathering for youth and adults */
+              description?: string | null
+              /** @example Lagos, Nigeria */
+              location?: string | null
+              /** @example Foursquare Camp Ground, Ajebo */
+              venue?: string | null
+              /**
+               * @default {}
+               * @example {
+               *       "location": "Foursquare Camp Ground, Ajebo",
+               *       "description": "Join us for worship, teachings, and fun activities",
+               *       "ministers": [
+               *         {
+               *           "name": "Pastor John Doe",
+               *           "designation": "Senior Pastor"
+               *         },
+               *         {
+               *           "name": "Evangelist Jane Smith",
+               *           "designation": "Guest Speaker"
+               *         }
+               *       ],
+               *       "activities": [
+               *         "Worship Sessions",
+               *         "Workshops",
+               *         "Outdoor Games"
+               *       ]
+               *     }
+               */
+              highlights: {
+                location?: string
+                description?: string
+                /** @default [] */
+                ministers: {
+                  name: string
+                  designation: string
+                }[]
+                /** @default [] */
+                activities: string[]
+              }
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              registration_deadline?: string | null
+              /** @example 500 */
+              capacity?: number | null
+              /**
+               * Format: email
+               * @example camp@foursquare.org
+               */
+              contact_email?: string | null
+              /** @example +2348012345678 */
+              contact_phone?: string | null
+              id: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              created_at: string
+              /**
+               * Format: date-time
+               * @example 2025-01-01T00:00:00Z
+               */
+              updated_at: string
+              is_active: boolean
+              is_coming_soon: boolean
+            }
+          }
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Validation error */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: false
+            errors: {
+              code: string
+              message: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+  get_GetDashboardAnalyticsEndpoint: {
+    parameters: {
+      query?: {
+        camp_id?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Dashboard analytics */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            data: {
+              total_campites: number
+              by_gender: {
+                gender: string
+                _count: {
+                  id: number
+                }
+              }[]
+              by_age_group: {
+                age_group: string
+                _count: {
+                  id: number
+                }
+              }[]
+            }
+          }
+        }
+      }
+    }
+  }
+  get_GetDetailedAnalyticsEndpoint: {
+    parameters: {
+      query?: {
+        period?: 'today' | 'week' | 'month' | 'year' | 'all'
+        camp_id?: string
+        district_id?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Detailed analytics */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            data: {
+              overview: {
+                total_campites: number
+                total_revenue: number
+                total_districts: number
+                pending_payments: number
+              }
+              campites: {
+                by_gender: {
+                  gender: string
+                  count: number
+                }[]
+                by_age_group: {
+                  age_group: string
+                  count: number
+                }[]
+                by_type: {
+                  type: string
+                  count: number
+                  revenue: number
+                }[]
+                by_district: {
+                  district_id: string
+                  district_name: string
+                  count: number
+                }[]
+              }
+              timeline: {
+                daily: {
+                  date: string
+                  count: number
+                  revenue: number
+                }[]
+                monthly: {
+                  month: string
+                  count: number
+                  revenue: number
+                }[]
+              }
+              revenue: {
+                total: number
+              }
+              recent_activity: {
+                recent_registrations: {
+                  id: string
+                  firstname: string
+                  lastname: string
+                  camp_title: string
+                  /** Format: date-time */
+                  created_at: string
+                }[]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

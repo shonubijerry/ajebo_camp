@@ -1,26 +1,26 @@
-"use client";
+'use client'
 
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { useRouter } from "next/navigation";
+import DashboardLayout from '@/components/dashboard/DashboardLayout'
+import { useRouter } from 'next/navigation'
 
 export default function DashboardRoutesLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  const router = useRouter();
+  const router = useRouter()
 
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("token");
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('token')
     if (!token) {
-      router.push("/admin");
+      router.push('/admin')
     }
   }
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    router.push("/admin");
-  };
+    localStorage.removeItem('token')
+    router.push('/admin')
+  }
 
-  return <DashboardLayout onLogout={handleLogout}>{children}</DashboardLayout>;
+  return <DashboardLayout onLogout={handleLogout}>{children}</DashboardLayout>
 }

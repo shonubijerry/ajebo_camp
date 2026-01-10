@@ -1,68 +1,82 @@
-"use client";
+'use client'
 
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import React from 'react'
+import { useForm, Controller } from 'react-hook-form'
 import {
   TextField,
   Button,
   Stack,
   CircularProgress,
   Alert,
-} from "@mui/material";
-import { useApi } from "@/lib/api/useApi";
-import { District } from "@/interfaces";
+} from '@mui/material'
+import { useApi } from '@/lib/api/useApi'
+import { District } from '@/interfaces'
 
 interface DistrictFormData {
-  name: string;
-  zonesString?: string;
+  name: string
+  zonesString?: string
 }
 
 interface DistrictFormProps {
-  district?: District;
-  mode: "create" | "edit" | "view";
-  onSuccess: () => void;
-  onCancel: () => void;
+  district?: District
+  mode: 'create' | 'edit' | 'view'
+  onSuccess: () => void
+  onCancel: () => void
 }
 
-export default function DistrictForm({ district, mode, onSuccess, onCancel }: DistrictFormProps) {
-  const { $api } = useApi();
-  const [error, setError] = React.useState<string | null>(null);
-  const isView = mode === "view";
+export default function DistrictForm({
+  district,
+  mode,
+  onSuccess,
+  onCancel,
+}: DistrictFormProps) {
+  const { $api } = useApi()
+  const [error, setError] = React.useState<string | null>(null)
+  const isView = mode === 'view'
 
-  const createMutation = $api.useMutation("post", "/api/v1/districts");
-  const updateMutation = $api.useMutation("patch", "/api/v1/districts/{id}");
+  const createMutation = $api.useMutation('post', '/api/v1/districts')
+  const updateMutation = $api.useMutation('patch', '/api/v1/districts/{id}')
 
-  const { control, handleSubmit, formState: { errors } } = useForm<DistrictFormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<DistrictFormData>({
     defaultValues: {
-      name: district?.name || "",
-      zonesString: (district?.zones ?? []).join(", ") || "",
+      name: district?.name || '',
+      zonesString: (district?.zones ?? []).join(', ') || '',
     },
-  });
+  })
 
   const onSubmit = async (data: DistrictFormData) => {
     try {
-      setError(null);
-      const { zonesString, ...districtData } = data;
+      setError(null)
+      const { zonesString, ...districtData } = data
       const payload = {
         ...districtData,
-        zones: zonesString ? zonesString.split(",").map((zone) => zone.trim()).filter(Boolean) : undefined,
-      };
+        zones: zonesString
+          ? zonesString
+              .split(',')
+              .map((zone) => zone.trim())
+              .filter(Boolean)
+          : undefined,
+      }
 
-      if (mode === "create") {
-        await createMutation.mutateAsync({ body: payload });
-      } else if (mode === "edit" && district?.id) {
+      if (mode === 'create') {
+        await createMutation.mutateAsync({ body: payload })
+      } else if (mode === 'edit' && district?.id) {
         await updateMutation.mutateAsync({
           params: { path: { id: district.id } },
           body: payload,
-        });
+        })
       }
-      onSuccess();
-    } catch (err: any) {
-      setError(err.message || "Operation failed");
+      onSuccess()
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Operation failed')
     }
-  };
+  }
 
-  const isLoading = createMutation.isPending || updateMutation.isPending;
+  const isLoading = createMutation.isPending || updateMutation.isPending
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -72,7 +86,7 @@ export default function DistrictForm({ district, mode, onSuccess, onCancel }: Di
         <Controller
           name="name"
           control={control}
-          rules={{ required: "District name is required" }}
+          rules={{ required: 'District name is required' }}
           render={({ field }) => (
             <TextField
               {...field}
@@ -103,7 +117,11 @@ export default function DistrictForm({ district, mode, onSuccess, onCancel }: Di
         />
 
         {!isView && (
-          <Stack direction="row" spacing={2} sx={{ justifyContent: "flex-end" }}>
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{ justifyContent: 'flex-end' }}
+          >
             <Button onClick={onCancel} disabled={isLoading}>
               Cancel
             </Button>
@@ -113,11 +131,11 @@ export default function DistrictForm({ district, mode, onSuccess, onCancel }: Di
               disabled={isLoading}
               startIcon={isLoading && <CircularProgress size={20} />}
             >
-              {mode === "create" ? "Create" : "Update"}
+              {mode === 'create' ? 'Create' : 'Update'}
             </Button>
           </Stack>
         )}
       </Stack>
     </form>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import EntityRedirect from "@/components/portal/EntityRedirect";
+import EntityRedirect from '@/components/portal/EntityRedirect'
 
 export default function DistrictDetailPage() {
-  return <EntityRedirect entityPath="districts" />;
+  return <EntityRedirect entityPath="districts" />
 }

@@ -1,51 +1,51 @@
-"use client";
+'use client'
 
-import CRUDPage from "@/components/portal/CRUDPage";
-import CampitesForm from "@/components/forms/CampitesForm";
-import CampitesBulkForm from "@/components/forms/CampitesBulkForm";
-import { ColumnDef } from "@tanstack/react-table";
-import { Campite } from "@/interfaces";
+import CRUDPage from '@/components/portal/CRUDPage'
+import CampitesForm from '@/components/forms/CampitesForm'
+import CampitesBulkForm from '@/components/forms/CampitesBulkForm'
+import { ColumnDef } from '@tanstack/react-table'
+import { Campite } from '@/interfaces'
 
 const CampitesPageContent = () => {
   const columns: ColumnDef<Campite>[] = [
     {
-      accessorKey: "camp",
-      header: "Camp",
-      cell: ({ getValue, row }) => {
-        const camp = getValue<{ id: string; title: string }>();
-        return camp.title;
-      },
-    },
-    {
-      accessorKey: "firstname",
-      header: "First Name",
-    },
-    {
-      accessorKey: "lastname",
-      header: "Last Name",
-    },
-    {
-      accessorKey: "phone",
-      header: "Phone",
-    },
-    {
-      accessorKey: "gender",
-      header: "Gender",
-    },
-    {
-      accessorKey: "amount",
-      header: "Amount",
+      accessorKey: 'camp',
+      header: 'Camp',
       cell: ({ getValue }) => {
-        const amount = getValue() as number;
-        return amount ? `₦${Number(amount).toLocaleString()}` : "-";
+        const camp = getValue<{ id: string; title: string }>()
+        return camp.title
       },
     },
     {
-      accessorKey: "created_at",
-      header: "Created",
+      accessorKey: 'firstname',
+      header: 'First Name',
+    },
+    {
+      accessorKey: 'lastname',
+      header: 'Last Name',
+    },
+    {
+      accessorKey: 'phone',
+      header: 'Phone',
+    },
+    {
+      accessorKey: 'gender',
+      header: 'Gender',
+    },
+    {
+      accessorKey: 'amount',
+      header: 'Amount',
+      cell: ({ getValue }) => {
+        const amount = getValue() as number
+        return amount ? `₦${Number(amount).toLocaleString()}` : '-'
+      },
+    },
+    {
+      accessorKey: 'created_at',
+      header: 'Created',
       cell: ({ getValue }) => new Date(String(getValue())).toLocaleDateString(),
     },
-  ];
+  ]
 
   return (
     <CRUDPage<Campite>
@@ -61,9 +61,9 @@ const CampitesPageContent = () => {
       getDeleteMessage={(campite) =>
         `Are you sure you want to delete ${campite?.firstname} ${campite?.lastname}? This action cannot be undone.`
       }
-      orderBy='[created_at]=desc'
+      orderBy="[created_at]=desc"
     />
-  );
-};
+  )
+}
 
-export default CampitesPageContent;
+export default CampitesPageContent

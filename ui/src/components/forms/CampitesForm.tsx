@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import React from 'react'
+import { useForm, Controller } from 'react-hook-form'
 import {
   TextField,
   Button,
@@ -14,22 +14,22 @@ import {
   CircularProgress,
   Alert,
   Typography,
-} from "@mui/material";
-import { useApi } from "@/lib/api/useApi";
-import { useDistrictSearch } from "@/hooks/useDistrictSearch";
-import { CommonCampDistrictFields } from "./CommonCampDistrictFields";
-import { Campite } from "@/interfaces";
+} from '@mui/material'
+import { useApi } from '@/lib/api/useApi'
+import { useDistrictSearch } from '@/hooks/useDistrictSearch'
+import { CommonCampDistrictFields } from './CommonCampDistrictFields'
+import { Campite } from '@/interfaces'
 
 interface CampitesFormProps {
-  campite?: Campite & { id?: string };
-  mode: "create" | "edit" | "view";
-  onSuccess: () => void;
-  onCancel: () => void;
+  campite?: Campite & { id?: string }
+  mode: 'create' | 'edit' | 'view'
+  onSuccess: () => void
+  onCancel: () => void
 }
 
-const AGE_GROUPS = ["11-20", "21-30", "31-40", "41-50", "above 50"];
-const GENDERS = ["male", "female"];
-const CAMPITE_TYPES = ["regular", "premium"];
+const AGE_GROUPS = ['11-20', '21-30', '31-40', '41-50', 'above 50']
+const GENDERS = ['male', 'female']
+const CAMPITE_TYPES = ['regular', 'premium']
 
 export default function CampitesForm({
   campite,
@@ -37,11 +37,12 @@ export default function CampitesForm({
   onSuccess,
   onCancel,
 }: CampitesFormProps) {
-  const { $api } = useApi();
-  const [error, setError] = React.useState<string | null>(null);
-  const [allocationSelections, setAllocationSelections] =
-    React.useState<Record<string, string>>({});
-  const isView = mode === "view";
+  const { $api } = useApi()
+  const [error, setError] = React.useState<string | null>(null)
+  const [allocationSelections, setAllocationSelections] = React.useState<
+    Record<string, string>
+  >({})
+  const isView = mode === 'view'
 
   const {
     districtSearch,
@@ -49,112 +50,119 @@ export default function CampitesForm({
     filteredDistricts,
     isLoading: districtLoading,
     refreshDistricts,
-  } = useDistrictSearch();
+  } = useDistrictSearch()
 
-  const createMutation = $api.useMutation("post", "/api/v1/campites");
-  const updateMutation = $api.useMutation("patch", "/api/v1/campites/{id}");
+  const createMutation = $api.useMutation('post', '/api/v1/campites')
+  const updateMutation = $api.useMutation('patch', '/api/v1/campites/{id}')
 
-  const campsQuery = $api.useQuery("get", "/api/v1/camps/list", {
+  const campsQuery = $api.useQuery('get', '/api/v1/camps/list', {
     params: { query: { page: 1, per_page: 100 } },
-  });
+  })
 
   const allocationsQuery = $api.useQuery(
-    "get",
-    "/api/v1/camp-allocations/list",
+    'get',
+    '/api/v1/camp-allocations/list',
     {
       params: { query: { page: 0, per_page: 100 } },
-    }
-  );
-
-  const camps = campsQuery.data?.data || [];
-  const allocations = allocationsQuery.data?.data || [];
-
-  const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm<Campite>({
-    defaultValues: {
-      firstname: campite?.firstname || "",
-      lastname: campite?.lastname || "",
-      email: campite?.email ?? undefined,
-      phone: campite?.phone || "",
-      age_group: campite?.age_group || "",
-      gender: campite?.gender || "",
-      camp_id: campite?.camp_id || "",
-      user_id: campite?.user_id || "",
-      district_id: campite?.district_id || "",
-      payment_ref: campite?.payment_ref || "",
-      type: campite?.type || "regular",
-      amount: campite?.amount || undefined,
-      allocated_items: campite?.allocated_items || "",
     },
-  });
+  )
 
-  const selectedType = watch("type");
-  const selectedCampId = watch("camp_id");
+  const camps = campsQuery.data?.data || []
 
-  const campAllocations = React.useMemo(
-    () => allocations.filter((allocation: any) => allocation.camp_id === selectedCampId),
-    [allocations, selectedCampId]
-  );
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<Campite>({
+    defaultValues: {
+      firstname: campite?.firstname || '',
+      lastname: campite?.lastname || '',
+      email: campite?.email ?? undefined,
+      phone: campite?.phone || '',
+      age_group: campite?.age_group || '',
+      gender: campite?.gender || '',
+      camp_id: campite?.camp_id || '',
+      user_id: campite?.user_id || '',
+      district_id: campite?.district_id || '',
+      payment_ref: campite?.payment_ref || '',
+      type: campite?.type || 'regular',
+      amount: campite?.amount || undefined,
+      allocated_items: campite?.allocated_items || '',
+    },
+  })
+
+  const selectedCampId = watch('camp_id')
+
+  const campAllocations = React.useMemo(() => {
+    const all = allocationsQuery.data?.data || []
+    return all.filter((a) => a.camp_id === selectedCampId)
+  }, [allocationsQuery.data, selectedCampId])
 
   React.useEffect(() => {
     const allocationItems = campite?.allocated_items
-      ? campite.allocated_items.split(",")
-      : [];
+      ? campite.allocated_items.split(',')
+      : []
 
-    const initialSelections: Record<string, string> = {};
-    campAllocations.forEach((allocation: any, index: number) => {
-      const items = Array.isArray(allocation?.items)
-        ? allocation.items.filter(Boolean)
-        : [];
-      const currentItem = allocationItems[index];
-      initialSelections[allocation.id] =
+    const initialSelections: Record<string, string> = {}
+    campAllocations.forEach((allocation, index: number) => {
+      const itemsRaw = allocation.items
+      const items = Array.isArray(itemsRaw)
+        ? itemsRaw.filter((i): i is string => typeof i === 'string')
+        : []
+      const currentItem = allocationItems[index]
+      const id = allocation.id
+      initialSelections[id] =
         currentItem && items.includes(currentItem)
           ? currentItem
-          : items[0] || "";
-    });
+          : items[0] || ''
+    })
 
-    setAllocationSelections(initialSelections);
-  }, [campAllocations, campite?.allocated_items]);
+    setAllocationSelections(initialSelections)
+  }, [campAllocations, campite?.allocated_items])
 
   React.useEffect(() => {
-    const orderedSelections = campAllocations.map(
-      (allocation: any) => allocationSelections[allocation.id] || ""
-    );
-    setValue("allocated_items", orderedSelections.join(","));
-  }, [allocationSelections, campAllocations, setValue]);
+    const orderedSelections = campAllocations.map((allocation) => {
+      const id = allocation.id
+      return allocationSelections[id] || ''
+    })
+    setValue('allocated_items', orderedSelections.join(','))
+  }, [allocationSelections, campAllocations, setValue])
 
   const handleAllocationItemChange = (allocationId: string, value: string) => {
-    setAllocationSelections((prev) => ({ ...prev, [allocationId]: value }));
-  };
+    setAllocationSelections((prev) => ({ ...prev, [allocationId]: value }))
+  }
 
   const onSubmit = async (data: Campite) => {
     try {
-      setError(null);
+      setError(null)
       const payload = {
         ...data,
         camp_id: data.camp_id,
         amount: data.amount,
         payment_ref: data.payment_ref,
-      };
-      if (mode === "create") {
-        await createMutation.mutateAsync({ body: payload });
-      } else if (mode === "edit" && campite?.id) {
+      }
+      if (mode === 'create') {
+        await createMutation.mutateAsync({ body: payload })
+      } else if (mode === 'edit' && campite?.id) {
         await updateMutation.mutateAsync({
           params: { path: { id: campite.id } },
           body: payload,
-        });
+        })
       }
-      onSuccess();
-    } catch (err: any) {
-      setError(err.message || "Operation failed");
+      onSuccess()
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Operation failed')
     }
-  };
+  }
 
   const isLoading =
     createMutation.isPending ||
     updateMutation.isPending ||
     campsQuery.isLoading ||
     districtLoading ||
-    allocationsQuery.isLoading;
+    allocationsQuery.isLoading
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -164,7 +172,7 @@ export default function CampitesForm({
         <Controller
           name="firstname"
           control={control}
-          rules={{ required: "First name is required" }}
+          rules={{ required: 'First name is required' }}
           render={({ field }) => (
             <TextField
               {...field}
@@ -180,7 +188,7 @@ export default function CampitesForm({
         <Controller
           name="lastname"
           control={control}
-          rules={{ required: "Last name is required" }}
+          rules={{ required: 'Last name is required' }}
           render={({ field }) => (
             <TextField
               {...field}
@@ -199,7 +207,7 @@ export default function CampitesForm({
           rules={{
             pattern: {
               value: /^[A-Z0-9._%+-]*@?[A-Z0-9.-]*\.[A-Z]{2,}?$/i,
-              message: "Invalid email address",
+              message: 'Invalid email address',
             },
           }}
           render={({ field }) => (
@@ -218,7 +226,7 @@ export default function CampitesForm({
         <Controller
           name="phone"
           control={control}
-          rules={{ required: "Phone number is required" }}
+          rules={{ required: 'Phone number is required' }}
           render={({ field }) => (
             <TextField
               {...field}
@@ -234,7 +242,7 @@ export default function CampitesForm({
         <Controller
           name="age_group"
           control={control}
-          rules={{ required: "Age group is required" }}
+          rules={{ required: 'Age group is required' }}
           render={({ field }) => (
             <FormControl fullWidth error={!!errors.age_group} disabled={isView}>
               <InputLabel>Age Group</InputLabel>
@@ -255,7 +263,7 @@ export default function CampitesForm({
         <Controller
           name="gender"
           control={control}
-          rules={{ required: "Gender is required" }}
+          rules={{ required: 'Gender is required' }}
           render={({ field }) => (
             <FormControl fullWidth error={!!errors.gender} disabled={isView}>
               <InputLabel>Gender</InputLabel>
@@ -280,8 +288,8 @@ export default function CampitesForm({
           districtSearch={districtSearch}
           onDistrictSearchChange={setDistrictSearch}
           onDistrictCreated={(district) => {
-            refreshDistricts();
-            setValue("district_id", district.id);
+            refreshDistricts()
+            setValue('district_id', district.id)
           }}
           errors={errors}
           isLoading={districtLoading}
@@ -332,7 +340,7 @@ export default function CampitesForm({
               fullWidth
               disabled
               InputProps={{ readOnly: true }}
-              helperText={!field.value ? "No payment reference" : undefined}
+              helperText={!field.value ? 'No payment reference' : undefined}
             />
           )}
         />
@@ -341,13 +349,13 @@ export default function CampitesForm({
           <Typography variant="subtitle2">Allocations</Typography>
 
           {campAllocations.length === 0 && (
-            <FormHelperText>There are no allocations for this camp.</FormHelperText>
+            <FormHelperText>
+              There are no allocations for this camp.
+            </FormHelperText>
           )}
 
-          {campAllocations.map((allocation: any) => {
-            const items = Array.isArray(allocation?.items)
-              ? allocation.items.filter(Boolean)
-              : [];
+          {campAllocations.map((allocation) => {
+            const items = allocation?.items ?? []
 
             return (
               <FormControl
@@ -357,12 +365,12 @@ export default function CampitesForm({
               >
                 <InputLabel>{allocation.name}</InputLabel>
                 <Select
-                  value={allocationSelections[allocation.id] || ""}
+                  value={allocationSelections[allocation.id] || ''}
                   label={allocation.name}
                   onChange={(e) =>
                     handleAllocationItemChange(
                       allocation.id,
-                      e.target.value as string
+                      e.target.value as string,
                     )
                   }
                 >
@@ -374,24 +382,26 @@ export default function CampitesForm({
                 </Select>
                 <FormHelperText>
                   {items.length === 0
-                    ? "No items available for this allocation"
-                    : "Select item for this allocation"}
+                    ? 'No items available for this allocation'
+                    : 'Select item for this allocation'}
                 </FormHelperText>
               </FormControl>
-            );
+            )
           })}
         </Stack>
 
         <Controller
           name="allocated_items"
           control={control}
-          render={({ field }) => (
-            <input type="hidden" {...field} />
-          )}
+          render={({ field }) => <input type="hidden" {...field} />}
         />
 
         {!isView && (
-          <Stack direction="row" spacing={2} sx={{ justifyContent: "flex-end" }}>
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{ justifyContent: 'flex-end' }}
+          >
             <Button onClick={onCancel} disabled={isLoading}>
               Cancel
             </Button>
@@ -401,11 +411,11 @@ export default function CampitesForm({
               disabled={isLoading}
               startIcon={isLoading && <CircularProgress size={20} />}
             >
-              {mode === "create" ? "Create" : "Update"}
+              {mode === 'create' ? 'Create' : 'Update'}
             </Button>
           </Stack>
         )}
       </Stack>
     </form>
-  );
+  )
 }

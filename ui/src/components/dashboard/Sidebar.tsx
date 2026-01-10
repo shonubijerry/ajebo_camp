@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   Box,
   Drawer,
@@ -11,10 +11,9 @@ import {
   ListItemIcon,
   ListItemText,
   Button,
-  Stack,
   useTheme,
   useMediaQuery,
-} from "@mui/material";
+} from '@mui/material'
 import {
   Dashboard as DashboardIcon,
   PersonOutline as PersonIcon,
@@ -25,102 +24,101 @@ import {
   Logout as LogoutIcon,
   Groups3 as Groups3Icon,
   Groups2 as Groups2Icon,
-  Insights as InsightsIcon,
-} from "@mui/icons-material";
-import Link from "next/link";
-import Image from "next/image";
-import { useAuth } from "@/hooks/useAuth";
-import { Permission } from "@/interfaces";
-import { usePathname } from "next/navigation";
+} from '@mui/icons-material'
+import Link from 'next/link'
+import Image from 'next/image'
+import { useAuth } from '@/hooks/useAuth'
+import { Permission } from '@/interfaces'
+import { usePathname } from 'next/navigation'
 
-const drawerWidth = 260;
+const drawerWidth = 260
 
 export interface NavItem {
-  label: string;
-  href: string;
-  icon: React.ReactNode;
-  requiredPermissions?: Permission[];
+  label: string
+  href: string
+  icon: React.ReactNode
+  requiredPermissions?: Permission[]
 }
 
 interface SidebarProps {
-  mobileOpen?: boolean;
-  onMobileClose?: () => void;
-  onLogout?: () => void;
-  image?: { src: string; width: number; height: number };
+  mobileOpen?: boolean
+  onMobileClose?: () => void
+  onLogout?: () => void
+  image?: { src: string; width: number; height: number }
 }
 
 const defaultNavItems: NavItem[] = [
   {
-    label: "Dashboard",
-    href: "/portal/dashboard",
+    label: 'Dashboard',
+    href: '/portal/dashboard',
     icon: <DashboardIcon />,
-    requiredPermissions: ["dashboard:view"],
+    requiredPermissions: ['dashboard:view'],
   },
   {
-    label: "Profile",
-    href: "/portal/profile",
+    label: 'Profile',
+    href: '/portal/profile',
     icon: <PersonIcon />,
   },
   {
-    label: "Campites",
-    href: "/portal/campites",
+    label: 'Campites',
+    href: '/portal/campites',
     icon: <Groups3Icon />,
-    requiredPermissions: ["campite:view"],
+    requiredPermissions: ['campite:view'],
   },
   {
-    label: "Users",
-    href: "/portal/users",
+    label: 'Users',
+    href: '/portal/users',
     icon: <PeopleIcon />,
-    requiredPermissions: ["user:manage"],
+    requiredPermissions: ['user:manage'],
   },
   {
-    label: "Entities",
-    href: "/portal/entities",
+    label: 'Entities',
+    href: '/portal/entities',
     icon: <Groups2Icon />,
-    requiredPermissions: ["entity:view"],
+    requiredPermissions: ['entity:view'],
   },
   {
-    label: "Camps",
-    href: "/portal/camps",
+    label: 'Camps',
+    href: '/portal/camps',
     icon: <CampingIcon />,
-    requiredPermissions: ["camp:view"],
+    requiredPermissions: ['camp:view'],
   },
   {
-    label: "Districts",
-    href: "/portal/districts",
+    label: 'Districts',
+    href: '/portal/districts',
     icon: <MapIcon />,
-    requiredPermissions: ["district:view"],
+    requiredPermissions: ['district:view'],
   },
   {
-    label: "Camp Allocations",
-    href: "/portal/camp-allocations",
+    label: 'Camp Allocations',
+    href: '/portal/camp-allocations',
     icon: <ReceiptLongIcon />,
-    requiredPermissions: ["camp-allocation:view"],
+    requiredPermissions: ['camp-allocation:view'],
   },
-];
+]
 
 function DrawerContent({
   onLogout,
   image,
-}: Pick<SidebarProps, "onLogout" | "image">) {
-  const { hasPermission, isLoading } = useAuth();
-  const pathname = usePathname();
+}: Pick<SidebarProps, 'onLogout' | 'image'>) {
+  const { hasPermission, isLoading } = useAuth()
+  const pathname = usePathname()
   const navItems = defaultNavItems.filter(
     (item) =>
       !item.requiredPermissions ||
-      (hasPermission && hasPermission(item.requiredPermissions))
-  );
+      (hasPermission && hasPermission(item.requiredPermissions)),
+  )
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <Toolbar sx={{ px: 2, py: 3, gap: 1.5, minHeight: "auto" }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Toolbar sx={{ px: 2, py: 3, gap: 1.5, minHeight: 'auto' }}>
         {image ? (
           <Image
             src={image.src}
             alt="Admin Panel"
             width={image.width}
             height={image.height}
-            style={{ height: 40, width: "auto" }}
+            style={{ height: 40, width: 'auto' }}
           />
         ) : (
           <Box
@@ -128,13 +126,13 @@ function DrawerContent({
               width: 40,
               height: 40,
               borderRadius: 1,
-              background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            <Typography variant="h6" sx={{ color: "white", fontWeight: 700 }}>
+            <Typography variant="h6" sx={{ color: 'white', fontWeight: 700 }}>
               A
             </Typography>
           </Box>
@@ -161,7 +159,7 @@ function DrawerContent({
           </ListItem>
         )}
         {navItems.map((item) => {
-          const isActive = pathname?.startsWith(item.href);
+          const isActive = pathname?.startsWith(item.href)
           return (
             <ListItem key={item.href} disablePadding sx={{ mb: 0.5 }}>
               <ListItemButton
@@ -169,26 +167,26 @@ function DrawerContent({
                 href={item.href}
                 sx={{
                   borderRadius: 1,
-                  bgcolor: isActive ? "primary.main" : "transparent",
-                  color: isActive ? "white" : "inherit",
-                  "&.MuiSvgIcon-root": {
-                    color: isActive ? "white" : "inherit",
+                  bgcolor: isActive ? 'primary.main' : 'transparent',
+                  color: isActive ? 'white' : 'inherit',
+                  '&.MuiSvgIcon-root': {
+                    color: isActive ? 'white' : 'inherit',
                   },
-                  transition: "all 0.2s",
-                  "&:hover": {
-                    bgcolor: "primary.light",
-                  color: "inherit",
+                  transition: 'all 0.2s',
+                  '&:hover': {
+                    bgcolor: 'primary.light',
+                    color: 'inherit',
                   },
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
                 <ListItemText
                   primary={item.label}
-                  primaryTypographyProps={{ variant: "body2", fontWeight: 500 }}
+                  primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
                 />
               </ListItemButton>
             </ListItem>
-          );
+          )
         })}
       </List>
       <Divider sx={{ my: 1 }} />
@@ -204,7 +202,7 @@ function DrawerContent({
         </Button>
       </Box>
     </Box>
-  );
+  )
 }
 
 export default function Sidebar({
@@ -213,10 +211,10 @@ export default function Sidebar({
   onLogout,
   image,
 }: SidebarProps) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
-  const drawer = <DrawerContent onLogout={onLogout} image={image} />;
+  const drawer = <DrawerContent onLogout={onLogout} image={image} />
 
   return (
     <Box
@@ -231,8 +229,8 @@ export default function Sidebar({
           onClose={onMobileClose}
           ModalProps={{ keepMounted: true }}
           sx={{
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
               width: drawerWidth,
             },
           }}
@@ -243,12 +241,12 @@ export default function Sidebar({
         <Drawer
           variant="permanent"
           sx={{
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
               width: drawerWidth,
-              border: "none",
-              borderRight: "1px solid",
-              borderColor: "divider",
+              border: 'none',
+              borderRight: '1px solid',
+              borderColor: 'divider',
             },
           }}
           open
@@ -257,7 +255,7 @@ export default function Sidebar({
         </Drawer>
       )}
     </Box>
-  );
+  )
 }
 
-export { drawerWidth };
+export { drawerWidth }

@@ -81,13 +81,13 @@ export class GetDashboardAnalyticsEndpoint extends OpenAPIRoute {
                 by_gender: z.array(
                   z.object({
                     gender: z.string(),
-                    count: z.number(),
+                    _count: z.object({ id: z.number() }),
                   }),
                 ),
                 by_age_group: z.array(
                   z.object({
                     age_group: z.string(),
-                    count: z.number(),
+                    _count: z.object({ id: z.number() }),
                   }),
                 ),
               }),

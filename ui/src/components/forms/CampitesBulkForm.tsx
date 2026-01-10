@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import React from "react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import React from 'react'
+import { useForm, Controller, useFieldArray } from 'react-hook-form'
 import {
   TextField,
   Button,
@@ -21,50 +21,49 @@ import {
   DialogActions,
   Paper,
   Select,
-  Autocomplete,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-import DownloadIcon from "@mui/icons-material/Download";
-import Script from "next/script";
-import { useApi } from "@/lib/api/useApi";
-import { generateRandomPaymentRef } from "@/lib/payments";
-import { useDistrictSearch } from "@/hooks/useDistrictSearch";
-import { usePaystackPayment } from "@/hooks/usePaystackPayment";
-import { CommonCampDistrictFields } from "./CommonCampDistrictFields";
-import { useParams } from "next/navigation";
+} from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
+import DeleteIcon from '@mui/icons-material/Delete'
+import DownloadIcon from '@mui/icons-material/Download'
+import Script from 'next/script'
+import { useApi } from '@/lib/api/useApi'
+import { generateRandomPaymentRef } from '@/lib/payments'
+import { useDistrictSearch } from '@/hooks/useDistrictSearch'
+import { usePaystackPayment } from '@/hooks/usePaystackPayment'
+import { CommonCampDistrictFields } from './CommonCampDistrictFields'
+import { useParams } from 'next/navigation'
 
 interface CampiteData {
-  firstname: string;
-  lastname: string;
-  phone: string;
-  age_group: string;
-  gender: string;
+  firstname: string
+  lastname: string
+  phone: string
+  age_group: string
+  gender: string
 }
 
 interface CampitesBulkFormProps {
-  mode: "create" | "edit" | "view";
-  onSuccess: () => void;
-  onCancel: () => void;
+  mode: 'create' | 'edit' | 'view'
+  onSuccess: () => void
+  onCancel: () => void
 }
 
 interface FormData {
-  camp_id: string;
-  district_id: string;
-  campites: CampiteData[];
+  camp_id: string
+  district_id: string
+  campites: CampiteData[]
 }
 
 interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
+  children?: React.ReactNode
+  index: number
+  value: number
 }
 
-const AGE_GROUPS = ["11-20", "21-30", "31-40", "41-50", "above 50"];
-const GENDERS = ["male", "female"];
+const AGE_GROUPS = ['11-20', '21-30', '31-40', '41-50', 'above 50']
+const GENDERS = ['male', 'female']
 
 function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+  const { children, value, index, ...other } = props
 
   return (
     <div
@@ -76,38 +75,30 @@ function TabPanel(props: TabPanelProps) {
     >
       {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
     </div>
-  );
+  )
 }
 
 // Common fields component to reduce duplication
-interface CommonFieldsProps {
-  control: any;
-  camps: any[];
-  filteredDistricts: any[];
-  districtSearch: string;
-  onDistrictSearchChange: (value: string) => void;
-  errors: any;
-  isLoading: boolean;
-}
+// Removed unused CommonFieldsProps interface
 
 export default function CampitesBulkForm({
   mode,
   onSuccess,
   onCancel,
 }: CampitesBulkFormProps) {
-  const { $api } = useApi();
-  const [error, setError] = React.useState<string | null>(null);
-  const [tabValue, setTabValue] = React.useState(0);
-  const [submitting, setSubmitting] = React.useState(false);
-  const [csvPreview, setCsvPreview] = React.useState<CampiteData[]>([]);
-  const [showCsvPreview, setShowCsvPreview] = React.useState(false);
-  const [showPaymentDialog, setShowPaymentDialog] = React.useState(false);
+  const { $api } = useApi()
+  const [error, setError] = React.useState<string | null>(null)
+  const [tabValue, setTabValue] = React.useState(0)
+  const [submitting, setSubmitting] = React.useState(false)
+  const [csvPreview, setCsvPreview] = React.useState<CampiteData[]>([])
+  const [showCsvPreview, setShowCsvPreview] = React.useState(false)
+  const [showPaymentDialog, setShowPaymentDialog] = React.useState(false)
   const [pendingFormData, setPendingFormData] = React.useState<FormData | null>(
-    null
-  );
-  const params = useParams();
+    null,
+  )
+  const params = useParams()
 
-  const isView = mode === "view";
+  const isView = mode === 'view'
 
   // Use custom hooks
   const {
@@ -116,21 +107,21 @@ export default function CampitesBulkForm({
     filteredDistricts,
     isLoading: districtLoading,
     refreshDistricts,
-  } = useDistrictSearch();
+  } = useDistrictSearch()
   const { paystackReady, setPaystackReady, processPayment } =
-    usePaystackPayment();
+    usePaystackPayment()
 
   // Fetch data
-  const campiteMutation = $api.useMutation("post", "/api/v1/campites/bulk");
-  const currentUserQuery = $api.useQuery("get", "/api/v1/users/me");
-  const campsQuery = $api.useQuery("get", "/api/v1/camps/list", {
+  const campiteMutation = $api.useMutation('post', '/api/v1/campites/bulk')
+  const currentUserQuery = $api.useQuery('get', '/api/v1/users/me')
+  const campsQuery = $api.useQuery('get', '/api/v1/camps/list', {
     params: { query: { page: 0, per_page: 100 } },
-  });
+  })
 
-  const currentUser = currentUserQuery.data?.data;
-  const camps = campsQuery.data?.data || [];
+  const currentUser = currentUserQuery.data?.data
+  const camps = campsQuery.data?.data || []
   const loading =
-    currentUserQuery.isLoading || campsQuery.isLoading || districtLoading;
+    currentUserQuery.isLoading || campsQuery.isLoading || districtLoading
 
   const {
     control,
@@ -141,138 +132,137 @@ export default function CampitesBulkForm({
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      camp_id: params.id ? camps.find((c) => c.id === params.id)?.id || "" : "",
-      district_id: "",
+      camp_id: params.id ? camps.find((c) => c.id === params.id)?.id || '' : '',
+      district_id: '',
       campites: [
         {
-          firstname: "",
-          lastname: "",
-          phone: "",
-          age_group: "",
-          gender: "",
+          firstname: '',
+          lastname: '',
+          phone: '',
+          age_group: '',
+          gender: '',
         },
       ],
     },
-  });
+  })
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "campites",
-  });
+    name: 'campites',
+  })
 
-  const selectedCampId = watch("camp_id");
+  const selectedCampId = watch('camp_id')
   const downloadCsvTemplate = () => {
-    const headers = ["firstname", "lastname", "phone", "age_group", "gender"];
-    const sampleRow = ["John", "Doe", "08012345678", "21-30", "male"];
+    const headers = ['firstname', 'lastname', 'phone', 'age_group', 'gender']
+    const sampleRow = ['John', 'Doe', '08012345678', '21-30', 'male']
 
     const csvContent = [headers, sampleRow]
-      .map((row) => row.join(","))
-      .join("\n");
-    const element = document.createElement("a");
+      .map((row) => row.join(','))
+      .join('\n')
+    const element = document.createElement('a')
     element.setAttribute(
-      "href",
-      "data:text/csv;charset=utf-8," + encodeURIComponent(csvContent)
-    );
-    element.setAttribute("download", "campites_template.csv");
-    element.style.display = "none";
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  };
+      'href',
+      'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent),
+    )
+    element.setAttribute('download', 'campites_template.csv')
+    element.style.display = 'none'
+    document.body.appendChild(element)
+    element.click()
+    document.body.removeChild(element)
+  }
 
   const parseCsv = (csvText: string): CampiteData[] => {
     const lines = csvText
       .trim()
-      .split("\n")
-      .filter((line) => line.trim());
-    if (lines.length < 2) return [];
+      .split('\n')
+      .filter((line) => line.trim())
+    if (lines.length < 2) return []
 
-    const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
-    const data: CampiteData[] = [];
+    const headers = lines[0].split(',').map((h) => h.trim().toLowerCase())
+    const data: CampiteData[] = []
 
     for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(",").map((v) => v.trim());
-      const row: any = {};
+      const values = lines[i].split(',').map((v) => v.trim())
+      const row: Record<string, string> = {}
 
       headers.forEach((header, index) => {
-        row[header] = values[index] || "";
-      });
+        row[header] = values[index] || ''
+      })
 
       if (row.firstname && row.lastname && row.phone) {
         data.push({
           firstname: row.firstname,
           lastname: row.lastname,
           phone: row.phone,
-          age_group: row.age_group || "",
-          gender: row.gender || "",
-        });
+          age_group: row.age_group || '',
+          gender: row.gender || '',
+        })
       }
     }
 
-    return data;
-  };
+    return data
+  }
 
   const handleCsvUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const file = e.target.files?.[0]
+    if (!file) return
 
-    const reader = new FileReader();
+    const reader = new FileReader()
     reader.onload = (event) => {
       try {
-        const csvText = event.target?.result as string;
-        const parsed = parseCsv(csvText);
+        const csvText = event.target?.result as string
+        const parsed = parseCsv(csvText)
         if (parsed.length > 0) {
-          setCsvPreview(parsed);
-          setShowCsvPreview(true);
+          setCsvPreview(parsed)
+          setShowCsvPreview(true)
         } else {
-          setError("No valid campite data found in CSV");
+          setError('No valid campite data found in CSV')
         }
-      } catch (err) {
-        setError("Failed to parse CSV file");
+      } catch {
+        setError('Failed to parse CSV file')
       }
-    };
-    reader.readAsText(file);
-  };
+    }
+    reader.readAsText(file)
+  }
 
   const importCsvData = () => {
     reset({
       ...watch(),
       campites: csvPreview,
-    });
-    setShowCsvPreview(false);
-    setTabValue(0);
-  };
+    })
+    setShowCsvPreview(false)
+    setTabValue(0)
+  }
 
   // Calculate total amount for all campites
   const calculateTotalAmount = (campites: CampiteData[]): number => {
     // This assumes a standard fee per campite, adjust as needed
-    const pricePerCampite =
-      camps.find((c) => c.id === selectedCampId)?.fee ?? 0;
-    return campites.length * pricePerCampite;
-  };
+    const pricePerCampite = camps.find((c) => c.id === selectedCampId)?.fee ?? 0
+    return campites.length * pricePerCampite
+  }
 
   const submitWithPayment = async (data: FormData) => {
     try {
-      setSubmitting(true);
-      setError(null);
+      setSubmitting(true)
+      setError(null)
 
       // Validate
       if (!data.camp_id) {
-        setError("Please select a camp");
-        setSubmitting(false);
-        return;
+        setError('Please select a camp')
+        setSubmitting(false)
+        return
       }
 
       if (!data.district_id) {
-        setError("Please select a district");
-        setSubmitting(false);
-        return;
+        setError('Please select a district')
+        setSubmitting(false)
+        return
       }
 
       if (!data.campites || data.campites.length === 0) {
-        setError("Please add at least one campite");
-        setSubmitting(false);
-        return;
+        setError('Please add at least one campite')
+        setSubmitting(false)
+        return
       }
 
       for (const c of data.campites) {
@@ -284,37 +274,37 @@ export default function CampitesBulkForm({
           !c.gender
         ) {
           setError(
-            "All campites must have firstname, lastname, phone, age_group, and gender"
-          );
-          setSubmitting(false);
-          return;
+            'All campites must have firstname, lastname, phone, age_group, and gender',
+          )
+          setSubmitting(false)
+          return
         }
       }
 
       if (!currentUser?.id) {
-        setError("User not authenticated");
-        setSubmitting(false);
-        return;
+        setError('User not authenticated')
+        setSubmitting(false)
+        return
       }
 
       // Calculate total amount
-      const totalAmount = calculateTotalAmount(data.campites);
+      const totalAmount = calculateTotalAmount(data.campites)
 
       // If amount is 0, skip payment
       if (totalAmount === 0) {
-        await createCampites(data, generateRandomPaymentRef());
-        return;
+        await createCampites(data, generateRandomPaymentRef())
+        return
       }
 
       // Store form data and show payment dialog
-      setPendingFormData(data);
-      setShowPaymentDialog(true);
-      setSubmitting(false);
-    } catch (err: any) {
-      setError(err.message || "Failed to process request");
-      setSubmitting(false);
+      setPendingFormData(data)
+      setShowPaymentDialog(true)
+      setSubmitting(false)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to process request')
+      setSubmitting(false)
     }
-  };
+  }
 
   const createCampites = async (data: FormData, paymentRef?: string) => {
     try {
@@ -326,47 +316,48 @@ export default function CampitesBulkForm({
           payment_ref: paymentRef || null,
           campites: data.campites,
         },
-      });
+      })
 
       if (result.success) {
-        onSuccess();
+        onSuccess()
       } else {
-        setError("Failed to create campites");
+        setError('Failed to create campites')
       }
-    } catch (err: any) {
-      setError(err.message || "Failed to create campites");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to create campites')
     } finally {
-      setSubmitting(false);
-      setShowPaymentDialog(false);
+      setSubmitting(false)
+      setShowPaymentDialog(false)
     }
-  };
+  }
 
-  const handlePaymentSuccess = async (transaction: any) => {
+  const handlePaymentSuccess = async (transaction: unknown) => {
     if (pendingFormData) {
-      await createCampites(pendingFormData, transaction.reference);
+      const ref = (transaction as { reference?: string }).reference ?? ''
+      await createCampites(pendingFormData, ref)
     }
-  };
+  }
 
   const handlePaymentCancel = () => {
-    setShowPaymentDialog(false);
-    setSubmitting(false);
-    setError("Payment was cancelled");
-  };
+    setShowPaymentDialog(false)
+    setSubmitting(false)
+    setError('Payment was cancelled')
+  }
 
-  const handlePaymentError = (error: any) => {
-    setShowPaymentDialog(false);
-    setSubmitting(false);
-    setError(error.message || "Payment failed");
-  };
+  const handlePaymentError = (error: unknown) => {
+    setShowPaymentDialog(false)
+    setSubmitting(false)
+    setError(error instanceof Error ? error.message : 'Payment failed')
+  }
 
   const initiatePayment = () => {
     if (!pendingFormData || !currentUser) {
-      setError("Invalid form state");
-      return;
+      setError('Invalid form state')
+      return
     }
 
-    const totalAmount = calculateTotalAmount(pendingFormData.campites);
-    setSubmitting(true);
+    const totalAmount = calculateTotalAmount(pendingFormData.campites)
+    setSubmitting(true)
 
     processPayment({
       email: currentUser.email,
@@ -374,15 +365,15 @@ export default function CampitesBulkForm({
       onSuccess: handlePaymentSuccess,
       onCancel: handlePaymentCancel,
       onError: handlePaymentError,
-    });
-  };
+    })
+  }
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
         <CircularProgress />
       </Box>
-    );
+    )
   }
 
   return (
@@ -398,7 +389,7 @@ export default function CampitesBulkForm({
         </Alert>
       )}
 
-      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs
           value={tabValue}
           onChange={(e, newValue) => setTabValue(newValue)}
@@ -414,9 +405,9 @@ export default function CampitesBulkForm({
           <Stack spacing={3}>
             {/* Current User Info */}
             {currentUser && (
-              <Box sx={{ p: 2, bgcolor: "info.light", borderRadius: 1 }}>
+              <Box sx={{ p: 2, bgcolor: 'info.light', borderRadius: 1 }}>
                 <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                  Creating campites for: {currentUser.firstname}{" "}
+                  Creating campites for: {currentUser.firstname}{' '}
                   {currentUser.lastname} ({currentUser.email})
                 </Typography>
               </Box>
@@ -430,8 +421,8 @@ export default function CampitesBulkForm({
               districtSearch={districtSearch}
               onDistrictSearchChange={setDistrictSearch}
               onDistrictCreated={(district) => {
-                refreshDistricts();
-                setValue("district_id", district.id);
+                refreshDistricts()
+                setValue('district_id', district.id)
               }}
               errors={errors}
               isLoading={districtLoading}
@@ -446,19 +437,19 @@ export default function CampitesBulkForm({
 
               <Stack spacing={2}>
                 {fields.map((field, index) => (
-                  <Paper key={field.id} sx={{ p: 2, bgcolor: "grey.50" }}>
+                  <Paper key={field.id} sx={{ p: 2, bgcolor: 'grey.50' }}>
                     <Stack spacing={2}>
                       <Box
                         sx={{
-                          display: "grid",
-                          gridTemplateColumns: "1fr 1fr",
+                          display: 'grid',
+                          gridTemplateColumns: '1fr 1fr',
                           gap: 2,
                         }}
                       >
                         <Controller
                           name={`campites.${index}.firstname`}
                           control={control}
-                          rules={{ required: "Required" }}
+                          rules={{ required: 'Required' }}
                           render={({ field }) => (
                             <TextField
                               {...field}
@@ -471,7 +462,7 @@ export default function CampitesBulkForm({
                         <Controller
                           name={`campites.${index}.lastname`}
                           control={control}
-                          rules={{ required: "Required" }}
+                          rules={{ required: 'Required' }}
                           render={({ field }) => (
                             <TextField
                               {...field}
@@ -484,7 +475,7 @@ export default function CampitesBulkForm({
                         <Controller
                           name={`campites.${index}.phone`}
                           control={control}
-                          rules={{ required: "Required" }}
+                          rules={{ required: 'Required' }}
                           render={({ field }) => (
                             <TextField
                               {...field}
@@ -497,7 +488,7 @@ export default function CampitesBulkForm({
                         <Controller
                           name={`campites.${index}.age_group`}
                           control={control}
-                          rules={{ required: "Required" }}
+                          rules={{ required: 'Required' }}
                           render={({ field }) => (
                             <FormControl
                               size="small"
@@ -518,7 +509,7 @@ export default function CampitesBulkForm({
                         <Controller
                           name={`campites.${index}.gender`}
                           control={control}
-                          rules={{ required: "Required" }}
+                          rules={{ required: 'Required' }}
                           render={({ field }) => (
                             <FormControl
                               size="small"
@@ -538,7 +529,7 @@ export default function CampitesBulkForm({
                         />
                       </Box>
 
-                      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <Button
                           size="small"
                           color="error"
@@ -559,11 +550,11 @@ export default function CampitesBulkForm({
                 startIcon={<AddIcon />}
                 onClick={() =>
                   append({
-                    firstname: "",
-                    lastname: "",
-                    phone: "",
-                    age_group: "",
-                    gender: "",
+                    firstname: '',
+                    lastname: '',
+                    phone: '',
+                    age_group: '',
+                    gender: '',
                   })
                 }
                 sx={{ mt: 2 }}
@@ -579,9 +570,9 @@ export default function CampitesBulkForm({
           <Stack spacing={3}>
             {/* Current User Info */}
             {currentUser && (
-              <Box sx={{ p: 2, bgcolor: "info.light", borderRadius: 1 }}>
+              <Box sx={{ p: 2, bgcolor: 'info.light', borderRadius: 1 }}>
                 <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                  Creating campites for: {currentUser.firstname}{" "}
+                  Creating campites for: {currentUser.firstname}{' '}
                   {currentUser.lastname} ({currentUser.email})
                 </Typography>
               </Box>
@@ -595,8 +586,8 @@ export default function CampitesBulkForm({
               districtSearch={districtSearch}
               onDistrictSearchChange={setDistrictSearch}
               onDistrictCreated={(district) => {
-                refreshDistricts();
-                setValue("district_id", district.id);
+                refreshDistricts()
+                setValue('district_id', district.id)
               }}
               errors={errors}
               isLoading={districtLoading}
@@ -619,25 +610,25 @@ export default function CampitesBulkForm({
 
             <Box
               sx={{
-                border: "2px dashed",
-                borderColor: "divider",
+                border: '2px dashed',
+                borderColor: 'divider',
                 borderRadius: 1,
                 p: 3,
-                textAlign: "center",
-                cursor: "pointer",
-                "&:hover": { bgcolor: "action.hover" },
+                textAlign: 'center',
+                cursor: 'pointer',
+                '&:hover': { bgcolor: 'action.hover' },
               }}
             >
               <input
                 type="file"
                 accept=".csv"
                 onChange={handleCsvUpload}
-                style={{ display: "none" }}
+                style={{ display: 'none' }}
                 id="csv-input"
               />
               <label
                 htmlFor="csv-input"
-                style={{ cursor: "pointer", display: "block" }}
+                style={{ cursor: 'pointer', display: 'block' }}
               >
                 <Typography>Click to upload CSV or drag and drop</Typography>
                 <Typography variant="caption" color="text.secondary">
@@ -657,33 +648,33 @@ export default function CampitesBulkForm({
         >
           <DialogTitle>CSV Preview</DialogTitle>
           <DialogContent>
-            <Box sx={{ overflow: "auto", mt: 2 }}>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <Box sx={{ overflow: 'auto', mt: 2 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr style={{ borderBottom: "1px solid #ddd" }}>
-                    <th style={{ padding: "8px", textAlign: "left" }}>
+                  <tr style={{ borderBottom: '1px solid #ddd' }}>
+                    <th style={{ padding: '8px', textAlign: 'left' }}>
                       First Name
                     </th>
-                    <th style={{ padding: "8px", textAlign: "left" }}>
+                    <th style={{ padding: '8px', textAlign: 'left' }}>
                       Last Name
                     </th>
-                    <th style={{ padding: "8px", textAlign: "left" }}>Phone</th>
-                    <th style={{ padding: "8px", textAlign: "left" }}>
+                    <th style={{ padding: '8px', textAlign: 'left' }}>Phone</th>
+                    <th style={{ padding: '8px', textAlign: 'left' }}>
                       Age Group
                     </th>
-                    <th style={{ padding: "8px", textAlign: "left" }}>
+                    <th style={{ padding: '8px', textAlign: 'left' }}>
                       Gender
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {csvPreview.map((row, idx) => (
-                    <tr key={idx} style={{ borderBottom: "1px solid #ddd" }}>
-                      <td style={{ padding: "8px" }}>{row.firstname}</td>
-                      <td style={{ padding: "8px" }}>{row.lastname}</td>
-                      <td style={{ padding: "8px" }}>{row.phone}</td>
-                      <td style={{ padding: "8px" }}>{row.age_group}</td>
-                      <td style={{ padding: "8px" }}>{row.gender}</td>
+                    <tr key={idx} style={{ borderBottom: '1px solid #ddd' }}>
+                      <td style={{ padding: '8px' }}>{row.firstname}</td>
+                      <td style={{ padding: '8px' }}>{row.lastname}</td>
+                      <td style={{ padding: '8px' }}>{row.phone}</td>
+                      <td style={{ padding: '8px' }}>{row.age_group}</td>
+                      <td style={{ padding: '8px' }}>{row.gender}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -700,7 +691,7 @@ export default function CampitesBulkForm({
 
         {/* Submit Button */}
         <Box
-          sx={{ display: "flex", gap: 2, mt: 4, justifyContent: "flex-end" }}
+          sx={{ display: 'flex', gap: 2, mt: 4, justifyContent: 'flex-end' }}
         >
           <Button onClick={onCancel} disabled={submitting}>
             Cancel
@@ -728,7 +719,7 @@ export default function CampitesBulkForm({
         <DialogContent>
           <Box sx={{ mt: 2 }}>
             <Typography variant="body2" sx={{ mb: 2 }}>
-              You are about to register{" "}
+              You are about to register{' '}
               <strong>
                 {pendingFormData?.campites.length || 0} campite(s)
               </strong>
@@ -737,7 +728,7 @@ export default function CampitesBulkForm({
               Total Amount: ₦
               {pendingFormData
                 ? calculateTotalAmount(
-                    pendingFormData.campites
+                    pendingFormData.campites,
                   ).toLocaleString()
                 : 0}
             </Typography>
@@ -759,10 +750,10 @@ export default function CampitesBulkForm({
             disabled={submitting || !paystackReady}
             startIcon={submitting && <CircularProgress size={20} />}
           >
-            {submitting ? "Processing..." : "Pay Now"}
+            {submitting ? 'Processing...' : 'Pay Now'}
           </Button>
         </DialogActions>
       </Dialog>
     </>
-  );
+  )
 }

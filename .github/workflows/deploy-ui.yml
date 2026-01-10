@@ -8,11 +8,6 @@ on:
       - 'package-lock.json'
       - 'package.json'
   workflow_dispatch:
-    inputs:
-      environment:
-        description: "Deployment environment name for GitHub (e.g. production, staging)"
-        required: false
-        default: "production"
 
 concurrency: ui-${{ github.ref }}
 
@@ -20,9 +15,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      ENVIRONMENT: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
       NEXT_TELEMETRY_DISABLED: 1
-    environment: ${{ (github.event_name == 'workflow_dispatch' && inputs.environment != '' && inputs.environment) || 'production' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,13 +25,13 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm ci --force
+        run: npm ci
 
-      - name: Build Next.js app
-        run: npm run build --workspace ui
+      - name: Build static export
+        working-directory: ui
+        run: npm run build
         env:
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
           NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: ${{ secrets.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY }}
@@ -49,4 +42,4 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: ui
-          command: pages deploy public --project-name=${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}
+          command: pages deploy out --project-name=${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}

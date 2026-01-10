@@ -1,6 +1,6 @@
 import { verify } from 'hono/jwt'
 import { z } from 'zod'
-import { AppContext } from '..'
+import { AppContext } from '../types'
 import { userResponse } from '../schemas'
 import { getPermissionsForRole, Role } from '../lib/permissions'
 

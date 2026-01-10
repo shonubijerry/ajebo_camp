@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import React from "react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import React from 'react'
+import { useForm, Controller, useFieldArray } from 'react-hook-form'
 import {
   TextField,
   Button,
@@ -17,27 +17,42 @@ import {
   Box,
   Paper,
   FormHelperText,
-} from "@mui/material";
-import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { useApi } from "@/lib/api/useApi";
-import { CreateCampRequest } from "@/interfaces";
+  Switch,
+  FormControlLabel,
+} from '@mui/material'
+import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material'
+import { useApi } from '@/lib/api/useApi'
+import { CreateCampRequest } from '@/interfaces'
 
 interface CampAllocation {
-  id?: string;
-  name: string;
-  items: string;
-  allocation_type: "random" | "definite";
+  id?: string
+  name: string
+  items: string
+  allocation_type: 'random' | 'definite'
 }
 
-interface CampFormData extends Omit<CreateCampRequest, "allocations"> {
-  allocations: CampAllocation[];
+interface MinisterInput {
+  id?: string
+  name: string
+  designation: string
+}
+
+interface CampFormData extends Omit<
+  CreateCampRequest,
+  'allocations' | 'highlights'
+> {
+  allocations: CampAllocation[]
+  highlights_location?: string
+  highlights_description?: string
+  highlights_activities_input?: string
+  highlights_ministers: MinisterInput[]
 }
 
 interface CampFormProps {
-  camp?: CreateCampRequest & { id?: string };
-  mode: "create" | "edit" | "view";
-  onSuccess: () => void;
-  onCancel: () => void;
+  camp?: CreateCampRequest & { id?: string }
+  mode: 'create' | 'edit' | 'view'
+  onSuccess: () => void
+  onCancel: () => void
 }
 
 export default function CampForm({
@@ -46,39 +61,40 @@ export default function CampForm({
   onSuccess,
   onCancel,
 }: CampFormProps) {
-  const { $api } = useApi();
-  const [error, setError] = React.useState<string | null>(null);
-  const isView = mode === "view";
+  const { $api } = useApi()
+  const [error, setError] = React.useState<string | null>(null)
+  const isView = mode === 'view'
 
-  const createCampMutation = $api.useMutation("post", "/api/v1/camps");
-  const updateCampMutation = $api.useMutation("patch", "/api/v1/camps/{id}");
+  const createCampMutation = $api.useMutation('post', '/api/v1/camps')
+  const updateCampMutation = $api.useMutation('patch', '/api/v1/camps/{id}')
   const createAllocationMutation = $api.useMutation(
-    "post",
-    "/api/v1/camp-allocations"
-  );
+    'post',
+    '/api/v1/camp-allocations',
+  )
   const updateAllocationMutation = $api.useMutation(
-    "patch",
-    "/api/v1/camp-allocations/{id}"
-  );
+    'patch',
+    '/api/v1/camp-allocations/{id}',
+  )
 
-  const entitiesResult = $api.useQuery("get", "/api/v1/entities/list", {
+  const entitiesResult = $api.useQuery('get', '/api/v1/entities/list', {
     params: { query: { page: 1, per_page: 100 } },
-  });
+  })
 
   const allocationsResult = $api.useQuery(
-    "get",
-    "/api/v1/camp-allocations/list",
+    'get',
+    '/api/v1/camp-allocations/list',
     {
       params: { query: { page: 1, per_page: 100, camp_id: camp?.id } },
-      queryKey: ["camp-allocations", camp?.id],
+      queryKey: ['camp-allocations', camp?.id],
     },
-    { enabled: !!camp?.id && mode === "edit" }
-  );
+    { enabled: !!camp?.id && mode === 'edit' },
+  )
 
-  const entities = entitiesResult.data?.success ? entitiesResult.data.data : [];
-  const existingAllocations = allocationsResult.data?.success
-    ? allocationsResult.data.data
-    : [];
+  const entities = entitiesResult.data?.success ? entitiesResult.data.data : []
+  const existingAllocations = React.useMemo(
+    () => (allocationsResult.data?.success ? allocationsResult.data.data : []),
+    [allocationsResult.data],
+  )
 
   const {
     control,
@@ -88,55 +104,121 @@ export default function CampForm({
     register,
   } = useForm<CampFormData>({
     defaultValues: {
-      title: camp?.title || "",
-      theme: camp?.theme || "",
-      verse: camp?.verse || "",
-      entity_id: camp?.entity_id || "",
+      title: camp?.title || '',
+      theme: camp?.theme || '',
+      verse: camp?.verse || '',
+      banner: camp?.banner || '',
+      entity_id: camp?.entity_id || '',
       year: camp?.year || new Date().getFullYear(),
       fee: camp?.fee || 0,
-      start_date: camp?.start_date || "",
-      end_date: camp?.end_date || "",
+      registration_deadline: camp?.registration_deadline || '',
+      capacity: camp?.capacity || undefined,
+      contact_email: camp?.contact_email || '',
+      contact_phone: camp?.contact_phone || '',
+      start_date: camp?.start_date || '',
+      end_date: camp?.end_date || '',
+      highlights_location: camp?.highlights?.location || '',
+      highlights_description: camp?.highlights?.description || '',
+      highlights_activities_input:
+        camp?.highlights?.activities?.join(', ') || '',
+      highlights_ministers:
+        camp?.highlights?.ministers && camp.highlights.ministers.length > 0
+          ? camp.highlights.ministers
+          : [{ name: '', designation: '' }],
       allocations: [],
     },
-  });
+  })
 
   React.useEffect(() => {
-    if (mode === "edit" && existingAllocations.length > 0) {
+    if (mode === 'edit' && existingAllocations.length > 0) {
       reset({
-        title: camp?.title || "",
-        theme: camp?.theme || "",
-        verse: camp?.verse || "",
-        entity_id: camp?.entity_id || "",
+        title: camp?.title || '',
+        theme: camp?.theme || '',
+        verse: camp?.verse || '',
+        banner: camp?.banner || '',
+        entity_id: camp?.entity_id || '',
         year: camp?.year || new Date().getFullYear(),
         fee: camp?.fee || 0,
-        start_date: camp?.start_date || "",
-        end_date: camp?.end_date || "",
+        registration_deadline: camp?.registration_deadline || '',
+        capacity: camp?.capacity || undefined,
+        contact_email: camp?.contact_email || '',
+        contact_phone: camp?.contact_phone || '',
+        start_date: camp?.start_date || '',
+        end_date: camp?.end_date || '',
+        highlights_location: camp?.highlights?.location || '',
+        highlights_description: camp?.highlights?.description || '',
+        highlights_activities_input:
+          camp?.highlights?.activities?.join(', ') || '',
+        highlights_ministers:
+          camp?.highlights?.ministers && camp.highlights.ministers.length > 0
+            ? camp.highlights.ministers
+            : [{ name: '', designation: '' }],
         allocations: existingAllocations.map((a) => ({
           id: a.id,
-          name: a.name || "",
-          items: Array.isArray(a.items) ? a.items.join(", ") : "",
+          name: a.name || '',
+          items: Array.isArray(a.items) ? a.items.join(', ') : '',
           allocation_type:
-            (a.allocation_type as "random" | "definite") || "random",
+            (a.allocation_type as 'random' | 'definite') || 'random',
         })),
-      });
+      })
     }
-  }, [mode, existingAllocations, camp, reset]);
+  }, [mode, existingAllocations, camp, reset])
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "allocations",
-  });
+    name: 'allocations',
+  })
+
+  const {
+    fields: ministerFields,
+    append: appendMinister,
+    remove: removeMinister,
+  } = useFieldArray({
+    control,
+    name: 'highlights_ministers',
+  })
 
   const onSubmit = async (data: CampFormData) => {
     try {
-      setError(null);
-      const { allocations, ...campData } = data;
+      setError(null)
+      const {
+        allocations,
+        highlights_location,
+        highlights_description,
+        highlights_activities_input,
+        highlights_ministers,
+        ...rest
+      } = data
 
-      if (mode === "create") {
+      const activities = highlights_activities_input
+        ? highlights_activities_input
+            .split(/[,\n]/)
+            .map((item) => item.trim())
+            .filter(Boolean)
+        : []
+
+      const ministers = (highlights_ministers || [])
+        .filter((m) => m.name?.trim())
+        .map((m) => ({
+          name: m.name.trim(),
+          designation: m.designation?.trim() || '',
+        }))
+
+      const campPayload: CreateCampRequest = {
+        ...rest,
+        highlights: {
+          location: highlights_location || undefined,
+          description: highlights_description || undefined,
+          activities,
+          ministers,
+        },
+      } as CreateCampRequest
+
+      if (mode === 'create') {
         const campResponse = await createCampMutation.mutateAsync({
-          body: campData,
-        });
-        const campId = campResponse.data?.id;
+          body: campPayload,
+        })
+        const campId = campResponse.data?.id
 
         if (campId && allocations.length > 0) {
           await Promise.all(
@@ -146,20 +228,20 @@ export default function CampForm({
                   camp_id: campId,
                   name: allocation.name,
                   items: allocation.items
-                    .split(",")
+                    .split(',')
                     .map((item) => item.trim())
                     .filter(Boolean),
                   allocation_type: allocation.allocation_type,
                 },
-              })
-            )
-          );
+              }),
+            ),
+          )
         }
-      } else if (mode === "edit" && camp?.id) {
+      } else if (mode === 'edit' && camp?.id) {
         await updateCampMutation.mutateAsync({
           params: { path: { id: camp.id } },
-          body: campData as CreateCampRequest,
-        });
+          body: campPayload,
+        })
 
         if (allocations.length > 0) {
           await Promise.all(
@@ -168,11 +250,11 @@ export default function CampForm({
                 camp_id: camp.id!,
                 name: allocation.name,
                 items: allocation.items
-                  .split(",")
+                  .split(',')
                   .map((item) => item.trim())
                   .filter(Boolean),
                 allocation_type: allocation.allocation_type,
-              };
+              }
 
               return allocation.id
                 ? updateAllocationMutation.mutateAsync({
@@ -181,24 +263,25 @@ export default function CampForm({
                   })
                 : createAllocationMutation.mutateAsync({
                     body: allocationBody,
-                  });
-            })
-          );
+                  })
+            }),
+          )
         }
       }
-      onSuccess();
-    } catch (err: any) {
+      onSuccess()
+    } catch (err: unknown) {
       setError(
-        err.errors.map((e: any) => e?.message ?? e).join(", ") ||
-          "Operation failed"
-      );
+        (err as { errors: [{ message: string }] }).errors
+          .map((e) => e?.message ?? e)
+          .join(', ') || 'Operation failed',
+      )
     }
-  };
+  }
 
   const isLoading =
     createCampMutation.isPending ||
     updateCampMutation.isPending ||
-    createAllocationMutation.isPending;
+    createAllocationMutation.isPending
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -208,7 +291,7 @@ export default function CampForm({
         <Controller
           name="title"
           control={control}
-          rules={{ required: "Title is required" }}
+          rules={{ required: 'Title is required' }}
           render={({ field }) => (
             <TextField
               {...field}
@@ -230,7 +313,7 @@ export default function CampForm({
               label="Theme"
               fullWidth
               disabled={isView}
-              value={field.value || ""}
+              value={field.value || ''}
             />
           )}
         />
@@ -246,7 +329,37 @@ export default function CampForm({
               disabled={isView}
               multiline
               rows={2}
-              value={field.value || ""}
+              value={field.value || ''}
+            />
+          )}
+        />
+
+        <Controller
+          name="description"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Description"
+              fullWidth
+              disabled={isView}
+              multiline
+              rows={3}
+              value={field.value || ''}
+            />
+          )}
+        />
+
+        <Controller
+          name="banner"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Banner URL"
+              fullWidth
+              disabled={isView}
+              value={field.value || ''}
             />
           )}
         />
@@ -254,7 +367,7 @@ export default function CampForm({
         <Controller
           name="entity_id"
           control={control}
-          rules={{ required: "Entity is required" }}
+          rules={{ required: 'Entity is required' }}
           render={({ field }) => (
             <FormControl fullWidth error={!!errors.entity_id} disabled={isView}>
               <InputLabel>Entity</InputLabel>
@@ -275,11 +388,11 @@ export default function CampForm({
         <Controller
           name="year"
           control={control}
-          rules={{ required: "Year is required" }}
+          rules={{ required: 'Year is required' }}
           render={({ field }) => (
             <TextField
               {...field}
-              {...register("year", { valueAsNumber: true })}
+              {...register('year', { valueAsNumber: true })}
               label="Year"
               type="number"
               fullWidth
@@ -293,11 +406,11 @@ export default function CampForm({
         <Controller
           name="fee"
           control={control}
-          rules={{ required: "Fee is required" }}
+          rules={{ required: 'Fee is required' }}
           render={({ field }) => (
             <TextField
               {...field}
-              {...register("fee", { valueAsNumber: true })}
+              {...register('fee', { valueAsNumber: true })}
               label="Fee"
               type="number"
               fullWidth
@@ -309,14 +422,90 @@ export default function CampForm({
         />
 
         <Controller
+          name="registration_deadline"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Registration Deadline"
+              type={isView ? 'text' : 'date'}
+              fullWidth
+              disabled={isView}
+              slotProps={{ inputLabel: { shrink: true } }}
+              value={
+                isView && field.value
+                  ? new Date(field.value).toISOString().split('T')[0]
+                  : field.value
+                    ? new Date(field.value).toISOString().split('T')[0]
+                    : ''
+              }
+              onChange={(e) => {
+                const dateValue = e.target.value
+                if (dateValue) {
+                  const isoDate = new Date(dateValue).toISOString()
+                  field.onChange(isoDate)
+                } else {
+                  field.onChange('')
+                }
+              }}
+            />
+          )}
+        />
+
+        <Controller
+          name="capacity"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              {...register('capacity', { valueAsNumber: true })}
+              label="Capacity"
+              type="number"
+              fullWidth
+              disabled={isView}
+              value={field.value || ''}
+            />
+          )}
+        />
+
+        <Controller
+          name="contact_email"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Contact Email"
+              type="email"
+              fullWidth
+              disabled={isView}
+              value={field.value || ''}
+            />
+          )}
+        />
+
+        <Controller
+          name="contact_phone"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Contact Phone"
+              fullWidth
+              disabled={isView}
+              value={field.value || ''}
+            />
+          )}
+        />
+
+        <Controller
           name="start_date"
           control={control}
-          rules={{ required: "Start date is required" }}
+          rules={{ required: 'Start date is required' }}
           render={({ field }) => (
             <TextField
               {...field}
               label="Start Date"
-              type={isView ? "text" : "date"}
+              type={isView ? 'text' : 'date'}
               fullWidth
               disabled={isView}
               error={!!errors.start_date}
@@ -324,19 +513,19 @@ export default function CampForm({
               slotProps={{ inputLabel: { shrink: true } }}
               value={
                 isView && field.value
-                  ? new Date(field.value).toISOString().split("T")[0]
+                  ? new Date(field.value).toISOString().split('T')[0]
                   : field.value
-                    ? new Date(field.value).toISOString().split("T")[0]
-                    : ""
+                    ? new Date(field.value).toISOString().split('T')[0]
+                    : ''
               }
               onChange={(e) => {
                 // Convert the date input (YYYY-MM-DD) to ISO 8601 format
-                const dateValue = e.target.value;
+                const dateValue = e.target.value
                 if (dateValue) {
-                  const isoDate = new Date(dateValue).toISOString();
-                  field.onChange(isoDate);
+                  const isoDate = new Date(dateValue).toISOString()
+                  field.onChange(isoDate)
                 } else {
-                  field.onChange("");
+                  field.onChange('')
                 }
               }}
             />
@@ -346,12 +535,12 @@ export default function CampForm({
         <Controller
           name="end_date"
           control={control}
-          rules={{ required: "End date is required" }}
+          rules={{ required: 'End date is required' }}
           render={({ field }) => (
             <TextField
               {...field}
               label="End Date"
-              type={isView ? "text" : "date"}
+              type={isView ? 'text' : 'date'}
               fullWidth
               disabled={isView}
               error={!!errors.end_date}
@@ -359,32 +548,168 @@ export default function CampForm({
               slotProps={{ inputLabel: { shrink: true } }}
               value={
                 isView && field.value
-                  ? new Date(field.value).toISOString().split("T")[0]
+                  ? new Date(field.value).toISOString().split('T')[0]
                   : field.value
-                    ? new Date(field.value).toISOString().split("T")[0]
-                    : ""
+                    ? new Date(field.value).toISOString().split('T')[0]
+                    : ''
               }
               onChange={(e) => {
                 // Convert the date input (YYYY-MM-DD) to ISO 8601 format
-                const dateValue = e.target.value;
+                const dateValue = e.target.value
                 if (dateValue) {
-                  const isoDate = new Date(dateValue).toISOString();
-                  field.onChange(isoDate);
+                  const isoDate = new Date(dateValue).toISOString()
+                  field.onChange(isoDate)
                 } else {
-                  field.onChange("");
+                  field.onChange('')
                 }
               }}
             />
           )}
         />
 
+        <Box>
+          <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
+            Highlights
+          </Typography>
+          <Stack spacing={2}>
+            <Controller
+              name="highlights_description"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Description"
+                  fullWidth
+                  disabled={isView}
+                  multiline
+                  rows={3}
+                  value={field.value || ''}
+                />
+              )}
+            />
+
+            <Controller
+              name="highlights_location"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Highlights Location"
+                  fullWidth
+                  disabled={isView}
+                  value={field.value || ''}
+                />
+              )}
+            />
+
+            <Controller
+              name="highlights_activities_input"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Activities (comma or new line)"
+                  placeholder="Worship Sessions, Workshops, Outdoor Games"
+                  fullWidth
+                  disabled={isView}
+                  multiline
+                  rows={3}
+                  value={field.value || ''}
+                  helperText="Enter activities separated by commas or one per line."
+                />
+              )}
+            />
+
+            <Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mb: 1,
+                }}
+              >
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Ministers
+                </Typography>
+                {!isView && (
+                  <Button
+                    variant="outlined"
+                    startIcon={<AddIcon />}
+                    onClick={() =>
+                      appendMinister({ name: '', designation: '' })
+                    }
+                    size="small"
+                  >
+                    Add Minister
+                  </Button>
+                )}
+              </Box>
+              <Stack spacing={1.5}>
+                {ministerFields.map((field, index) => (
+                  <Paper key={field.id} sx={{ p: 2, bgcolor: 'grey.50' }}>
+                    <Stack spacing={1.5}>
+                      <Controller
+                        name={`highlights_ministers.${index}.name`}
+                        control={control}
+                        rules={{ required: 'Name is required' }}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            label="Name"
+                            fullWidth
+                            size="small"
+                            disabled={isView}
+                            error={!!errors.highlights_ministers?.[index]?.name}
+                            helperText={
+                              errors.highlights_ministers?.[index]?.name
+                                ?.message
+                            }
+                          />
+                        )}
+                      />
+                      <Controller
+                        name={`highlights_ministers.${index}.designation`}
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            label="Designation"
+                            fullWidth
+                            size="small"
+                            disabled={isView}
+                            value={field.value || ''}
+                          />
+                        )}
+                      />
+                      {!isView && (
+                        <Box
+                          sx={{ display: 'flex', justifyContent: 'flex-end' }}
+                        >
+                          <IconButton
+                            size="small"
+                            color="error"
+                            onClick={() => removeMinister(index)}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Box>
+                      )}
+                    </Stack>
+                  </Paper>
+                ))}
+              </Stack>
+            </Box>
+          </Stack>
+        </Box>
+
         {!isView && (
           <Box>
             <Box
               sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
                 mb: 2,
               }}
             >
@@ -395,7 +720,7 @@ export default function CampForm({
                 variant="outlined"
                 startIcon={<AddIcon />}
                 onClick={() =>
-                  append({ name: "", items: "", allocation_type: "random" })
+                  append({ name: '', items: '', allocation_type: 'random' })
                 }
                 size="small"
               >
@@ -405,13 +730,13 @@ export default function CampForm({
 
             <Stack spacing={2}>
               {fields.map((field, index) => (
-                <Paper key={field.id} sx={{ p: 2, bgcolor: "grey.50" }}>
+                <Paper key={field.id} sx={{ p: 2, bgcolor: 'grey.50' }}>
                   <Stack spacing={2}>
                     <Box
                       sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
                       }}
                     >
                       <Typography variant="body2" fontWeight={600}>
@@ -429,7 +754,7 @@ export default function CampForm({
                     <Controller
                       name={`allocations.${index}.name`}
                       control={control}
-                      rules={{ required: "Name is required" }}
+                      rules={{ required: 'Name is required' }}
                       render={({ field }) => (
                         <TextField
                           {...field}
@@ -448,7 +773,7 @@ export default function CampForm({
                     <Controller
                       name={`allocations.${index}.items`}
                       control={control}
-                      rules={{ required: "Items are required" }}
+                      rules={{ required: 'Items are required' }}
                       render={({ field }) => (
                         <TextField
                           {...field}
@@ -492,8 +817,8 @@ export default function CampForm({
               Camp Allocations
             </Typography>
             <Stack spacing={2}>
-              {existingAllocations.map((allocation, index) => (
-                <Paper key={allocation.id} sx={{ p: 2, bgcolor: "grey.50" }}>
+              {existingAllocations.map((allocation) => (
+                <Paper key={allocation.id} sx={{ p: 2, bgcolor: 'grey.50' }}>
                   <Stack spacing={1.5}>
                     <Box>
                       <Typography variant="caption" color="text.secondary">
@@ -509,7 +834,7 @@ export default function CampForm({
                       </Typography>
                       <Typography variant="body2">
                         {Array.isArray(allocation.items)
-                          ? allocation.items.join(", ")
+                          ? allocation.items.join(', ')
                           : allocation.items}
                       </Typography>
                     </Box>
@@ -519,7 +844,7 @@ export default function CampForm({
                       </Typography>
                       <Typography
                         variant="body2"
-                        sx={{ textTransform: "capitalize" }}
+                        sx={{ textTransform: 'capitalize' }}
                       >
                         {allocation.allocation_type}
                       </Typography>
@@ -535,7 +860,7 @@ export default function CampForm({
           <Stack
             direction="row"
             spacing={2}
-            sx={{ justifyContent: "flex-end" }}
+            sx={{ justifyContent: 'flex-end' }}
           >
             <Button onClick={onCancel} disabled={isLoading}>
               Cancel
@@ -546,11 +871,11 @@ export default function CampForm({
               disabled={isLoading}
               startIcon={isLoading && <CircularProgress size={20} />}
             >
-              {mode === "create" ? "Create" : "Update"}
+              {mode === 'create' ? 'Create' : 'Update'}
             </Button>
           </Stack>
         )}
       </Stack>
     </form>
-  );
+  )
 }

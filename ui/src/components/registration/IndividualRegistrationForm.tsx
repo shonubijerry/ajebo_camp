@@ -1,5 +1,5 @@
-import * as React from "react";
-import { useForm, Controller } from "react-hook-form";
+import * as React from 'react'
+import { useForm, Controller } from 'react-hook-form'
 import {
   Box,
   Button,
@@ -14,55 +14,55 @@ import {
   Alert,
   CircularProgress,
   FormHelperText,
-} from "@mui/material";
-import { useApi } from "@/lib/api/useApi";
-import { useDistrictSearch } from "@/hooks/useDistrictSearch";
-import { usePaystackPayment } from "@/hooks/usePaystackPayment";
-import Script from "next/script";
+} from '@mui/material'
+import { useApi } from '@/lib/api/useApi'
+import { useDistrictSearch } from '@/hooks/useDistrictSearch'
+import { usePaystackPayment } from '@/hooks/usePaystackPayment'
+import Script from 'next/script'
 
-const AGE_GROUPS = ["11-20", "21-30", "31-40", "41-50", "above 50"];
+const AGE_GROUPS = ['11-20', '21-30', '31-40', '41-50', 'above 50']
 
 interface FormData {
-  firstname: string;
-  lastname: string;
-  email: string;
-  phone: string;
-  age_group: string;
-  gender: string;
-  district_id: string;
-  type: "regular" | "premium";
-  amount: number;
+  firstname: string
+  lastname: string
+  email: string
+  phone: string
+  age_group: string
+  gender: string
+  district_id: string
+  type: 'regular' | 'premium'
+  amount: number
 }
 
 interface IndividualRegistrationFormProps {
-  campId: string;
-  onSuccess?: () => void;
+  campId: string
+  onSuccess?: () => void
 }
 
 export default function IndividualRegistrationForm({
   campId,
   onSuccess,
 }: IndividualRegistrationFormProps) {
-  const { $api } = useApi();
+  const { $api } = useApi()
 
-  const campResult = $api.useQuery("get", "/api/v1/camps/{id}", {
+  const campResult = $api.useQuery('get', '/api/v1/camps/{id}', {
     params: { path: { id: campId } },
-  });
+  })
 
-  const [submitting, setSubmitting] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
-  const [success, setSuccess] = React.useState(false);
+  const [submitting, setSubmitting] = React.useState(false)
+  const [error, setError] = React.useState<string | null>(null)
+  const [success, setSuccess] = React.useState(false)
   const { paystackReady, setPaystackReady, processPayment } =
-    usePaystackPayment();
+    usePaystackPayment()
   const {
     filteredDistricts,
     districtSearch: districtSearchValue,
     setDistrictSearch: setDistrictSearchValue,
     isLoading: districtsLoading,
-  } = useDistrictSearch({ perPage: 100 });
+  } = useDistrictSearch({ perPage: 100 })
 
-  const camp = campResult?.data?.data;
-  const isFreeRegistration = camp?.fee === 0;
+  const camp = campResult?.data?.data
+  const isFreeRegistration = camp?.fee === 0
 
   const {
     control,
@@ -73,30 +73,30 @@ export default function IndividualRegistrationForm({
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      firstname: "",
-      lastname: "",
-      email: "",
-      phone: "",
-      age_group: "",
-      gender: "",
-      district_id: "",
-      type: "regular",
+      firstname: '',
+      lastname: '',
+      email: '',
+      phone: '',
+      age_group: '',
+      gender: '',
+      district_id: '',
+      type: 'regular',
       amount: camp?.fee ?? 0,
     },
-  });
+  })
 
-  const campiteType = watch("type");
+  const campiteType = watch('type')
 
   // Set amount based on campite type and camp fee
   React.useEffect(() => {
-    if (campiteType === "regular" && camp?.fee !== undefined) {
-      setValue("amount", camp.fee);
+    if (campiteType === 'regular' && camp?.fee !== undefined) {
+      setValue('amount', camp.fee)
     }
-  }, [campiteType, camp?.fee, setValue]);
+  }, [campiteType, camp?.fee, setValue])
 
   // Initialize mutations at component level
-  const userMutation = $api.useMutation("post", "/api/v1/users");
-  const campiteMutation = $api.useMutation("post", "/api/v1/campites");
+  const userMutation = $api.useMutation('post', '/api/v1/users')
+  const campiteMutation = $api.useMutation('post', '/api/v1/campites')
 
   const createRegistration = async (data: FormData, paymentRef?: string) => {
     // Create user first
@@ -107,10 +107,10 @@ export default function IndividualRegistrationForm({
         email: data.email,
         phone: data.phone,
       },
-    });
+    })
 
     if (!userResult) {
-      throw new Error("Failed to create user");
+      throw new Error('Failed to create user')
     }
 
     // Create campite
@@ -129,67 +129,74 @@ export default function IndividualRegistrationForm({
         amount: data.amount,
         payment_ref: paymentRef || null,
       },
-    });
-  };
+    })
+  }
 
   const onSubmit = async (data: FormData) => {
     try {
-      setSubmitting(true);
-      setError(null);
+      setSubmitting(true)
+      setError(null)
 
       // If amount is 0 or free registration, skip payment
       if (data.amount === 0 || (isFreeRegistration && data.amount === 0)) {
-        await createRegistration(data);
-        setSuccess(true);
-        reset();
-        setTimeout(() => onSuccess?.(), 2000);
-        setSubmitting(false);
-        return;
+        await createRegistration(data)
+        setSuccess(true)
+        reset()
+        setTimeout(() => onSuccess?.(), 2000)
+        setSubmitting(false)
+        return
       }
 
       processPayment({
         email: data.email,
         amount: data.amount,
-        onSuccess: async (transaction) => {
+        onSuccess: async (transaction: unknown) => {
           try {
-            await createRegistration(data, transaction.reference);
-            setSuccess(true);
-            reset();
-            setTimeout(() => onSuccess?.(), 2000);
-          } catch (err: any) {
-            setError(err.message || "Registration failed after payment");
+            await createRegistration(
+              data,
+              (transaction as { reference: string }).reference,
+            )
+            setSuccess(true)
+            reset()
+            setTimeout(() => onSuccess?.(), 2000)
+          } catch (err: unknown) {
+            setError(
+              (err as Error).message || 'Registration failed after payment',
+            )
           } finally {
-            setSubmitting(false);
+            setSubmitting(false)
           }
         },
         onCancel: () => {
-          setSubmitting(false);
-          setError("Payment was cancelled");
+          setSubmitting(false)
+          setError('Payment was cancelled')
         },
         onError: (paymentError) => {
-          setSubmitting(false);
-          setError(paymentError.message || "Payment failed");
+          setSubmitting(false)
+          setError((paymentError as Error).message || 'Payment failed')
         },
-      });
-    } catch (err: any) {
-      setError(err.message || "Registration failed. Please try again.");
-      setSubmitting(false);
+      })
+    } catch (err: unknown) {
+      setError(
+        (err as Error).message || 'Registration failed. Please try again.',
+      )
+      setSubmitting(false)
     }
-  };
+  }
 
   if (campResult.isLoading) {
     return (
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "200px",
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '200px',
         }}
       >
         <CircularProgress />
       </Box>
-    );
+    )
   }
 
   if (!camp) {
@@ -197,7 +204,7 @@ export default function IndividualRegistrationForm({
       <Typography color="error" align="center">
         Camp not found
       </Typography>
-    );
+    )
   }
 
   return (
@@ -205,7 +212,7 @@ export default function IndividualRegistrationForm({
       <Script
         src="https://js.paystack.co/v1/inline.js"
         onLoad={() => setPaystackReady(true)}
-        onError={() => setError("Failed to load payment service")}
+        onError={() => setError('Failed to load payment service')}
       />
 
       <Typography variant="h5" gutterBottom sx={{ fontWeight: 700, mb: 1 }}>
@@ -233,7 +240,7 @@ export default function IndividualRegistrationForm({
             <Controller
               name="firstname"
               control={control}
-              rules={{ required: "First name is required" }}
+              rules={{ required: 'First name is required' }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -250,7 +257,7 @@ export default function IndividualRegistrationForm({
             <Controller
               name="lastname"
               control={control}
-              rules={{ required: "Last name is required" }}
+              rules={{ required: 'Last name is required' }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -268,10 +275,10 @@ export default function IndividualRegistrationForm({
               name="email"
               control={control}
               rules={{
-                required: "Email is required",
+                required: 'Email is required',
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
+                  message: 'Invalid email address',
                 },
               }}
               render={({ field }) => (
@@ -291,7 +298,7 @@ export default function IndividualRegistrationForm({
             <Controller
               name="phone"
               control={control}
-              rules={{ required: "Phone number is required" }}
+              rules={{ required: 'Phone number is required' }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -308,7 +315,7 @@ export default function IndividualRegistrationForm({
             <Controller
               name="age_group"
               control={control}
-              rules={{ required: "Age group is required" }}
+              rules={{ required: 'Age group is required' }}
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.age_group}>
                   <InputLabel>Age Group</InputLabel>
@@ -331,7 +338,7 @@ export default function IndividualRegistrationForm({
             <Controller
               name="gender"
               control={control}
-              rules={{ required: "Gender is required" }}
+              rules={{ required: 'Gender is required' }}
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.gender}>
                   <InputLabel>Gender</InputLabel>
@@ -351,7 +358,7 @@ export default function IndividualRegistrationForm({
             <Controller
               name="district_id"
               control={control}
-              rules={{ required: "District is required" }}
+              rules={{ required: 'District is required' }}
               render={({ field: { onChange, value } }) => (
                 <Autocomplete
                   options={filteredDistricts}
@@ -359,7 +366,7 @@ export default function IndividualRegistrationForm({
                   loading={districtsLoading}
                   value={filteredDistricts.find((d) => d.id === value) || null}
                   inputValue={districtSearchValue}
-                  onChange={(_, data) => onChange(data?.id || "")}
+                  onChange={(_, data) => onChange(data?.id || '')}
                   onInputChange={(_, newValue) =>
                     setDistrictSearchValue(newValue)
                   }
@@ -369,7 +376,7 @@ export default function IndividualRegistrationForm({
                       label="District"
                       error={!!errors.district_id}
                       helperText={
-                        errors.district_id?.message || "Search by district name"
+                        errors.district_id?.message || 'Search by district name'
                       }
                       slotProps={{
                         input: {
@@ -408,7 +415,7 @@ export default function IndividualRegistrationForm({
           </Grid>
 
           <Grid size={{ xs: 12, sm: 6 }}>
-            {isFreeRegistration && campiteType === "regular" ? (
+            {isFreeRegistration && campiteType === 'regular' ? (
               <Controller
                 name="amount"
                 control={control}
@@ -419,17 +426,17 @@ export default function IndividualRegistrationForm({
                     type="number"
                     fullWidth
                     helperText={`Are you willing to support ${camp.title} financially (Any amount is appreciated).`}
-                    value={field.value || ""}
+                    value={field.value || ''}
                     onChange={(e) =>
                       field.onChange(Number(e.target.value) || 0)
                     }
                   />
                 )}
               />
-            ) : campiteType === "regular" ? (
+            ) : campiteType === 'regular' ? (
               <TextField
                 label="Amount"
-                value={`₦${camp.fee?.toLocaleString() || "0"}`}
+                value={`₦${camp.fee?.toLocaleString() || '0'}`}
                 fullWidth
                 disabled
               />
@@ -437,7 +444,7 @@ export default function IndividualRegistrationForm({
               <Controller
                 name="amount"
                 control={control}
-                rules={{ required: "Amount is required for premium" }}
+                rules={{ required: 'Amount is required for premium' }}
                 render={({ field }) => (
                   <FormControl fullWidth error={!!errors.amount}>
                     <InputLabel>Premium Amount</InputLabel>
@@ -466,11 +473,11 @@ export default function IndividualRegistrationForm({
               size="large"
               disabled={submitting || !paystackReady}
             >
-              {submitting ? "Processing..." : "Complete Registration"}
+              {submitting ? 'Processing...' : 'Complete Registration'}
             </Button>
           </Grid>
         </Grid>
       </form>
     </>
-  );
+  )
 }

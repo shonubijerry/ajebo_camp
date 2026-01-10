@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { Camp } from "@/interfaces";
+import { Camp } from '@/interfaces'
 import {
   Box,
   Button,
@@ -12,67 +12,67 @@ import {
   Grid,
   Stack,
   Typography,
-} from "@mui/material";
+} from '@mui/material'
 
 const colors = {
-  red: "#c8102e",
-  blue: "#0033a0",
-  yellow: "#ffd100",
-  navy: "#0b1c3f",
-  light: "#f8fafc",
-};
+  red: '#c8102e',
+  blue: '#0033a0',
+  yellow: '#ffd100',
+  navy: '#0b1c3f',
+  light: '#f8fafc',
+}
 
 function getCampStatus(camp: Camp) {
   if (camp.is_active)
-    return { label: "Active", color: "success", isActive: true };
+    return { label: 'Active', color: 'success', isActive: true }
 
   if (camp.is_coming_soon)
-    return { label: "Upcoming", color: "info", isActive: false };
+    return { label: 'Upcoming', color: 'info', isActive: false }
 
-  return { label: "Active", color: "success", isActive: true };
+  return { label: 'Active', color: 'success', isActive: true }
 }
 
 function formatMoney(amount: number) {
-  return amount <= 0 ? "Free" : `₦${amount.toLocaleString()}`;
+  return amount <= 0 ? 'Free' : `₦${amount.toLocaleString()}`
 }
 
 export default function CampsDisplay({ camps }: { camps: Camp[] }) {
-  const activeCamps = camps.filter((c) => getCampStatus(c).isActive);
+  const activeCamps = camps.filter((c) => getCampStatus(c).isActive)
   const upcomingCamps = camps.filter(
-    (c) => getCampStatus(c).label === "Upcoming"
-  );
-  const primaryCta = activeCamps?.[0] || upcomingCamps?.[0];
+    (c) => getCampStatus(c).label === 'Upcoming',
+  )
+  const primaryCta = activeCamps?.[0] || upcomingCamps?.[0]
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: colors.light }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: colors.light }}>
       <Box
         sx={{
-          position: "relative",
-          overflow: "hidden",
+          position: 'relative',
+          overflow: 'hidden',
           background: `linear-gradient(135deg, ${colors.blue} 0%, ${colors.blue} 50%, ${colors.red} 100%)`,
-          color: "#0b1c3f",
+          color: '#0b1c3f',
           pb: 8,
         }}
       >
         <Box
           sx={{
-            position: "absolute",
+            position: 'absolute',
             inset: 0,
             background:
-              "linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.65))",
-            pointerEvents: "none",
+              'linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.65))',
+            pointerEvents: 'none',
           }}
         />
 
         <Container
           maxWidth="lg"
-          sx={{ pt: 10, position: "relative", zIndex: 1 }}
+          sx={{ pt: 10, position: 'relative', zIndex: 1 }}
         >
           <Stack spacing={3} sx={{ maxWidth: 900 }}>
             <Chip
               label="Foursquare Ajebo Camp Central"
               sx={{
-                width: "fit-content",
+                width: 'fit-content',
                 bgcolor: colors.light,
                 color: colors.red,
                 fontWeight: 700,
@@ -101,7 +101,7 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
                     px: 3,
                     py: 1.4,
                     bgcolor: colors.red,
-                    "&:hover": { bgcolor: "#a70f29" },
+                    '&:hover': { bgcolor: '#a70f29' },
                   }}
                 >
                   View {primaryCta.title}
@@ -125,7 +125,7 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
                   py: 1.4,
                   borderColor: colors.navy,
                   color: colors.navy,
-                  "&:hover": { borderColor: colors.red, color: colors.red },
+                  '&:hover': { borderColor: colors.red, color: colors.red },
                 }}
                 href="#camps"
               >
@@ -136,17 +136,17 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
             <Grid container spacing={3} sx={{ pt: 2 }}>
               {[
                 {
-                  label: "Total Camps",
+                  label: 'Total Camps',
                   value: camps.length,
                   color: colors.blue,
                 },
                 {
-                  label: "Active",
+                  label: 'Active',
                   value: activeCamps.length,
                   color: colors.red,
                 },
                 {
-                  label: "Upcoming",
+                  label: 'Upcoming',
                   value: upcomingCamps.length,
                   color: colors.yellow,
                 },
@@ -156,9 +156,9 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
                     sx={{
                       p: 2.5,
                       borderRadius: 2,
-                      bgcolor: "white",
+                      bgcolor: 'white',
                       border: `1px solid ${item.color}`,
-                      boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
+                      boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
                     }}
                   >
                     <Typography
@@ -203,10 +203,10 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
             sx={{
               p: 4,
               borderRadius: 2,
-              border: "1px solid",
-              borderColor: "divider",
-              textAlign: "center",
-              bgcolor: "white",
+              border: '1px solid',
+              borderColor: 'divider',
+              textAlign: 'center',
+              bgcolor: 'white',
             }}
           >
             <Typography
@@ -220,18 +220,18 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
         ) : (
           <Grid container spacing={3}>
             {camps.map((camp) => {
-              const status = getCampStatus(camp);
-              const feeLabel = formatMoney(camp.fee);
+              const status = getCampStatus(camp)
+              const feeLabel = formatMoney(camp.fee)
 
               return (
                 <Grid key={camp.id} size={{ xs: 12, sm: 6, md: 4 }}>
                   <Card
                     sx={{
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
                       borderRadius: 2,
-                      boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+                      boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
                       border: `1px solid ${colors.light}`,
                     }}
                   >
@@ -239,8 +239,8 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
                       component="div"
                       sx={{
                         height: 180,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
                         bgcolor: colors.light,
                         backgroundImage: camp.banner
                           ? `linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.55)), url(${camp.banner})`
@@ -250,8 +250,8 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
                     <CardContent
                       sx={{
                         flex: 1,
-                        display: "flex",
-                        flexDirection: "column",
+                        display: 'flex',
+                        flexDirection: 'column',
                         gap: 1.5,
                       }}
                     >
@@ -265,10 +265,10 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
                           label={status.label}
                           color={
                             status.isActive
-                              ? "success"
-                              : status.label === "Upcoming"
-                                ? "info"
-                                : "default"
+                              ? 'success'
+                              : status.label === 'Upcoming'
+                                ? 'info'
+                                : 'default'
                           }
                           size="small"
                         />
@@ -300,27 +300,27 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
                         color={colors.navy}
                         sx={{ opacity: 0.7 }}
                       >
-                        {new Date(camp.start_date).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}{" "}
-                        -{" "}
-                        {new Date(camp.end_date).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
+                        {new Date(camp.start_date).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                        })}{' '}
+                        -{' '}
+                        {new Date(camp.end_date).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
                         })}
                       </Typography>
 
-                      <Box sx={{ mt: "auto" }}>
+                      <Box sx={{ mt: 'auto' }}>
                         <Button
                           href={`/${camp.id}`}
                           variant="contained"
                           fullWidth
                           sx={{
                             bgcolor: status.isActive ? colors.red : colors.blue,
-                            color: "white",
-                            "&:hover": {
-                              bgcolor: status.isActive ? "#a70f29" : "#002a80",
+                            color: 'white',
+                            '&:hover': {
+                              bgcolor: status.isActive ? '#a70f29' : '#002a80',
                             },
                           }}
                         >
@@ -330,7 +330,7 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
                     </CardContent>
                   </Card>
                 </Grid>
-              );
+              )
             })}
           </Grid>
         )}
@@ -339,9 +339,9 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
       <Box
         sx={{
           py: 4,
-          textAlign: "center",
-          bgcolor: "white",
-          borderTop: "1px solid #e2e8f0",
+          textAlign: 'center',
+          bgcolor: 'white',
+          borderTop: '1px solid #e2e8f0',
         }}
       >
         <Typography variant="body2" color={colors.navy} sx={{ opacity: 0.75 }}>
@@ -349,5 +349,5 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
         </Typography>
       </Box>
     </Box>
-  );
+  )
 }

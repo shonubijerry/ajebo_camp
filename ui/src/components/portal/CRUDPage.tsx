@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import React from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import {
   Box,
   Typography,
@@ -13,39 +13,39 @@ import {
   DialogActions,
   useMediaQuery,
   useTheme,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import DataTable from "@/components/dashboard/DataTable";
-import SlideInDrawer from "@/components/dashboard/SlideInDrawer";
-import { useApi } from "@/lib/api/useApi";
-import { ColumnDef } from "@tanstack/react-table";
-import { useAuth } from "@/hooks/useAuth";
-import { Permission } from "@/interfaces";
+} from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
+import DataTable from '@/components/dashboard/DataTable'
+import SlideInDrawer from '@/components/dashboard/SlideInDrawer'
+import { useApi } from '@/lib/api/useApi'
+import { ColumnDef } from '@tanstack/react-table'
+import { useAuth } from '@/hooks/useAuth'
+import { Permission } from '@/interfaces'
 
 interface CRUDPageProps<T extends { id?: string }> {
-  title: string;
-  description: string;
-  entityName: string; // singular, e.g., "user", "camp"
-  entityNamePlural?: string; // plural, e.g., "users", "camps" (defaults to entityName + 's')
-  listEndpoint: any;
-  deleteEndpoint: any;
-  columns: ColumnDef<T>[];
+  title: string
+  description: string
+  entityName: string // singular, e.g., "user", "camp"
+  entityNamePlural?: string // plural, e.g., "users", "camps" (defaults to entityName + 's')
+  listEndpoint: string
+  deleteEndpoint: string
+  columns: ColumnDef<T>[]
   FormComponent: React.ComponentType<{
-    [key: string]: any;
-    mode: "create" | "edit" | "view";
-    onSuccess: () => void;
-    onCancel: () => void;
-  }>;
+    [key: string]: unknown
+    mode: 'create' | 'edit' | 'view'
+    onSuccess: () => void
+    onCancel: () => void
+  }>
   FormCreateComponent?: React.ComponentType<{
-    [key: string]: any;
-    mode: "create" | "edit" | "view";
-    onSuccess: () => void;
-    onCancel: () => void;
-  }>; // optional separate component for create operations
-  formPropName?: string; // name of the prop to pass entity to form, defaults to entityName
-  getDeleteMessage?: (entity: T) => string;
-  filter?: string;
-  orderBy?: string;
+    [key: string]: unknown
+    mode: 'create' | 'edit' | 'view'
+    onSuccess: () => void
+    onCancel: () => void
+  }> // optional separate component for create operations
+  formPropName?: string // name of the prop to pass entity to form, defaults to entityName
+  getDeleteMessage?: (entity: T) => string
+  filter?: string
+  orderBy?: string
 }
 
 export default function CRUDPage<
@@ -63,144 +63,148 @@ export default function CRUDPage<
   formPropName,
   getDeleteMessage,
   filter,
-  orderBy
+  orderBy,
 }: CRUDPageProps<T>) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { $api } = useApi();
-  const { hasPermission, isLoading: authIsLoading } = useAuth();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const { $api } = useApi()
+  const { hasPermission, isLoading: authIsLoading } = useAuth()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = React.useState(false)
   const [drawerMode, setDrawerMode] = React.useState<
-    "create" | "edit" | "view"
-  >("view");
-  const [selectedEntity, setSelectedEntity] = React.useState<T | undefined>();
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-  const [entityToDelete, setEntityToDelete] = React.useState<T | null>(null);
+    'create' | 'edit' | 'view'
+  >('view')
+  const [selectedEntity, setSelectedEntity] = React.useState<T | undefined>()
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
+  const [entityToDelete, setEntityToDelete] = React.useState<T | null>(null)
 
-  const plural = entityNamePlural || `${entityName}s`;
-  const propName = formPropName || entityName;
-  const deleteMutation = $api.useMutation("delete", deleteEndpoint);
-  const result = $api.useQuery("get", listEndpoint, {
+  const plural = entityNamePlural || `${entityName}s`
+  const propName = formPropName || entityName
+
+  // @ts-expect-error -- TS cannot infer string index signature here
+  const deleteMutation = $api.useMutation('delete', deleteEndpoint)
+
+  // eslint-disable-next-line
+  const result = $api.useQuery('get', listEndpoint as any, {
     params: { query: { page: 1, per_page: 100, filter, orderBy } },
-  });
+  })
 
-  const entities = result.data?.success ? result.data.data : [];
-  const isLoading = result.isLoading || authIsLoading;
+  const entities = React.useMemo(
+    () => (result.data?.success ? (result.data.data as T[]) : []),
+    [result.data],
+  )
+  const isLoading = result.isLoading || authIsLoading
 
   // Permission checks based on entity name
   const canCreate =
     hasPermission(`${entityName}:create` as Permission) ||
-    hasPermission(`${entityName}:manage` as Permission);
+    hasPermission(`${entityName}:manage` as Permission)
 
   const canView =
     hasPermission(`${entityName}:view` as Permission) ||
-    hasPermission(`${entityName}:manage` as Permission);
+    hasPermission(`${entityName}:manage` as Permission)
 
   const canUpdate =
     hasPermission(`${entityName}:update` as Permission) ||
-    hasPermission(`${entityName}:manage` as Permission);
+    hasPermission(`${entityName}:manage` as Permission)
 
   const canDelete =
     hasPermission(`${entityName}:delete` as Permission) ||
-    hasPermission(`${entityName}:manage` as Permission);
+    hasPermission(`${entityName}:manage` as Permission)
 
   // Handle URL params for direct access
   React.useEffect(() => {
-    const id = searchParams.get("id");
+    const id = searchParams.get('id')
     if (id && entities.length > 0) {
-      const entity = entities.find((e: any) => e.id === id);
+      const entity = entities.find((e) => String(e.id) === id)
       if (entity) {
-        setSelectedEntity(entity);
-        setDrawerMode("view");
-        setDrawerOpen(true);
+        setSelectedEntity(entity)
+        setDrawerMode('view')
+        setDrawerOpen(true)
       }
     }
-  }, [searchParams, entities]);
+  }, [searchParams, entities])
 
   const handleCreateNew = () => {
-    setSelectedEntity(undefined);
-    setDrawerMode("create");
-    setDrawerOpen(true);
-  };
+    setSelectedEntity(undefined)
+    setDrawerMode('create')
+    setDrawerOpen(true)
+  }
 
   const handleView = (entity: T) => {
-    router.push(`${pathname}?id=${entity.id}`);
-  };
+    router.push(`${pathname}?id=${entity.id}`)
+  }
 
   const handleEdit = (entity: T) => {
-    setSelectedEntity(entity);
-    setDrawerMode("edit");
-    setDrawerOpen(true);
-  };
+    setSelectedEntity(entity)
+    setDrawerMode('edit')
+    setDrawerOpen(true)
+  }
 
   const handleDelete = (entity: T) => {
-    setEntityToDelete(entity);
-    setDeleteDialogOpen(true);
-  };
+    setEntityToDelete(entity)
+    setDeleteDialogOpen(true)
+  }
 
   const confirmDelete = async () => {
-    if (!entityToDelete?.id) return;
+    if (!entityToDelete?.id) return
 
     try {
       await deleteMutation.mutateAsync({
         params: { path: { id: entityToDelete.id } },
-      });
-      setDeleteDialogOpen(false);
-      setEntityToDelete(null);
-      result.refetch();
+      })
+      setDeleteDialogOpen(false)
+      setEntityToDelete(null)
+      result.refetch()
     } catch (error) {
-      console.error(`Failed to delete ${entityName}:`, error);
+      console.error(`Failed to delete ${entityName}:`, error)
     }
-  };
+  }
 
   const handleDrawerClose = () => {
-    setDrawerOpen(false);
-    if (searchParams.get("id")) {
-      router.push(`${pathname}`);
+    setDrawerOpen(false)
+    if (searchParams.get('id')) {
+      router.push(`${pathname}`)
     }
-  };
+  }
 
   const handleFormSuccess = () => {
-    setDrawerOpen(false);
-    if (searchParams.get("id")) {
-      router.push(`/portal/${plural}`);
+    setDrawerOpen(false)
+    if (searchParams.get('id')) {
+      router.push(`/portal/${plural}`)
     }
-    result.refetch();
-  };
+    result.refetch()
+  }
 
   const getDrawerTitle = () => {
     const capitalizedName =
-      entityName.charAt(0).toUpperCase() + entityName.slice(1);
-    if (drawerMode === "create") return `Create New ${capitalizedName}`;
-    if (drawerMode === "edit") return `Edit ${capitalizedName}`;
-    return `View ${capitalizedName}`;
-  };
+      entityName.charAt(0).toUpperCase() + entityName.slice(1)
+    if (drawerMode === 'create') return `Create New ${capitalizedName}`
+    if (drawerMode === 'edit') return `Edit ${capitalizedName}`
+    return `View ${capitalizedName}`
+  }
 
   const getDefaultDeleteMessage = () => {
-    const name =
-      (entityToDelete as any)?.name ||
-      (entityToDelete as any)?.title ||
-      "this item";
-    return `Are you sure you want to delete ${name}? This action cannot be undone.`;
-  };
+    const name = entityToDelete?.name || entityToDelete?.title || 'this item'
+    return `Are you sure you want to delete ${name}? This action cannot be undone.`
+  }
 
   if (isLoading) {
     return (
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100%',
         }}
       >
         <Typography>Loading...</Typography>
       </Box>
-    );
+    )
   }
 
   return (
@@ -208,34 +212,43 @@ export default function CRUDPage<
       <Box
         sx={{
           mb: 3,
-          display: "flex",
-          flexDirection: isMobile ? "column" : "row",
-          justifyContent: "space-between",
-          alignItems: isMobile ? "stretch" : "center",
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          justifyContent: 'space-between',
+          alignItems: isMobile ? 'stretch' : 'center',
           gap: 2,
         }}
       >
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Typography variant={isMobile ? "h6" : "h5"} sx={{ fontWeight: 700, mb: 1 }}>
+          <Typography
+            variant={isMobile ? 'h6' : 'h5'}
+            sx={{ fontWeight: 700, mb: 1 }}
+          >
             {title}
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ display: { xs: "none", sm: "block" } }}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ display: { xs: 'none', sm: 'block' } }}
+          >
             {description}
           </Typography>
         </Box>
-        {canCreate && (<Button
-          variant="contained"
-          startIcon={!isMobile && <AddIcon />}
-          onClick={handleCreateNew}
-          fullWidth={isMobile}
-          sx={{ 
-            whiteSpace: "nowrap",
-            flexShrink: 0,
-            minWidth: isMobile ? "100%" : "auto",
-          }}
-        >
-          {isMobile ? "+ Create" : "Create New"}
-        </Button>)}
+        {canCreate && (
+          <Button
+            variant="contained"
+            startIcon={!isMobile && <AddIcon />}
+            onClick={handleCreateNew}
+            fullWidth={isMobile}
+            sx={{
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+              minWidth: isMobile ? '100%' : 'auto',
+            }}
+          >
+            {isMobile ? '+ Create' : 'Create New'}
+          </Button>
+        )}
       </Box>
 
       <DataTable
@@ -252,10 +265,10 @@ export default function CRUDPage<
         onClose={handleDrawerClose}
         title={getDrawerTitle()}
       >
-        {drawerMode === "create" && FormCreateComponent ? (
+        {drawerMode === 'create' && FormCreateComponent ? (
           <FormCreateComponent
             {...{
-              [propName === "camp-allocation" ? "campAllocation" : propName]:
+              [propName === 'camp-allocation' ? 'campAllocation' : propName]:
                 selectedEntity,
             }}
             mode={drawerMode}
@@ -265,7 +278,7 @@ export default function CRUDPage<
         ) : (
           <FormComponent
             {...{
-              [propName === "camp-allocation" ? "campAllocation" : propName]:
+              [propName === 'camp-allocation' ? 'campAllocation' : propName]:
                 selectedEntity,
             }}
             mode={drawerMode}
@@ -300,5 +313,5 @@ export default function CRUDPage<
         </DialogActions>
       </Dialog>
     </>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import { Permission } from "@/interfaces"
+import { Permission } from '@/interfaces'
 
 export function hasAllPermissions(
   permissions: Permission[] = [],

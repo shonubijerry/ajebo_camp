@@ -1,14 +1,14 @@
-"use client";
+'use client'
 
-import QueryProviders from "../../providers/query";
-import AdminAuthProvider from "./providers/auth";
-import AppTheme from "@/components/theme/AppTheme";
-import CssBaseline from "@mui/material/CssBaseline";
+import QueryProviders from '../../providers/query'
+import AdminAuthProvider from './providers/auth'
+import AppTheme from '@/components/theme/AppTheme'
+import CssBaseline from '@mui/material/CssBaseline'
 
 export default function AdminLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <QueryProviders>
@@ -19,5 +19,5 @@ export default function AdminLayout({
         </AppTheme>
       </AdminAuthProvider>
     </QueryProviders>
-  );
+  )
 }

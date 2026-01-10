@@ -1,51 +1,51 @@
-"use client";
+'use client'
 
-import CRUDPage from "@/components/portal/CRUDPage";
-import CampForm from "@/components/forms/CampForm";
-import { ColumnDef } from "@tanstack/react-table";
-import { useRouter } from "next/navigation";
-import { Button, Box } from "@mui/material";
+import CRUDPage from '@/components/portal/CRUDPage'
+import CampForm from '@/components/forms/CampForm'
+import { ColumnDef } from '@tanstack/react-table'
+import { useRouter } from 'next/navigation'
+import { Button, Box } from '@mui/material'
 import {
   Analytics as AnalyticsIcon,
   Group as CampitesIcon,
-} from "@mui/icons-material";
-import { Camp } from "@/interfaces";
-import { useAuth } from "@/hooks/useAuth";
-import { TableCellGetter } from "@/components/dashboard/DataTable";
+} from '@mui/icons-material'
+import { Camp } from '@/interfaces'
+import { useAuth } from '@/hooks/useAuth'
+import { TableCellGetter } from '@/components/dashboard/DataTable'
 
 const CampsPageContent = () => {
-  const router = useRouter();
-  const { hasPermission } = useAuth();
+  const router = useRouter()
+  const { hasPermission } = useAuth()
 
   const columns: ColumnDef<Camp>[] = [
     {
-      accessorKey: "title",
-      header: "Title",
+      accessorKey: 'title',
+      header: 'Title',
     },
     {
-      accessorKey: "year",
-      header: "Year",
+      accessorKey: 'year',
+      header: 'Year',
     },
     {
-      accessorKey: "theme",
-      header: "Theme",
+      accessorKey: 'theme',
+      header: 'Theme',
     },
-    ...((hasPermission("camp:update") && [
+    ...((hasPermission('camp:update') && [
       {
-        accessorKey: "fee",
-        header: "Fee",
+        accessorKey: 'fee',
+        header: 'Fee',
         cell: ({ getValue }: TableCellGetter) =>
           `₦${Number(getValue()).toLocaleString()}`,
       },
       {
-        accessorKey: "start_date",
-        header: "Start Date",
+        accessorKey: 'start_date',
+        header: 'Start Date',
         cell: ({ getValue }: TableCellGetter) =>
           new Date(String(getValue())).toLocaleDateString(),
       },
       {
-        accessorKey: "end_date",
-        header: "End Date",
+        accessorKey: 'end_date',
+        header: 'End Date',
         cell: ({ getValue }: TableCellGetter) =>
           new Date(String(getValue())).toLocaleDateString(),
       },
@@ -53,15 +53,15 @@ const CampsPageContent = () => {
       []),
     {
       enableSorting: false,
-      accessorKey: " ",
-      header: " ",
+      accessorKey: ' ',
+      header: ' ',
       cell: ({ getValue, row }) => {
-        const campId = row.original.id;
+        const campId = row.original.id
         return (
-          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             <span>{getValue<string>()}</span>
-            <Box sx={{ display: "flex", gap: 0.5 }}>
-              {hasPermission("analytics:view") && (
+            <Box sx={{ display: 'flex', gap: 0.5 }}>
+              {hasPermission('analytics:view') && (
                 <Button
                   size="small"
                   variant="outlined"
@@ -83,10 +83,10 @@ const CampsPageContent = () => {
               </Button>
             </Box>
           </Box>
-        );
+        )
       },
     },
-  ];
+  ]
 
   return (
     <CRUDPage<Camp>
@@ -101,7 +101,7 @@ const CampsPageContent = () => {
         `Are you sure you want to delete ${camp?.title}? This action cannot be undone.`
       }
     />
-  );
-};
+  )
+}
 
-export default CampsPageContent;
+export default CampsPageContent

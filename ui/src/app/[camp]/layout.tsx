@@ -1,13 +1,13 @@
-"use client";
+'use client'
 
-import AppTheme from "@/components/theme/AppTheme";
-import QueryProviders from "../../providers/query";
-import { CssBaseline } from "@mui/material";
+import AppTheme from '@/components/theme/AppTheme'
+import QueryProviders from '../../providers/query'
+import { CssBaseline } from '@mui/material'
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <QueryProviders>
@@ -16,5 +16,5 @@ export default function RootLayout({
         <QueryProviders> {children}</QueryProviders>
       </AppTheme>
     </QueryProviders>
-  );
+  )
 }

@@ -1,55 +1,55 @@
-import React from "react";
+import React from 'react'
 import {
   AppBar,
   Avatar,
-  Box,
   IconButton,
   Menu,
   MenuItem,
   Toolbar,
   Typography,
-} from "@mui/material";
+} from '@mui/material'
 import {
   Menu as MenuIcon,
   Logout as LogoutIcon,
   AccountCircle as AccountCircleIcon,
-} from "@mui/icons-material";
-import ColorModeSelect from "@/components/theme/ColorModeSelect";
-import { drawerWidth } from "./Sidebar";
-import { useRouter } from "next/navigation";
+} from '@mui/icons-material'
+import ColorModeSelect from '@/components/theme/ColorModeSelect'
+import { drawerWidth } from './Sidebar'
+import { useRouter } from 'next/navigation'
+import ColorModeIconDropdown from '../theme/ColorModeIconDropdown'
 
 interface DashboardAppBarProps {
-  onMenuClick?: () => void;
-  onLogout?: () => void;
-  initials?: string;
+  onMenuClick?: () => void
+  onLogout?: () => void
+  initials?: string
 }
 
 export default function DashboardAppBar({
   onMenuClick,
   onLogout,
-  initials = "Admin User",
+  initials = 'Admin User',
 }: DashboardAppBarProps) {
-  const router = useRouter();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const menuOpen = Boolean(anchorEl);
+  const router = useRouter()
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const menuOpen = Boolean(anchorEl)
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   const handleProfile = () => {
-    handleMenuClose();
-    router.push("/portal/profile");
-  };
+    handleMenuClose()
+    router.push('/portal/profile')
+  }
 
   const handleLogout = () => {
-    handleMenuClose();
-    onLogout?.();
-  };
+    handleMenuClose()
+    onLogout?.()
+  }
 
   return (
     <AppBar
@@ -57,12 +57,12 @@ export default function DashboardAppBar({
       sx={{
         width: { sm: `calc(100% - ${drawerWidth}px)` },
         ml: { sm: `${drawerWidth}px` },
-        backgroundImage: "none",
-        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.08)",
-        borderBottom: "1px solid",
-        borderColor: "divider",
-        "@media print": {
-          display: "none",
+        backgroundImage: 'none',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
+        borderBottom: '1px solid',
+        borderColor: 'divider',
+        '@media print': {
+          display: 'none',
         },
       }}
       color="inherit"
@@ -73,22 +73,22 @@ export default function DashboardAppBar({
           aria-label="open drawer"
           edge="start"
           onClick={onMenuClick}
-          sx={{ mr: 2, display: { sm: "none" } }}
+          sx={{ mr: 2, display: { sm: 'none' } }}
         >
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" noWrap sx={{ flexGrow: 1, fontWeight: 600 }}>
           Dashboard
         </Typography>
-        <ColorModeSelect size="small" sx={{ mr: 2 }} />
+        <ColorModeIconDropdown size="small" sx={{ mr: 2 }} />
         <IconButton
           onClick={handleMenuOpen}
           size="small"
           sx={{
             ml: 1,
-            transition: "all 0.2s",
-            "&:hover": {
-              bgcolor: "action.hover",
+            transition: 'all 0.2s',
+            '&:hover': {
+              bgcolor: 'action.hover',
             },
           }}
         >
@@ -97,8 +97,8 @@ export default function DashboardAppBar({
             sx={{
               width: 32,
               height: 32,
-              bgcolor: "primary.main",
-              fontSize: "0.875rem",
+              bgcolor: 'primary.main',
+              fontSize: '0.875rem',
             }}
           >
             {initials}
@@ -108,8 +108,8 @@ export default function DashboardAppBar({
           anchorEl={anchorEl}
           open={menuOpen}
           onClose={handleMenuClose}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          transformOrigin={{ vertical: "top", horizontal: "right" }}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
           <MenuItem onClick={handleProfile}>
             <AccountCircleIcon fontSize="small" sx={{ mr: 1.5 }} />
@@ -118,7 +118,7 @@ export default function DashboardAppBar({
           <MenuItem onClick={handleLogout}>
             <LogoutIcon
               fontSize="small"
-              sx={{ mr: 1.5, color: "error.main" }}
+              sx={{ mr: 1.5, color: 'error.main' }}
             />
             <Typography variant="body2" color="error">
               Logout
@@ -127,5 +127,5 @@ export default function DashboardAppBar({
         </Menu>
       </Toolbar>
     </AppBar>
-  );
+  )
 }

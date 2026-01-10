@@ -1,8 +1,8 @@
-import * as React from 'react';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import Typography from '@mui/material/Typography';
+import * as React from 'react'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import Typography from '@mui/material/Typography'
 
 const products = [
   {
@@ -25,10 +25,10 @@ const products = [
     desc: 'License',
     price: '$49.99',
   },
-];
+]
 
 interface InfoProps {
-  totalPrice: string;
+  totalPrice: string
 }
 
 export default function Info({ totalPrice }: InfoProps) {
@@ -55,5 +55,5 @@ export default function Info({ totalPrice }: InfoProps) {
         ))}
       </List>
     </React.Fragment>
-  );
+  )
 }

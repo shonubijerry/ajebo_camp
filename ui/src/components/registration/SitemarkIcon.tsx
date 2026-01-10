@@ -1,4 +1,4 @@
-import Box from '@mui/material/Box';
+import Box from '@mui/material/Box'
 
 export default function SitemarkIcon() {
   return (
@@ -6,7 +6,7 @@ export default function SitemarkIcon() {
       component="img"
       src="/logo/logo.png"
       alt="Ajebo Camp Logo"
-      sx={{ height: 40, width: "auto", display: "block" }}
+      sx={{ height: 40, width: 'auto', display: 'block' }}
     />
-  );
+  )
 }

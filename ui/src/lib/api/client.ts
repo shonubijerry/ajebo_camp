@@ -1,11 +1,11 @@
-import createFetchClient from "openapi-fetch";
-import createClient from "openapi-react-query";
-import type { paths } from "@/lib/api/v1";
+import createFetchClient from 'openapi-fetch'
+import createClient from 'openapi-react-query'
+import type { paths } from '@/lib/api/v1'
 
 const fetchClient = createFetchClient<paths>({
   baseUrl: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:6001',
   fetch: async (input) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token')
 
     return fetch(input, {
       ...input,
@@ -13,8 +13,8 @@ const fetchClient = createFetchClient<paths>({
         ...input?.headers,
         ...(token && { Authorization: `Bearer ${token}` }),
       },
-    });
+    })
   },
-});
+})
 
-export const api = createClient(fetchClient);
+export const api = createClient(fetchClient)

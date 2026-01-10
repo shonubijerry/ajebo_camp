@@ -1,21 +1,21 @@
-"use client";
+'use client'
 
-import CRUDPage from "@/components/portal/CRUDPage";
-import EntityForm from "@/components/forms/EntityForm";
-import { ColumnDef } from "@tanstack/react-table";
-import { Entity } from "@/interfaces";
+import CRUDPage from '@/components/portal/CRUDPage'
+import EntityForm from '@/components/forms/EntityForm'
+import { ColumnDef } from '@tanstack/react-table'
+import { Entity } from '@/interfaces'
 
 const columns: ColumnDef<Entity>[] = [
   {
-    accessorKey: "name",
-    header: "Entity Name",
+    accessorKey: 'name',
+    header: 'Entity Name',
   },
   {
-    accessorKey: "created_at",
-    header: "Created",
+    accessorKey: 'created_at',
+    header: 'Created',
     cell: ({ getValue }) => new Date(String(getValue())).toLocaleDateString(),
   },
-];
+]
 
 export default function EntitiesPage() {
   return (
@@ -32,5 +32,5 @@ export default function EntitiesPage() {
         `Are you sure you want to delete ${entity?.name}? This action cannot be undone.`
       }
     />
-  );
+  )
 }

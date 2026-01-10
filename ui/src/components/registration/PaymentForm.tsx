@@ -1,22 +1,22 @@
-import * as React from 'react';
-import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
-import MuiCard from '@mui/material/Card';
-import CardActionArea from '@mui/material/CardActionArea';
-import CardContent from '@mui/material/CardContent';
-import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormLabel from '@mui/material/FormLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import RadioGroup from '@mui/material/RadioGroup';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
-import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded';
-import CreditCardRoundedIcon from '@mui/icons-material/CreditCardRounded';
-import SimCardRoundedIcon from '@mui/icons-material/SimCardRounded';
-import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
+import * as React from 'react'
+import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
+import MuiCard from '@mui/material/Card'
+import CardActionArea from '@mui/material/CardActionArea'
+import CardContent from '@mui/material/CardContent'
+import Checkbox from '@mui/material/Checkbox'
+import FormControl from '@mui/material/FormControl'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormLabel from '@mui/material/FormLabel'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import RadioGroup from '@mui/material/RadioGroup'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { styled } from '@mui/material/styles'
+import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded'
+import CreditCardRoundedIcon from '@mui/icons-material/CreditCardRounded'
+import SimCardRoundedIcon from '@mui/icons-material/SimCardRounded'
+import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 
 const Card = styled(MuiCard)<{ selected?: boolean }>(({ theme }) => ({
   border: '1px solid',
@@ -49,7 +49,7 @@ const Card = styled(MuiCard)<{ selected?: boolean }>(({ theme }) => ({
       },
     },
   ],
-}));
+}))
 
 const PaymentContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -75,47 +75,47 @@ const PaymentContainer = styled('div')(({ theme }) => ({
       'linear-gradient(to right bottom, hsla(220, 30%, 6%, 0.2) 25%, hsla(220, 20%, 25%, 0.2) 100%)',
     boxShadow: '0px 4px 8px hsl(220, 35%, 0%)',
   }),
-}));
+}))
 
 const FormGrid = styled('div')(() => ({
   display: 'flex',
   flexDirection: 'column',
-}));
+}))
 
 export default function PaymentForm() {
-  const [paymentType, setPaymentType] = React.useState('creditCard');
-  const [cardNumber, setCardNumber] = React.useState('');
-  const [cvv, setCvv] = React.useState('');
-  const [expirationDate, setExpirationDate] = React.useState('');
+  const [paymentType, setPaymentType] = React.useState('creditCard')
+  const [cardNumber, setCardNumber] = React.useState('')
+  const [cvv, setCvv] = React.useState('')
+  const [expirationDate, setExpirationDate] = React.useState('')
 
   const handlePaymentTypeChange = (event: {
-    target: { value: React.SetStateAction<string> };
+    target: { value: React.SetStateAction<string> }
   }) => {
-    setPaymentType(event.target.value);
-  };
+    setPaymentType(event.target.value)
+  }
 
   const handleCardNumberChange = (event: { target: { value: string } }) => {
-    const value = event.target.value.replace(/\D/g, '');
-    const formattedValue = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+    const value = event.target.value.replace(/\D/g, '')
+    const formattedValue = value.replace(/(\d{4})(?=\d)/g, '$1 ')
     if (value.length <= 16) {
-      setCardNumber(formattedValue);
+      setCardNumber(formattedValue)
     }
-  };
+  }
 
   const handleCvvChange = (event: { target: { value: string } }) => {
-    const value = event.target.value.replace(/\D/g, '');
+    const value = event.target.value.replace(/\D/g, '')
     if (value.length <= 3) {
-      setCvv(value);
+      setCvv(value)
     }
-  };
+  }
 
   const handleExpirationDateChange = (event: { target: { value: string } }) => {
-    const value = event.target.value.replace(/\D/g, '');
-    const formattedValue = value.replace(/(\d{2})(?=\d{2})/, '$1/');
+    const value = event.target.value.replace(/\D/g, '')
+    const formattedValue = value.replace(/(\d{2})(?=\d{2})/, '$1/')
     if (value.length <= 4) {
-      setExpirationDate(formattedValue);
+      setExpirationDate(formattedValue)
     }
-  };
+  }
 
   return (
     <Stack spacing={{ xs: 3, sm: 6 }} useFlexGap>
@@ -143,7 +143,9 @@ export default function PaymentForm() {
                 },
               }}
             >
-              <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <CardContent
+                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+              >
                 <CreditCardRoundedIcon
                   fontSize="small"
                   sx={[
@@ -174,7 +176,9 @@ export default function PaymentForm() {
                 },
               }}
             >
-              <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <CardContent
+                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+              >
                 <AccountBalanceRoundedIcon
                   fontSize="small"
                   sx={[
@@ -189,7 +193,9 @@ export default function PaymentForm() {
                     },
                   ]}
                 />
-                <Typography sx={{ fontWeight: 'medium' }}>Bank account</Typography>
+                <Typography sx={{ fontWeight: 'medium' }}>
+                  Bank account
+                </Typography>
               </CardContent>
             </CardActionArea>
           </Card>
@@ -319,5 +325,5 @@ export default function PaymentForm() {
         </Box>
       )}
     </Stack>
-  );
+  )
 }

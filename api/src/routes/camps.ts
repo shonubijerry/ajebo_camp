@@ -8,6 +8,7 @@ import { requestBodies, responseBodies } from '../schemas'
 import { AppContext } from '../types'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './generic/types'
+import { AuthenticatedUser } from '../middlewares/auth'
 
 const campMeta = {
   collection: 'Camp' as const,
@@ -23,7 +24,9 @@ export class CreateCampEndpoint extends OpenAPIEndpoint {
     permission: 'camp:create' as const,
   }
 
-  async action(c: AppContext, payload: typeof this.meta.requestSchema._type) {
+  async action(c: AppContext  & {
+      user?: AuthenticatedUser
+    }, payload: typeof this.meta.requestSchema._type) {
     const contentType = c.req.header('content-type')?.toLowerCase() || ''
     let file: File | null = null
     let bodyInput: unknown = payload?.body
@@ -51,6 +54,10 @@ export class CreateCampEndpoint extends OpenAPIEndpoint {
         premium_fees: premiumFees,
         start_date: formData.get('start_date')?.toString() || '',
         end_date: formData.get('end_date')?.toString() || '',
+        highlights: formData.get('highlights')?.toString() || '',
+        registration_deadline: formData.get('registration_deadline')?.toString() || '',
+        contact_email: formData.get('contact_email')?.toString() || null,
+        contact_phone: formData.get('contact_phone')?.toString() || null,
       }
     }
 
@@ -59,8 +66,8 @@ export class CreateCampEndpoint extends OpenAPIEndpoint {
       return c.json({ success: false, errors: parsed.error.issues }, 400)
     }
 
-    const campData = { ...parsed.data }
-
+    const campData = { ...parsed.data, user_id: c.user?.sub, }
+    
     if (file && file.size > 0) {
       const key = `camps/${crypto.randomUUID()}`
       const bytes = await file.arrayBuffer()

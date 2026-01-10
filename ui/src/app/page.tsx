@@ -1,37 +1,37 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { Box, CircularProgress } from "@mui/material";
-import CampsDisplay from "../components/home/CampsDisplay";
-import { api } from "@/lib/api/server";
-import { Camp } from "@/interfaces";
+import { useEffect, useState } from "react"
+import { Box, CircularProgress } from "@mui/material"
+import CampsDisplay from "../components/home/CampsDisplay"
+import { api } from "@/lib/api/server"
+import { Camp } from "@/interfaces"
 
 export default function HomePage() {
-  const [camps, setCamps] = useState<Camp[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [camps, setCamps] = useState<Camp[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    let isMounted = true;
+    let isMounted = true
 
     const loadCamps = async () => {
       try {
         const result = await api.GET("/api/v1/camps/list", {
           query: { page: 0, per_page: 100 },
-        });
+        })
 
-        if (!isMounted) return;
-        setCamps(result.data?.success ? result.data.data ?? [] : []);
+        if (!isMounted) return
+        setCamps(result.data?.success ? (result.data.data ?? []) : [])
       } finally {
-        if (isMounted) setIsLoading(false);
+        if (isMounted) setIsLoading(false)
       }
-    };
+    }
 
-    loadCamps();
+    loadCamps()
 
     return () => {
-      isMounted = false;
-    };
-  }, []);
+      isMounted = false
+    }
+  }, [])
 
   if (isLoading) {
     return (
@@ -45,8 +45,8 @@ export default function HomePage() {
       >
         <CircularProgress />
       </Box>
-    );
+    )
   }
 
-  return <CampsDisplay camps={camps} />;
+  return <CampsDisplay camps={camps} />
 }

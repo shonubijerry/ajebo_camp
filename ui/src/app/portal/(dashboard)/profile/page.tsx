@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import React from "react";
+import React from 'react'
 import {
   Avatar,
   Box,
@@ -12,25 +12,25 @@ import {
   Skeleton,
   Stack,
   Typography,
-} from "@mui/material";
-import { useAuth } from "@/hooks/useAuth";
+} from '@mui/material'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function ProfilePage() {
-  const { user, isLoading } = useAuth();
-  const profile = user?.data;
+  const { user, isLoading } = useAuth()
+  const profile = user?.data
 
   const initials = React.useMemo(() => {
-    const first = profile?.firstname?.[0] || "";
-    const last = profile?.lastname?.[0] || "";
-    return (first + last || "A").toUpperCase();
-  }, [profile?.firstname, profile?.lastname]);
+    const first = profile?.firstname?.[0] || ''
+    const last = profile?.lastname?.[0] || ''
+    return (first + last || 'A').toUpperCase()
+  }, [profile?.firstname, profile?.lastname])
 
   const infoRows = [
-    { label: "Email", value: profile?.email },
-    { label: "Phone", value: profile?.phone || "Not provided" },
-    { label: "Role", value: profile?.role },
-    { label: "User ID", value: profile?.id },
-  ];
+    { label: 'Email', value: profile?.email },
+    { label: 'Phone', value: profile?.phone || 'Not provided' },
+    { label: 'Role', value: profile?.role },
+    { label: 'User ID', value: profile?.id },
+  ]
 
   return (
     <Stack spacing={3}>
@@ -45,20 +45,20 @@ export default function ProfilePage() {
 
       <Card
         sx={{
-          overflow: "hidden",
-          border: "1px solid",
-          borderColor: "divider",
-          boxShadow: "0 16px 40px rgba(15, 23, 42, 0.08)",
+          overflow: 'hidden',
+          border: '1px solid',
+          borderColor: 'divider',
+          boxShadow: '0 16px 40px rgba(15, 23, 42, 0.08)',
         }}
       >
         <Box
           sx={{
-            background: "linear-gradient(135deg, #6366f1 0%, #0ea5e9 100%)",
-            color: "white",
+            background: 'linear-gradient(135deg, #6366f1 0%, #0ea5e9 100%)',
+            color: 'white',
             px: { xs: 3, sm: 4 },
             py: { xs: 3, sm: 4 },
-            display: "flex",
-            alignItems: "center",
+            display: 'flex',
+            alignItems: 'center',
             gap: 2,
           }}
         >
@@ -67,15 +67,15 @@ export default function ProfilePage() {
               variant="circular"
               width={72}
               height={72}
-              sx={{ bgcolor: "rgba(255,255,255,0.3)" }}
+              sx={{ bgcolor: 'rgba(255,255,255,0.3)' }}
             />
           ) : (
             <Avatar
               sx={{
                 width: 72,
                 height: 72,
-                bgcolor: "white",
-                color: "primary.main",
+                bgcolor: 'white',
+                color: 'primary.main',
                 fontWeight: 800,
               }}
             >
@@ -87,21 +87,21 @@ export default function ProfilePage() {
               {isLoading ? (
                 <Skeleton
                   width={180}
-                  sx={{ bgcolor: "rgba(255,255,255,0.4)" }}
+                  sx={{ bgcolor: 'rgba(255,255,255,0.4)' }}
                 />
               ) : (
-                `${profile?.firstname ?? ""} ${profile?.lastname ?? ""}`.trim() ||
-                "User"
+                `${profile?.firstname ?? ''} ${profile?.lastname ?? ''}`.trim() ||
+                'User'
               )}
             </Typography>
             <Typography variant="body2" sx={{ opacity: 0.9 }} noWrap>
               {isLoading ? (
                 <Skeleton
                   width={220}
-                  sx={{ bgcolor: "rgba(255,255,255,0.3)" }}
+                  sx={{ bgcolor: 'rgba(255,255,255,0.3)' }}
                 />
               ) : (
-                (profile?.email ?? "")
+                (profile?.email ?? '')
               )}
             </Typography>
           </Box>
@@ -115,7 +115,7 @@ export default function ProfilePage() {
                   {row.label}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                  {isLoading ? <Skeleton width={140} /> : row.value || "—"}
+                  {isLoading ? <Skeleton width={140} /> : row.value || '—'}
                 </Typography>
               </Grid>
             ))}
@@ -140,7 +140,7 @@ export default function ProfilePage() {
                   label={perm}
                   size="small"
                   variant="outlined"
-                  sx={{ textTransform: "none" }}
+                  sx={{ textTransform: 'none' }}
                 />
               ))}
             </Stack>
@@ -152,5 +152,5 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
     </Stack>
-  );
+  )
 }

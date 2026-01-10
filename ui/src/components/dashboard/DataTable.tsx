@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -9,7 +9,7 @@ import {
   ColumnDef,
   SortingState,
   Getter,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table'
 import {
   Box,
   Table,
@@ -28,7 +28,7 @@ import {
   useMediaQuery,
   useTheme,
   Typography,
-} from "@mui/material";
+} from '@mui/material'
 import {
   UnfoldMore as ArrowUpDownIcon,
   KeyboardArrowUp as ChevronUpIcon,
@@ -36,19 +36,19 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Visibility as ViewIcon,
-} from "@mui/icons-material";
+} from '@mui/icons-material'
 
 interface DataTableProps<T> {
-  data: T[];
-  columns: ColumnDef<T>[];
-  onView?: (row: T) => void;
-  onEdit?: (row: T) => void;
-  onDelete?: (row: T) => void;
-  isLoading?: boolean;
-  pageSize?: number;
+  data: T[]
+  columns: ColumnDef<T>[]
+  onView?: (row: T) => void
+  onEdit?: (row: T) => void
+  onDelete?: (row: T) => void
+  isLoading?: boolean
+  pageSize?: number
 }
 
-export type TableCellGetter = { getValue: Getter<unknown>}
+export type TableCellGetter = { getValue: Getter<unknown> }
 
 export default function DataTable<T>({
   data,
@@ -56,31 +56,29 @@ export default function DataTable<T>({
   onView,
   onEdit,
   onDelete,
-  isLoading = false,
   pageSize = 25,
 }: DataTableProps<T>) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
-  
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = React.useState("");
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [globalFilter, setGlobalFilter] = React.useState('')
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize,
-  });
+  })
 
   const tableColumns = React.useMemo(() => {
-    const cols: ColumnDef<T>[] = [...columns];
+    const cols: ColumnDef<T>[] = [...columns]
 
     // On mobile, show only first 3 columns plus actions
     if (isMobile) {
-      const visibleCols = cols.slice(0, 3);
-      
+      const visibleCols = cols.slice(0, 3)
+
       if (onView || onEdit || onDelete) {
         visibleCols.push({
-          id: "actions",
-          header: "",
+          id: 'actions',
+          header: '',
           cell: ({ row }) => (
             <Stack direction="row" spacing={0}>
               {onView && (
@@ -88,7 +86,7 @@ export default function DataTable<T>({
                   size="small"
                   onClick={() => onView(row.original)}
                   color="info"
-                  sx={{ padding: "4px" }}
+                  sx={{ padding: '4px' }}
                 >
                   <ViewIcon fontSize="small" />
                 </IconButton>
@@ -98,7 +96,7 @@ export default function DataTable<T>({
                   size="small"
                   onClick={() => onEdit(row.original)}
                   color="primary"
-                  sx={{ padding: "4px" }}
+                  sx={{ padding: '4px' }}
                 >
                   <EditIcon fontSize="small" />
                 </IconButton>
@@ -108,23 +106,23 @@ export default function DataTable<T>({
                   size="small"
                   onClick={() => onDelete(row.original)}
                   color="error"
-                  sx={{ padding: "4px" }}
+                  sx={{ padding: '4px' }}
                 >
                   <DeleteIcon fontSize="small" />
                 </IconButton>
               )}
             </Stack>
           ),
-        } as ColumnDef<T>);
+        } as ColumnDef<T>)
       }
-      
-      return visibleCols;
+
+      return visibleCols
     }
 
     if (onView || onEdit || onDelete) {
       cols.push({
-        id: "actions",
-        header: "Actions",
+        id: 'actions',
+        header: 'Actions',
         cell: ({ row }) => (
           <Stack direction="row" spacing={0.5}>
             {onView && (
@@ -162,11 +160,11 @@ export default function DataTable<T>({
             )}
           </Stack>
         ),
-      } as ColumnDef<T>);
+      } as ColumnDef<T>)
     }
 
-    return cols;
-  }, [columns, onView, onEdit, onDelete, isMobile]);
+    return cols
+  }, [columns, onView, onEdit, onDelete, isMobile])
 
   const table = useReactTable({
     data,
@@ -183,35 +181,41 @@ export default function DataTable<T>({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-  });
+  })
 
   return (
-    <Paper variant="outlined" sx={{ width: "100%", overflow: "hidden" }}>
-      <Box sx={{ p: { xs: 1, sm: 2 }, borderBottom: "1px solid", borderColor: "divider" }}>
+    <Paper variant="outlined" sx={{ width: '100%', overflow: 'hidden' }}>
+      <Box
+        sx={{
+          p: { xs: 1, sm: 2 },
+          borderBottom: '1px solid',
+          borderColor: 'divider',
+        }}
+      >
         <TextField
           size="small"
           placeholder="Search..."
           value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}
           fullWidth
-          sx={{ maxWidth: isMobile ? "100%" : 300 }}
+          sx={{ maxWidth: isMobile ? '100%' : 300 }}
         />
       </Box>
 
-      <TableContainer sx={{ overflowX: "auto", maxWidth: "100%" }}>
-        <Table 
-          stickyHeader 
+      <TableContainer sx={{ overflowX: 'auto', maxWidth: '100%' }}>
+        <Table
+          stickyHeader
           aria-label="data table"
-          size={isMobile ? "small" : "medium"}
+          size={isMobile ? 'small' : 'medium'}
           sx={{
-            tableLayout: isMobile ? "auto" : "auto",
-            width: "100%",
-            "& td, & th": {
-              fontSize: isMobile ? "0.7rem" : "0.875rem",
-              padding: isMobile ? "6px 4px" : "16px",
-              maxWidth: isMobile ? "120px" : "none",
-              overflow: isMobile ? "hidden" : "visible",
-              textOverflow: isMobile ? "ellipsis" : "clip",
+            tableLayout: isMobile ? 'auto' : 'auto',
+            width: '100%',
+            '& td, & th': {
+              fontSize: isMobile ? '0.7rem' : '0.875rem',
+              padding: isMobile ? '6px 4px' : '16px',
+              maxWidth: isMobile ? '120px' : 'none',
+              overflow: isMobile ? 'hidden' : 'visible',
+              textOverflow: isMobile ? 'ellipsis' : 'clip',
             },
           }}
         >
@@ -220,35 +224,52 @@ export default function DataTable<T>({
               <TableRow
                 key={headerGroup.id}
                 sx={{
-                  backgroundColor: "action.hover",
-                  "& th": {
+                  backgroundColor: 'action.hover',
+                  '& th': {
                     fontWeight: 600,
-                    fontSize: isMobile ? "0.75rem" : "0.875rem",
+                    fontSize: isMobile ? '0.75rem' : '0.875rem',
                   },
                 }}
               >
                 {headerGroup.headers.map((header) => (
                   <TableCell
                     key={header.id}
-                    onClick={header.column.getCanSort() ? header.column.getToggleSortingHandler() : undefined}
+                    onClick={
+                      header.column.getCanSort()
+                        ? header.column.getToggleSortingHandler()
+                        : undefined
+                    }
                     sx={{
-                      cursor: header.column.getCanSort() ? "pointer" : "default",
-                      userSelect: "none",
-                      whiteSpace: "nowrap",
-                      "&:hover": header.column.getCanSort()
+                      cursor: header.column.getCanSort()
+                        ? 'pointer'
+                        : 'default',
+                      userSelect: 'none',
+                      whiteSpace: 'nowrap',
+                      '&:hover': header.column.getCanSort()
                         ? {
-                            bgcolor: "action.selected",
+                            bgcolor: 'action.selected',
                           }
                         : {},
                     }}
                   >
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                      {flexRender(header.column.columnDef.header, header.getContext())}
+                    <Box
+                      sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                       {header.column.getCanSort() && !isMobile && (
-                        <Box sx={{ display: "flex", alignItems: "center", opacity: 0.5 }}>
-                          {header.column.getIsSorted() === "desc" ? (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            opacity: 0.5,
+                          }}
+                        >
+                          {header.column.getIsSorted() === 'desc' ? (
                             <ChevronDownIcon fontSize="small" />
-                          ) : header.column.getIsSorted() === "asc" ? (
+                          ) : header.column.getIsSorted() === 'asc' ? (
                             <ChevronUpIcon fontSize="small" />
                           ) : (
                             <ArrowUpDownIcon fontSize="small" />
@@ -266,20 +287,20 @@ export default function DataTable<T>({
               <TableRow
                 key={row.id}
                 sx={{
-                  "&:hover": {
-                    backgroundColor: "action.hover",
+                  '&:hover': {
+                    backgroundColor: 'action.hover',
                   },
-                  "&:last-child td, &:last-child th": {
+                  '&:last-child td, &:last-child th': {
                     border: 0,
                   },
                 }}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell 
+                  <TableCell
                     key={cell.id}
                     sx={{
-                      whiteSpace: isMobile ? "normal" : "nowrap",
-                      wordBreak: isMobile ? "break-word" : "normal",
+                      whiteSpace: isMobile ? 'normal' : 'nowrap',
+                      wordBreak: isMobile ? 'break-word' : 'normal',
                     }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -292,30 +313,36 @@ export default function DataTable<T>({
       </TableContainer>
 
       {table.getRowModel().rows.length === 0 && (
-        <Box sx={{ p: 3, textAlign: "center", color: "text.secondary" }}>
+        <Box sx={{ p: 3, textAlign: 'center', color: 'text.secondary' }}>
           No results found
         </Box>
       )}
 
       <Box
         sx={{
-          display: "flex",
-          flexDirection: isMobile ? "column" : "row",
-          alignItems: isMobile ? "stretch" : "center",
-          justifyContent: "space-between",
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: isMobile ? 'stretch' : 'center',
+          justifyContent: 'space-between',
           p: isMobile ? 1 : 2,
-          borderTop: "1px solid",
-          borderColor: "divider",
+          borderTop: '1px solid',
+          borderColor: 'divider',
           gap: 1,
         }}
       >
         {isMobile ? (
           <>
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
               <Typography variant="caption" color="text.secondary">
                 {`${pagination.pageIndex * pagination.pageSize + 1}-${Math.min(
                   (pagination.pageIndex + 1) * pagination.pageSize,
-                  table.getFilteredRowModel().rows.length
+                  table.getFilteredRowModel().rows.length,
                 )} of ${table.getFilteredRowModel().rows.length}`}
               </Typography>
               <Stack direction="row" spacing={1}>
@@ -347,12 +374,12 @@ export default function DataTable<T>({
             page={pagination.pageIndex}
             onPageChange={(_, page) => table.setPageIndex(page)}
             onRowsPerPageChange={(e) => {
-              table.setPageSize(Number(e.target.value));
+              table.setPageSize(Number(e.target.value))
             }}
-            sx={{ width: "100%", border: 0 }}
+            sx={{ width: '100%', border: 0 }}
           />
         )}
       </Box>
     </Paper>
-  );
+  )
 }

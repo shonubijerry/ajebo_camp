@@ -63,27 +63,26 @@ export const campCreate = z.object({
   fee: z.number().int().openapi({ example: 15000 }),
   premium_fees: z
     .array(z.number().int())
-    .default([])
     .openapi({ example: [20000, 30000] }),
   start_date: isoDate,
   end_date: isoDate,
-  description: z
-    .string()
-    .nullish()
-    .openapi({ example: 'An amazing spiritual gathering for youth and adults' }),
-  location: z.string().nullish().openapi({ example: 'Lagos, Nigeria' }),
-  venue: z
-    .string()
-    .nullish()
-    .openapi({ example: 'Foursquare Camp Ground, Ajebo' }),
   highlights: z
-    .array(z.string())
-    .default([])
-    .openapi({
-      example: ['Powerful worship sessions', 'Inspiring teachings', 'Fellowship'],
+    .object({
+      location: z.string().optional().openapi({ example: 'Foursquare Camp Ground, Ajebo' }),
+      description: z.string().optional().openapi({ example: 'Join us for worship, teachings, and fun activities' }),
+      ministers: z
+        .object({
+          name: z.string().openapi({ example: 'Pastor John Doe' }),
+          designation: z.string().openapi({ example: 'Senior Pastor' }),
+        })
+        .array()
+        .openapi({ example: [
+          { name: 'Pastor John Doe', designation: 'Senior Pastor' },
+          { name: 'Evangelist Jane Smith', designation: 'Guest Speaker' },
+        ] }),
+      activities: z.array(z.string()).openapi({ example: ['Worship Sessions', 'Workshops', 'Outdoor Games'] }),
     }),
   registration_deadline: isoDate.nullish(),
-  capacity: z.number().int().nullish().openapi({ example: 500 }),
   contact_email: z
     .string()
     .email()
@@ -91,7 +90,7 @@ export const campCreate = z.object({
     .openapi({ example: 'camp@foursquare.org' }),
   contact_phone: z.string().nullish().openapi({ example: '+2348012345678' }),
 })
-export const campResponse = campCreate.extend(basedSchemas).extend({  
+export const campResponse = campCreate.extend(basedSchemas).extend({
   is_active: z.boolean(),
   is_coming_soon: z.boolean(),
 })

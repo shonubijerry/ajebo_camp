@@ -1,37 +1,37 @@
-"use client";
+'use client'
 
-import CRUDPage from "@/components/portal/CRUDPage";
-import UserForm from "@/components/forms/UserForm";
-import { ColumnDef } from "@tanstack/react-table";
-import { User } from "@/interfaces";
+import CRUDPage from '@/components/portal/CRUDPage'
+import UserForm from '@/components/forms/UserForm'
+import { ColumnDef } from '@tanstack/react-table'
+import { User } from '@/interfaces'
 
 const columns: ColumnDef<User>[] = [
   {
-    accessorKey: "firstname",
-    header: "First Name",
+    accessorKey: 'firstname',
+    header: 'First Name',
   },
   {
-    accessorKey: "lastname",
-    header: "Last Name",
+    accessorKey: 'lastname',
+    header: 'Last Name',
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: 'email',
+    header: 'Email',
   },
   {
-    accessorKey: "phone",
-    header: "Phone",
+    accessorKey: 'phone',
+    header: 'Phone',
   },
   {
-    accessorKey: "role",
-    header: "Role",
+    accessorKey: 'role',
+    header: 'Role',
   },
   {
-    accessorKey: "created_at",
-    header: "Created",
+    accessorKey: 'created_at',
+    header: 'Created',
     cell: ({ getValue }) => new Date(String(getValue())).toLocaleDateString(),
   },
-];
+]
 
 export default function UsersPage() {
   return (
@@ -46,7 +46,7 @@ export default function UsersPage() {
       getDeleteMessage={(user) =>
         `Are you sure you want to delete ${user?.firstname} ${user?.lastname}? This action cannot be undone.`
       }
-      orderBy='[created_at]=desc'
+      orderBy="[created_at]=desc"
     />
-  );
+  )
 }
