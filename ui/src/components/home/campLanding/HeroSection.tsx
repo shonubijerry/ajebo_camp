@@ -140,8 +140,8 @@ export function HeroSection({
               sx={{
                 px: 4,
                 py: 1.8,
+                color: 'white',
                 borderColor: 'white',
-                color: 'secondary',
                 fontSize: '1.1rem',
                 fontWeight: 700,
                 '&:hover': {
@@ -163,6 +163,7 @@ export function HeroSection({
                 sx={{
                   px: 4,
                   py: 1.8,
+                  color: 'white',
                   borderColor: 'white',
                   fontSize: '1.1rem',
                   fontWeight: 700,

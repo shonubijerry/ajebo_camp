@@ -1,6 +1,4 @@
-import React from 'react'
-
-const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || ''
+import React from "react"
 
 interface PaystackTransaction {
   reference?: string
@@ -35,16 +33,16 @@ export const usePaystackPayment = () => {
 
     // Lazy-load Paystack on the client to avoid SSR window access.
     const loadPaystack = async () => {
-      if (typeof window === 'undefined') return
+      if (typeof window === "undefined") return
 
       try {
-        const paystackModule = await import('@paystack/inline-js')
+        const paystackModule = await import("@paystack/inline-js")
         if (!cancelled) {
           paystackRef.current = paystackModule.default
           setPaystackReady(true)
         }
       } catch (error) {
-        console.error('Failed to load Paystack', error)
+        console.error("Failed to load Paystack", error)
       }
     }
 
@@ -63,19 +61,19 @@ export const usePaystackPayment = () => {
     onError,
   }: ProcessPaymentArgs) => {
     if (!paystackReady || !paystackRef.current) {
-      onError(new Error('Payment service not ready'))
+      onError(new Error("Payment service not ready"))
       return
     }
 
-    if (typeof window === 'undefined') {
-      onError(new Error('Payment can only be initiated in the browser'))
+    if (typeof window === "undefined") {
+      onError(new Error("Payment can only be initiated in the browser"))
       return
     }
 
     const PaystackPop = paystackRef.current!
     const popup = new PaystackPop()
     popup.newTransaction({
-      key: PAYSTACK_PUBLIC_KEY,
+      key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY ?? "",
       email,
       amount: Math.round(amount * 100),
       onSuccess,
