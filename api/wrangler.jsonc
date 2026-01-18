@@ -39,16 +39,16 @@
     }
   ],
   "env": {
-    "staging": {
-      "name": "ajebo_camp_api_staging",
-      "route": "https://staging-api.ajebo.camp/*",
+    "production": {
+      "name": "ajebo_camp_api_production",
+      "route": "https://api.ajebo.camp/*",
       "vars": {
-        "ENVIRONMENT": "staging"
+        "ENVIRONMENT": "production"
       },
       "services": [
         {
           "binding": "DATABASE",
-          "service": "database-staging"
+          "service": "database-production"
         }
       ],
       "r2_buckets": [

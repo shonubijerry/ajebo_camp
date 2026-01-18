@@ -2,7 +2,7 @@ import dbService from '@ajebo_camp/database'
 import { prismaExtension } from './lib/prisma'
 
 export type Env = {
-  ENVIRONMENT: 'staging' | 'production' | 'development'
+  ENVIRONMENT: 'production' | 'development'
   DB: D1Database
   SENTRY_RELEASE: string
   DATABASE: Service<dbService>
