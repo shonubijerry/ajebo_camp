@@ -5,14 +5,13 @@ on:
     branches: [main]
     paths:
       - 'packages/database/**'
-      - 'package-lock.json'
-      - 'package.json'
+      - '.github/workflows/deploy-database.yml'
   workflow_dispatch:
     inputs:
       wrangler_env:
         description: "Wrangler environment name (leave empty to deploy the default/production config)"
         required: false
-        default: "staging"
+        default: "production"
 
 concurrency: database-${{ github.ref }}
 

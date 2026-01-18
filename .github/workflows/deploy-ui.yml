@@ -5,8 +5,7 @@ on:
     branches: [main]
     paths:
       - 'ui/**'
-      - 'package-lock.json'
-      - 'package.json'
+      - '.github/workflows/deploy-ui.yml'
   workflow_dispatch:
 
 concurrency: ui-${{ github.ref }}
