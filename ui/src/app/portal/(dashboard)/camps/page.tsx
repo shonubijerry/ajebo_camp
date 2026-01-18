@@ -23,10 +23,6 @@ const CampsPageContent = () => {
       header: 'Title',
     },
     {
-      accessorKey: 'year',
-      header: 'Year',
-    },
-    {
       accessorKey: 'theme',
       header: 'Theme',
     },

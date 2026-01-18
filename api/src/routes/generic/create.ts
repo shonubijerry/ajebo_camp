@@ -26,6 +26,7 @@ export abstract class OpenAPIEndpoint extends OpenAPIRoute {
     collection?: Prisma.ModelName
     security?: Array<{ bearer: [] }>
     permission?: Permission | Permission[]
+    supportsFormData?: boolean
   }
 
   /**
@@ -61,7 +62,15 @@ export abstract class OpenAPIEndpoint extends OpenAPIRoute {
       request: this.meta.requestSchema
         ? {
             ...this.meta.requestSchema.shape,
-            body: contentJson(this.meta.requestSchema.shape.body),
+            body: this.meta.supportsFormData
+              ? {
+                  content: {
+                    'multipart/form-data': {
+                      schema: this.meta.requestSchema.shape.body,
+                    },
+                  },
+                }
+              : contentJson(this.meta.requestSchema.shape.body),
           }
         : undefined,
       responses: {

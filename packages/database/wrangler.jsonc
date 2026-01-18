@@ -27,15 +27,15 @@
     "WRANGLER_ENVIRONMENT": "development"
   },
   "env": {
-    "staging": {
-      "name": "database-staging",
+    "production": {
+      "name": "database-production",
       "vars": {
-        "WRANGLER_ENVIRONMENT": "staging"
+        "WRANGLER_ENVIRONMENT": "production"
       },
       "d1_databases": [
         {
           "binding": "DB",
-          "database_name": "ajebo-camp-staging-db",
+          "database_name": "ajebo-camp-production-db",
           "database_id": "fa1c2ef1-977f-4694-887b-e022dc0ab61f",
           "migrations_dir": "migrations/db"
         }

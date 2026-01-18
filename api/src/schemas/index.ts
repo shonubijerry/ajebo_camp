@@ -56,13 +56,15 @@ export const campCreate = z.object({
   verse: z.string().nullish().openapi({ example: 'Jeremiah 29:11' }),
   entity_id: z.string().openapi({ example: 'entity_123' }),
   banner: z
-    .string()
-    .nullish()
-    .openapi({ example: 'https://example.com/banner.jpg' }),
+    .union([z.instanceof(File), z.string(), z.null()])
+    .optional()
+    .openapi({ type: 'string', format: 'binary', description: 'Banner image file' }),
   year: z.number().int().openapi({ example: 2025 }),
   fee: z.number().int().openapi({ example: 15000 }),
   premium_fees: z
     .array(z.number().int())
+    .optional()
+    .default([])
     .openapi({ example: [20000, 30000] }),
   start_date: isoDate,
   end_date: isoDate,
@@ -76,12 +78,15 @@ export const campCreate = z.object({
           designation: z.string().openapi({ example: 'Senior Pastor' }),
         })
         .array()
+        .optional()
+        .default([])
         .openapi({ example: [
           { name: 'Pastor John Doe', designation: 'Senior Pastor' },
           { name: 'Evangelist Jane Smith', designation: 'Guest Speaker' },
         ] }),
-      activities: z.array(z.string()).openapi({ example: ['Worship Sessions', 'Workshops', 'Outdoor Games'] }),
-    }),
+      activities: z.array(z.string()).optional().default([]).openapi({ example: ['Worship Sessions', 'Workshops', 'Outdoor Games'] }),
+    })
+    .optional(),
   registration_deadline: isoDate.nullish(),
   contact_email: z
     .string()

@@ -17,12 +17,12 @@ import {
   Box,
   Paper,
   FormHelperText,
-  Switch,
-  FormControlLabel,
+  TextareaAutosize,
 } from '@mui/material'
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import { useApi } from '@/lib/api/useApi'
 import { CreateCampRequest } from '@/interfaces'
+import { getMediaUrl } from '@/lib/media'
 
 interface CampAllocation {
   id?: string
@@ -63,6 +63,10 @@ export default function CampForm({
 }: CampFormProps) {
   const { $api } = useApi()
   const [error, setError] = React.useState<string | null>(null)
+  const [bannerFile, setBannerFile] = React.useState<File | null>(null)
+  const [bannerPreview, setBannerPreview] = React.useState<string | null>(
+    getMediaUrl(camp?.banner),
+  )
   const isView = mode === 'view'
 
   const createCampMutation = $api.useMutation('post', '/api/v1/camps')
@@ -96,14 +100,28 @@ export default function CampForm({
     [allocationsResult.data],
   )
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    register,
-  } = useForm<CampFormData>({
-    defaultValues: {
+  const token = localStorage.getItem('token')
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:6001'
+
+  // Helper to format date for display in input
+  const formatDateForInput = (value: string | null | undefined): string => {
+    return value ? new Date(value).toISOString().split('T')[0] : ''
+  }
+
+  // Helper to convert date input to ISO string
+  const handleDateChange = (
+    dateValue: string,
+    onChange: (value: string) => void,
+  ) => {
+    if (dateValue) {
+      onChange(new Date(dateValue).toISOString())
+    } else {
+      onChange('')
+    }
+  }
+
+  const getCampDefaults = React.useCallback(
+    (includeAllocations = false): Partial<CampFormData> => ({
       title: camp?.title || '',
       theme: camp?.theme || '',
       verse: camp?.verse || '',
@@ -112,7 +130,6 @@ export default function CampForm({
       year: camp?.year || new Date().getFullYear(),
       fee: camp?.fee || 0,
       registration_deadline: camp?.registration_deadline || '',
-      capacity: camp?.capacity || undefined,
       contact_email: camp?.contact_email || '',
       contact_phone: camp?.contact_phone || '',
       start_date: camp?.start_date || '',
@@ -125,44 +142,34 @@ export default function CampForm({
         camp?.highlights?.ministers && camp.highlights.ministers.length > 0
           ? camp.highlights.ministers
           : [{ name: '', designation: '' }],
-      allocations: [],
-    },
+      allocations: includeAllocations
+        ? existingAllocations.map((a) => ({
+            id: a.id,
+            name: a.name || '',
+            items: Array.isArray(a.items) ? a.items.join(', ') : '',
+            allocation_type:
+              (a.allocation_type as 'random' | 'definite') || 'random',
+          }))
+        : [],
+    }),
+    [camp, existingAllocations],
+  )
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    register,
+  } = useForm<CampFormData>({
+    defaultValues: getCampDefaults(),
   })
 
   React.useEffect(() => {
     if (mode === 'edit' && existingAllocations.length > 0) {
-      reset({
-        title: camp?.title || '',
-        theme: camp?.theme || '',
-        verse: camp?.verse || '',
-        banner: camp?.banner || '',
-        entity_id: camp?.entity_id || '',
-        year: camp?.year || new Date().getFullYear(),
-        fee: camp?.fee || 0,
-        registration_deadline: camp?.registration_deadline || '',
-        capacity: camp?.capacity || undefined,
-        contact_email: camp?.contact_email || '',
-        contact_phone: camp?.contact_phone || '',
-        start_date: camp?.start_date || '',
-        end_date: camp?.end_date || '',
-        highlights_location: camp?.highlights?.location || '',
-        highlights_description: camp?.highlights?.description || '',
-        highlights_activities_input:
-          camp?.highlights?.activities?.join(', ') || '',
-        highlights_ministers:
-          camp?.highlights?.ministers && camp.highlights.ministers.length > 0
-            ? camp.highlights.ministers
-            : [{ name: '', designation: '' }],
-        allocations: existingAllocations.map((a) => ({
-          id: a.id,
-          name: a.name || '',
-          items: Array.isArray(a.items) ? a.items.join(', ') : '',
-          allocation_type:
-            (a.allocation_type as 'random' | 'definite') || 'random',
-        })),
-      })
+      reset(getCampDefaults(true))
     }
-  }, [mode, existingAllocations, camp, reset])
+  }, [mode, existingAllocations, reset, getCampDefaults])
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -214,11 +221,61 @@ export default function CampForm({
         },
       } as CreateCampRequest
 
+      const buildFormData = (
+        payload: CreateCampRequest,
+        file: File | null,
+      ): FormData => {
+        const formData = new FormData()
+
+        if (file) {
+          formData.append('banner', file)
+        }
+
+        formData.append('title', payload.title)
+        formData.append('entity_id', payload.entity_id)
+        formData.append('year', payload.year.toString())
+        formData.append('fee', payload.fee.toString())
+        formData.append('start_date', payload.start_date)
+        formData.append('end_date', payload.end_date)
+
+        if (payload.theme) formData.append('theme', payload.theme)
+        if (payload.verse) formData.append('verse', payload.verse)
+        if (payload.registration_deadline)
+          formData.append(
+            'registration_deadline',
+            payload.registration_deadline,
+          )
+        if (payload.contact_email)
+          formData.append('contact_email', payload.contact_email)
+        if (payload.contact_phone)
+          formData.append('contact_phone', payload.contact_phone)
+        if (payload.highlights) {
+          formData.append('highlights', JSON.stringify(payload.highlights))
+        }
+
+        return formData
+      }
+
       if (mode === 'create') {
-        const campResponse = await createCampMutation.mutateAsync({
-          body: campPayload,
+        const requestBody = buildFormData(campPayload, bannerFile)
+
+        const campResponse = await fetch(`${baseUrl}/api/v1/camps`, {
+          method: 'POST',
+          body: requestBody as any,
+          headers: {
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+        }).then(async (res) => {
+          const resp = await res.json() as { data: any; errors?: string; error?: string }
+
+          if (!res.ok) {
+            setError(JSON.stringify(resp.errors || resp.error || 'Failed to create camp'))
+          }
+
+          return resp.data
         })
-        const campId = campResponse.data?.id
+
+        const campId = campResponse?.id
 
         if (campId && allocations.length > 0) {
           await Promise.all(
@@ -238,9 +295,14 @@ export default function CampForm({
           )
         }
       } else if (mode === 'edit' && camp?.id) {
-        await updateCampMutation.mutateAsync({
-          params: { path: { id: camp.id } },
-          body: campPayload,
+        const requestBody = buildFormData(campPayload, bannerFile)
+
+        await fetch(`${baseUrl}/api/v1/camps/${camp.id}`, {
+          method: 'PATCH',
+          body: requestBody as any,
+          headers: {
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
         })
 
         if (allocations.length > 0) {
@@ -334,35 +396,69 @@ export default function CampForm({
           )}
         />
 
-        <Controller
-          name="description"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="Description"
+        {!isView && (
+          <Box>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              Banner Image
+            </Typography>
+            <Button
+              variant="outlined"
+              component="label"
               fullWidth
-              disabled={isView}
-              multiline
-              rows={3}
-              value={field.value || ''}
-            />
-          )}
-        />
+              sx={{ mb: 1 }}
+            >
+              {bannerFile ? bannerFile.name : 'Choose Banner Image'}
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null
+                  setBannerFile(file)
+                  if (file) {
+                    const reader = new FileReader()
+                    reader.onloadend = () => {
+                      setBannerPreview(reader.result as string)
+                    }
+                    reader.readAsDataURL(file)
+                  } else {
+                    setBannerPreview(getMediaUrl(camp?.banner))
+                  }
+                }}
+              />
+            </Button>
+            {bannerPreview && (
+              <Box sx={{ mt: 1 }}>
+                <img
+                  src={bannerPreview}
+                  alt="Banner preview"
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '200px',
+                    objectFit: 'contain',
+                  }}
+                />
+              </Box>
+            )}
+          </Box>
+        )}
 
-        <Controller
-          name="banner"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="Banner URL"
-              fullWidth
-              disabled={isView}
-              value={field.value || ''}
+        {isView && camp?.banner && (
+          <Box>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              Banner Image
+            </Typography>
+            <img
+              src={getMediaUrl(camp.banner) || ''}
+              alt="Camp banner"
+              style={{
+                maxWidth: '100%',
+                maxHeight: '200px',
+                objectFit: 'contain',
+              }}
             />
-          )}
-        />
+          </Box>
+        )}
 
         <Controller
           name="entity_id"
@@ -432,38 +528,8 @@ export default function CampForm({
               fullWidth
               disabled={isView}
               slotProps={{ inputLabel: { shrink: true } }}
-              value={
-                isView && field.value
-                  ? new Date(field.value).toISOString().split('T')[0]
-                  : field.value
-                    ? new Date(field.value).toISOString().split('T')[0]
-                    : ''
-              }
-              onChange={(e) => {
-                const dateValue = e.target.value
-                if (dateValue) {
-                  const isoDate = new Date(dateValue).toISOString()
-                  field.onChange(isoDate)
-                } else {
-                  field.onChange('')
-                }
-              }}
-            />
-          )}
-        />
-
-        <Controller
-          name="capacity"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              {...register('capacity', { valueAsNumber: true })}
-              label="Capacity"
-              type="number"
-              fullWidth
-              disabled={isView}
-              value={field.value || ''}
+              value={formatDateForInput(field.value)}
+              onChange={(e) => handleDateChange(e.target.value, field.onChange)}
             />
           )}
         />
@@ -511,23 +577,8 @@ export default function CampForm({
               error={!!errors.start_date}
               helperText={errors.start_date?.message}
               slotProps={{ inputLabel: { shrink: true } }}
-              value={
-                isView && field.value
-                  ? new Date(field.value).toISOString().split('T')[0]
-                  : field.value
-                    ? new Date(field.value).toISOString().split('T')[0]
-                    : ''
-              }
-              onChange={(e) => {
-                // Convert the date input (YYYY-MM-DD) to ISO 8601 format
-                const dateValue = e.target.value
-                if (dateValue) {
-                  const isoDate = new Date(dateValue).toISOString()
-                  field.onChange(isoDate)
-                } else {
-                  field.onChange('')
-                }
-              }}
+              value={formatDateForInput(field.value)}
+              onChange={(e) => handleDateChange(e.target.value, field.onChange)}
             />
           )}
         />
@@ -546,23 +597,8 @@ export default function CampForm({
               error={!!errors.end_date}
               helperText={errors.end_date?.message}
               slotProps={{ inputLabel: { shrink: true } }}
-              value={
-                isView && field.value
-                  ? new Date(field.value).toISOString().split('T')[0]
-                  : field.value
-                    ? new Date(field.value).toISOString().split('T')[0]
-                    : ''
-              }
-              onChange={(e) => {
-                // Convert the date input (YYYY-MM-DD) to ISO 8601 format
-                const dateValue = e.target.value
-                if (dateValue) {
-                  const isoDate = new Date(dateValue).toISOString()
-                  field.onChange(isoDate)
-                } else {
-                  field.onChange('')
-                }
-              }}
+              value={formatDateForInput(field.value)}
+              onChange={(e) => handleDateChange(e.target.value, field.onChange)}
             />
           )}
         />
@@ -576,14 +612,13 @@ export default function CampForm({
               name="highlights_description"
               control={control}
               render={({ field }) => (
-                <TextField
+                <TextareaAutosize
                   {...field}
-                  label="Description"
-                  fullWidth
+                  placeholder="Description"
                   disabled={isView}
-                  multiline
-                  rows={3}
+                  minRows={3}
                   value={field.value || ''}
+                  style={{ width: '100%', padding: '8px' }}
                 />
               )}
             />
@@ -606,16 +641,13 @@ export default function CampForm({
               name="highlights_activities_input"
               control={control}
               render={({ field }) => (
-                <TextField
+                <TextareaAutosize
                   {...field}
-                  label="Activities (comma or new line)"
-                  placeholder="Worship Sessions, Workshops, Outdoor Games"
-                  fullWidth
+                  placeholder="Enter activities separated by commas or one per line. e.g. Worship Sessions, Workshops"
                   disabled={isView}
-                  multiline
-                  rows={3}
+                  minRows={3}
                   value={field.value || ''}
-                  helperText="Enter activities separated by commas or one per line."
+                  style={{ width: '100%', padding: '8px' }}
                 />
               )}
             />
@@ -647,7 +679,7 @@ export default function CampForm({
               </Box>
               <Stack spacing={1.5}>
                 {ministerFields.map((field, index) => (
-                  <Paper key={field.id} sx={{ p: 2, bgcolor: 'grey.50' }}>
+                  <Paper key={field.id} sx={{ p: 2, bgcolor: 'grey.500' }}>
                     <Stack spacing={1.5}>
                       <Controller
                         name={`highlights_ministers.${index}.name`}
@@ -730,7 +762,7 @@ export default function CampForm({
 
             <Stack spacing={2}>
               {fields.map((field, index) => (
-                <Paper key={field.id} sx={{ p: 2, bgcolor: 'grey.50' }}>
+                <Paper key={field.id} sx={{ p: 2, bgcolor: 'grey.500' }}>
                   <Stack spacing={2}>
                     <Box
                       sx={{
@@ -818,7 +850,7 @@ export default function CampForm({
             </Typography>
             <Stack spacing={2}>
               {existingAllocations.map((allocation) => (
-                <Paper key={allocation.id} sx={{ p: 2, bgcolor: 'grey.50' }}>
+                <Paper key={allocation.id} sx={{ p: 2, bgcolor: 'grey.500' }}>
                   <Stack spacing={1.5}>
                     <Box>
                       <Typography variant="caption" color="text.secondary">

@@ -13,6 +13,8 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
+import { FooterSection } from './campLanding/FooterSection'
+import { getMediaUrl } from '@/lib/media'
 
 const colors = {
   red: '#c8102e',
@@ -29,7 +31,7 @@ function getCampStatus(camp: Camp) {
   if (camp.is_coming_soon)
     return { label: 'Upcoming', color: 'info', isActive: false }
 
-  return { label: 'Active', color: 'success', isActive: true }
+  return { label: 'Closed', color: 'error', isActive: false }
 }
 
 function formatMoney(amount: number) {
@@ -242,8 +244,8 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         bgcolor: colors.light,
-                        backgroundImage: camp.banner
-                          ? `linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.55)), url(${camp.banner})`
+                        backgroundImage: getMediaUrl(camp.banner)
+                          ? `linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.55)), url(${getMediaUrl(camp.banner)})`
                           : `linear-gradient(135deg, ${colors.blue}, ${colors.red})`,
                       }}
                     />
@@ -317,10 +319,10 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
                           variant="contained"
                           fullWidth
                           sx={{
-                            bgcolor: status.isActive ? colors.red : colors.blue,
+                            bgcolor: status.isActive ? colors.blue : colors.red,
                             color: 'white',
                             '&:hover': {
-                              bgcolor: status.isActive ? '#a70f29' : '#002a80',
+                              bgcolor: status.isActive ? '#002a80' : '#a70f29',
                             },
                           }}
                         >
@@ -336,18 +338,7 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
         )}
       </Container>
 
-      <Box
-        sx={{
-          py: 4,
-          textAlign: 'center',
-          bgcolor: 'white',
-          borderTop: '1px solid #e2e8f0',
-        }}
-      >
-        <Typography variant="body2" color={colors.navy} sx={{ opacity: 0.75 }}>
-          Powered by Foursquare Gospel Church Nigeria • Ajebo Camp Management
-        </Typography>
-      </Box>
+      <FooterSection />
     </Box>
   )
 }

@@ -14,6 +14,7 @@ import { RegistrationType } from './types'
 import { colors, formatDateShort } from './utils'
 import { RegistrationToggle } from './RegistrationToggle'
 import { Camp } from '@/interfaces'
+import { getMediaUrl } from '@/lib/media'
 
 interface HeroSectionProps {
   camp: Camp
@@ -47,8 +48,8 @@ export function HeroSection({
         display: 'flex',
         alignItems: 'center',
         overflow: 'hidden',
-        backgroundImage: camp.banner
-          ? `linear-gradient(rgba(11, 28, 63, 0.75), rgba(11, 28, 63, 0.85)), url(${camp.banner})`
+        backgroundImage: getMediaUrl(camp.banner)
+          ? `linear-gradient(rgba(11, 28, 63, 0.75), rgba(11, 28, 63, 0.85)), url(${getMediaUrl(camp.banner)})`
           : `linear-gradient(135deg, ${colors.blue} 0%, ${colors.navy} 50%, ${colors.red} 100%)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
