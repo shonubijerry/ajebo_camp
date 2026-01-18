@@ -56,7 +56,14 @@
           "binding": "MEDIA_BUCKET",
           "bucket_name": "ajebo-camp-media"
         }
-      ]
+      ],
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "ajebo-camp-production-db",
+          "database_id": "d3ef64ae-6f18-46a7-a65d-dc1b9e6e783f",
+        }
+      ],
     }
   }
 }

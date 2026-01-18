@@ -4,9 +4,9 @@ on:
   push:
     branches: [main]
     paths:
-      - 'api/**'
-      - 'packages/database/**'
-      - '.github/workflows/deploy-api.yml'
+      - "api/**"
+      - "packages/database/**"
+      - ".github/workflows/deploy-api.yml"
   workflow_dispatch:
     inputs:
       wrangler_env:
@@ -34,13 +34,24 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
+        working-directory: api
         run: npm ci
+
+      - name: Run lint
+        working-directory: api
+        run: npm run lint
 
       - name: Deploy API worker
         uses: cloudflare/wrangler-action@v3
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          SALT_ROUND: ${{ secrets.SALT_ROUND }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          PAYSTACK_SECRET_KEY: ${{ secrets.PAYSTACK_SECRET_KEY }}
+          R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          environment: ${{ env.WRANGLER_ENV != '' && env.WRANGLER_ENV || 'production' }}
           workingDirectory: api
           command: deploy${{ env.WRANGLER_ENV != '' && format(' --env {0}', env.WRANGLER_ENV) || '' }}
           secrets: |

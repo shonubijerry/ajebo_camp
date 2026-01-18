@@ -36,7 +36,7 @@
         {
           "binding": "DB",
           "database_name": "ajebo-camp-production-db",
-          "database_id": "fa1c2ef1-977f-4694-887b-e022dc0ab61f",
+          "database_id": "d3ef64ae-6f18-46a7-a65d-dc1b9e6e783f",
           "migrations_dir": "migrations/db"
         }
       ],

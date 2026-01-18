@@ -35,10 +35,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run lint
+        working-directory: api
+        run: npm run lint
+
       - name: Deploy database worker
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: packages/database
+          environment: ${{ env.WRANGLER_ENV != '' && env.WRANGLER_ENV || 'production' }}
+          preCommands: echo y | npx wrangler d1 migrations apply ajebo-camp-production-db --env production --remote true
           command: deploy${{ env.WRANGLER_ENV != '' && format(' --env {0}', env.WRANGLER_ENV) || '' }}
