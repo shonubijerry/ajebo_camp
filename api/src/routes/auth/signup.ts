@@ -1,11 +1,11 @@
 import { z } from 'zod'
 import { OpenAPIEndpoint } from '../generic/create'
-import { AppContext } from '../..'
 import { sign } from 'hono/jwt'
 import { requestBodies, userResponse } from '../../schemas'
-import { errorRes, successRes } from '../../lib/response'
+import { errorRes } from '../../lib/response'
 import { hash } from '../../lib/encrypt'
 import { getPermissionsForRole, Role } from '../../lib/permissions'
+import { AppContext } from '../../types'
 
 export class SignupEndpoint extends OpenAPIEndpoint {
   meta = {
@@ -33,6 +33,10 @@ export class SignupEndpoint extends OpenAPIEndpoint {
 
     if (exists) {
       return errorRes(c, 'User with email already exists', 409)
+    }
+
+    if (role) {
+      return errorRes(c, 'Method not allowed', 403)
     }
 
     if (rest.password) {

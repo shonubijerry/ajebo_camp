@@ -47,7 +47,10 @@ export const authMiddleware = async (
       )
     }
     // verify token — consumer may need to adjust depending on `hono/jwt` version
-    const payload = (await verify(token, c.env.JWT_SECRET)) as BaseAuthenticatedUser
+    const payload = (await verify(
+      token,
+      c.env.JWT_SECRET,
+    )) as BaseAuthenticatedUser
     const permissions = getPermissionsForRole(payload.role as Role)
 
     c.user = {

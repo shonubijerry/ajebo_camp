@@ -1,9 +1,9 @@
 import { z } from 'zod'
 import { OpenAPIEndpoint } from '../../generic/create'
-import { AppContext } from '../../..'
 import { errorRes } from '../../../lib/response'
 import { generateRandomString } from '../../../lib/generators'
 import { sendMail } from '../../../services/email.service'
+import { AppContext } from '../../../types'
 
 const requestPayload = z.object({
   email: z.string().email().trim().toLowerCase(),

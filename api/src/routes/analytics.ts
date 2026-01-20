@@ -179,8 +179,11 @@ export class GetDetailedAnalyticsEndpoint extends OpenAPIRoute {
       return cachedResponse.json()
     }
 
-    const { period, camp_id, district_id } = (await this.getValidatedData())
-      .query
+    const payload = (await this.getValidatedData()) as {
+      query: typeof analyticsQuerySchema._type
+    }
+
+    const { period, camp_id, district_id } = payload.query
 
     const dateFrom = getDateRange(period)
 

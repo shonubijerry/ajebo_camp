@@ -12,7 +12,10 @@ export const prismaExtension = (client: PrismaClient) => {
 /**
  * Middleware to initialize Prisma client for each request
  */
-export const prismaMiddleware = async (c: AppContext, next: () => Promise<void>) => {
+export const prismaMiddleware = async (
+  c: AppContext,
+  next: () => Promise<void>,
+) => {
   const adapter = new PrismaD1(c.env.DB)
 
   c.env.PRISMA = prismaExtension(

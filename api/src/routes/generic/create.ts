@@ -40,7 +40,7 @@ export abstract class OpenAPIEndpoint extends OpenAPIRoute {
     return this.getValidatedData()
   }
 
-  async action(
+  action(
     c: AppContext,
     data: AwaitedReturnType<typeof this.preAction>,
   ): Promise<Response | unknown> {

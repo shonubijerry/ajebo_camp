@@ -1,12 +1,12 @@
 import { z } from 'zod'
 import { OpenAPIEndpoint } from '../generic/create'
 import { ApiException } from 'chanfana'
-import { AppContext } from '../..'
 import { sign } from 'hono/jwt'
 import { compare } from '../../lib/encrypt'
 import { schemas, userResponse } from '../../schemas'
-import { errorRes, successRes } from '../../lib/response'
+import { errorRes } from '../../lib/response'
 import { getPermissionsForRole, Role } from '../../lib/permissions'
+import { AppContext } from '../../types'
 
 export class LoginEndpoint extends OpenAPIEndpoint {
   meta = {

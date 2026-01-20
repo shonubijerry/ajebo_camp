@@ -12,7 +12,9 @@ import { GetMediaEndpoint } from './media'
 /**
  * Register public routes that don't require authentication
  */
-export const registerPublicRoutes = (app: ReturnType<typeof fromHono<Hono<AppBindings>>>) => {
+export const registerPublicRoutes = (
+  app: ReturnType<typeof fromHono<Hono<AppBindings>>>,
+) => {
   // Auth routes
   app.post('/auth/login', LoginEndpoint)
   app.post('/auth/signup', SignupEndpoint)

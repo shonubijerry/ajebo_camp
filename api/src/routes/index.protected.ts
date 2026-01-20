@@ -53,7 +53,9 @@ import {
  * Register protected routes that require authentication
  * These routes are protected by the authMiddleware
  */
-export const registerProtectedRoutes = (app: ReturnType<typeof fromHono<Hono<AppBindings>>>) => {
+export const registerProtectedRoutes = (
+  app: ReturnType<typeof fromHono<Hono<AppBindings>>>,
+) => {
   // User routes
   app.post('/users', CreateUserEndpoint)
   app.get('/users/me', GetCurrentUserEndpoint)

@@ -34,7 +34,14 @@ export const PermissionsSchema = z.enum([
 export type Permission = z.infer<typeof PermissionsSchema>
 
 export const rolePermissions: Record<Role, Permission[]> = {
-  user: ['dashboard:view', 'campite:view', 'camp:view', 'campite:create',  'campite:update', 'district:view'],
+  user: [
+    'dashboard:view',
+    'campite:view',
+    'camp:view',
+    'campite:create',
+    'campite:update',
+    'district:view',
+  ],
   staff: [
     'dashboard:view',
     'camp:view',

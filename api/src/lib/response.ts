@@ -1,6 +1,5 @@
 import { ContentfulStatusCode } from 'hono/utils/http-status'
-import { AppContext } from '..'
-import { unknown } from 'zod/v4'
+import { AppContext } from '../types'
 
 export const errorRes = (
   c: AppContext,

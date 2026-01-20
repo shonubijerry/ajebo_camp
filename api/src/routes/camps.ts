@@ -9,7 +9,6 @@ import { AppContext } from '../types'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './generic/types'
 import { AuthenticatedUser } from '../middlewares/auth'
-import { he } from 'zod/v4/locales'
 
 const campMeta = {
   collection: 'Camp' as const,
@@ -21,7 +20,7 @@ function parseCampFormData(formData: FormData): unknown {
   const premiumFeesRaw = formData.get('premium_fees')?.toString() || '[]'
   let premiumFees: number[] = []
   try {
-    premiumFees = JSON.parse(premiumFeesRaw)
+    premiumFees = JSON.parse(premiumFeesRaw) as number[]
   } catch {
     premiumFees = []
   }
@@ -30,7 +29,7 @@ function parseCampFormData(formData: FormData): unknown {
   const highlightsRaw = formData.get('highlights')?.toString()
   if (highlightsRaw) {
     try {
-      highlights = JSON.parse(highlightsRaw)
+      highlights = JSON.parse(highlightsRaw) as string[]
     } catch {
       highlights = undefined
     }
@@ -94,7 +93,6 @@ export class CreateCampEndpoint extends OpenAPIEndpoint {
     c: AppContext & {
       user?: AuthenticatedUser
     },
-    payload: typeof this.meta.requestSchema._type,
   ) {
     const formData = await c.req.formData()
     const file = formData.get('banner')
@@ -181,7 +179,7 @@ export class UpdateCampEndpoint extends UpdateEndpoint {
 
   async action(
     c: AppContext,
-    { params, body }: typeof this.meta.requestSchema._type,
+    { params }: typeof this.meta.requestSchema._type,
   ) {
     const formData = await c.req.formData()
     const file = formData.get('banner')

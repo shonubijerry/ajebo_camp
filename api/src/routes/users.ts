@@ -5,12 +5,15 @@ import { GetEndpoint } from './generic/get'
 import { UpdateEndpoint } from './generic/update'
 import { DeleteEndpoint } from './generic/delete'
 import { requestBodies, responseBodies } from '../schemas'
-import { AppContext } from '..'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './generic/types'
 import { AuthenticatedUser } from '../middlewares/auth'
-import { getPermissionsForRole, PermissionsSchema, Role } from '../lib/permissions'
-import { permission } from 'process'
+import {
+  getPermissionsForRole,
+  PermissionsSchema,
+  Role,
+} from '../lib/permissions'
+import { AppContext } from '../types'
 
 const userMeta = {
   collection: 'User' as const,

@@ -1,5 +1,4 @@
 import { ApiException } from 'chanfana'
-import { Context } from 'hono'
 import { AppContext } from '../types'
 
 /**

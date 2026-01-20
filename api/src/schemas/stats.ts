@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 export const dashboardStatsSchema = z.object({
   overview: z.object({
@@ -8,14 +8,16 @@ export const dashboardStatsSchema = z.object({
     total_entities: z.number(),
   }),
 
-  recent_activity: z.array(z.object({
-    id: z.string(),
-    firstname: z.string(),
-    lastname: z.string(),
-    camp_title: z.string(),
-    created_at: z.string(),
-  })),
-});
+  recent_activity: z.array(
+    z.object({
+      id: z.string(),
+      firstname: z.string(),
+      lastname: z.string(),
+      camp_title: z.string(),
+      created_at: z.string(),
+    }),
+  ),
+})
 
 export const CampDetailedAnalyticsSchema = z.object({
   overview: z.object({
@@ -26,39 +28,51 @@ export const CampDetailedAnalyticsSchema = z.object({
   }),
 
   campites: z.object({
-    by_gender: z.array(z.object({
-      gender: z.string(),
-      count: z.number(),
-    })),
-    by_age_group: z.array(z.object({
-      age_group: z.string(),
-      count: z.number(),
-    })),
-    by_type: z.array(z.object({
-      type: z.string(),
-      count: z.number(),
-      revenue: z.number(),
-    })),
-    by_district: z.array(z.object({
-      district_id: z.string(),
-      district_name: z.string(),
-      count: z.number(),
-    })),
+    by_gender: z.array(
+      z.object({
+        gender: z.string(),
+        count: z.number(),
+      }),
+    ),
+    by_age_group: z.array(
+      z.object({
+        age_group: z.string(),
+        count: z.number(),
+      }),
+    ),
+    by_type: z.array(
+      z.object({
+        type: z.string(),
+        count: z.number(),
+        revenue: z.number(),
+      }),
+    ),
+    by_district: z.array(
+      z.object({
+        district_id: z.string(),
+        district_name: z.string(),
+        count: z.number(),
+      }),
+    ),
   }),
 
   timeline: z.object({
-    daily: z.array(z.object({
-      date: z.string(), // or z.string().date() if using Zod 3.24+
-      count: z.number(),
-      revenue: z.number(),
-    })),
-    // Monthly is an empty array in your snippet, 
+    daily: z.array(
+      z.object({
+        date: z.string(), // or z.string().date() if using Zod 3.24+
+        count: z.number(),
+        revenue: z.number(),
+      }),
+    ),
+    // Monthly is an empty array in your snippet,
     // but usually shares the same structure as daily
-    monthly: z.array(z.object({
-      month: z.string(),
-      count: z.number(),
-      revenue: z.number(),
-    })),
+    monthly: z.array(
+      z.object({
+        month: z.string(),
+        count: z.number(),
+        revenue: z.number(),
+      }),
+    ),
   }),
 
   revenue: z.object({
@@ -66,18 +80,20 @@ export const CampDetailedAnalyticsSchema = z.object({
   }),
 
   recent_activity: z.object({
-    recent_registrations: z.array(z.object({
-      id: z.string(),
-      firstname: z.string(),
-      lastname: z.string(),
-      camp_title: z.string(),
-      created_at: z.string().datetime(), // Matches .toISOString()
-    })),
+    recent_registrations: z.array(
+      z.object({
+        id: z.string(),
+        firstname: z.string(),
+        lastname: z.string(),
+        camp_title: z.string(),
+        created_at: z.string().datetime(), // Matches .toISOString()
+      }),
+    ),
   }),
-});
+})
 
 // Extract the type for use in your frontend or services
-export type CampDetailedAnalytics = z.infer<typeof CampDetailedAnalyticsSchema>;
+export type CampDetailedAnalytics = z.infer<typeof CampDetailedAnalyticsSchema>
 
 // To extract the TypeScript types from the schemas:
-export type DashboardStats = z.infer<typeof dashboardStatsSchema>;
+export type DashboardStats = z.infer<typeof dashboardStatsSchema>

@@ -1,4 +1,3 @@
-import { AppContext } from '..'
 import { AuthenticatedUser } from './auth'
 import {
   getPermissionsForRole,
@@ -6,6 +5,7 @@ import {
   Permission,
   Role,
 } from '../lib/permissions'
+import { AppContext } from '../types'
 
 export const requirePermissions = (
   c: AppContext & { user?: AuthenticatedUser },

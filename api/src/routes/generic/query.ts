@@ -163,9 +163,9 @@ export function queryStringToPrismaWhere<T = PrismaWhere>(queryString: string) {
     if (queryParams[key]) {
       // Handle multiple values for same key
       if (Array.isArray(queryParams[key])) {
-        ;(queryParams[key] as string[]).push(value)
+        queryParams[key].push(value)
       } else {
-        queryParams[key] = [queryParams[key] as string, value]
+        queryParams[key] = [queryParams[key], value]
       }
     } else {
       queryParams[key] = value

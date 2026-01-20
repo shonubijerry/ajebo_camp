@@ -16,7 +16,9 @@ export const createOpenApiApp = () => {
   })
 }
 
-export const registerSecuritySchemes = (app: ReturnType<typeof createOpenApiApp>) => {
+export const registerSecuritySchemes = (
+  app: ReturnType<typeof createOpenApiApp>,
+) => {
   app.registry.registerComponent('securitySchemes', 'bearer', {
     type: 'http',
     scheme: 'bearer',

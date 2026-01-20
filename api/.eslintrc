@@ -18,7 +18,9 @@
   "rules": {
     "@typescript-eslint/no-unused-vars": 2,
     "@typescript-eslint/no-misused-promises": 2,
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "no-case-declarations": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off"
   },
   "ignorePatterns": ["node_modules/", "dist/", "build/"],
   "env": {

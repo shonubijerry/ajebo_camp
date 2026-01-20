@@ -1,8 +1,9 @@
 import { z } from 'zod'
 import { OpenAPIEndpoint } from '../../generic/create'
-import { AppContext } from '../../..'
 import { hash } from '../../../lib/encrypt'
 import { sign } from 'hono/jwt'
+import { AppContext } from '../../../types'
+import { userResponse } from '../../../schemas'
 
 const ChangePasswordPublicSchema = z.object({
   password: z.string().min(8),
@@ -19,8 +20,9 @@ export class ChangePasswordPublic extends OpenAPIEndpoint {
       }),
       body: ChangePasswordPublicSchema,
     }),
-    responseSchema: z.object({
-      id: z.string().cuid2(),
+    responseSchema: userResponse.extend({
+      token: z.string(),
+      permissions: z.array(z.string()),
     }),
   }
 
@@ -74,7 +76,7 @@ export class ChangePasswordPublic extends OpenAPIEndpoint {
             forgot_token: undefined,
           },
           password: undefined,
-        },
+        } satisfies Record<string, unknown>,
       },
       200,
     )

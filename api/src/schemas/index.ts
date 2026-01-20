@@ -58,7 +58,11 @@ export const campCreate = z.object({
   banner: z
     .union([z.instanceof(File), z.string(), z.null()])
     .optional()
-    .openapi({ type: 'string', format: 'binary', description: 'Banner image file' }),
+    .openapi({
+      type: 'string',
+      format: 'binary',
+      description: 'Banner image file',
+    }),
   year: z.number().int().openapi({ example: 2025 }),
   fee: z.number().int().openapi({ example: 15000 }),
   premium_fees: z
@@ -70,8 +74,13 @@ export const campCreate = z.object({
   end_date: isoDate,
   highlights: z
     .object({
-      location: z.string().optional().openapi({ example: 'Foursquare Camp Ground, Ajebo' }),
-      description: z.string().optional().openapi({ example: 'Join us for worship, teachings, and fun activities' }),
+      location: z
+        .string()
+        .optional()
+        .openapi({ example: 'Foursquare Camp Ground, Ajebo' }),
+      description: z.string().optional().openapi({
+        example: 'Join us for worship, teachings, and fun activities',
+      }),
       ministers: z
         .object({
           name: z.string().openapi({ example: 'Pastor John Doe' }),
@@ -80,11 +89,19 @@ export const campCreate = z.object({
         .array()
         .optional()
         .default([])
-        .openapi({ example: [
-          { name: 'Pastor John Doe', designation: 'Senior Pastor' },
-          { name: 'Evangelist Jane Smith', designation: 'Guest Speaker' },
-        ] }),
-      activities: z.array(z.string()).optional().default([]).openapi({ example: ['Worship Sessions', 'Workshops', 'Outdoor Games'] }),
+        .openapi({
+          example: [
+            { name: 'Pastor John Doe', designation: 'Senior Pastor' },
+            { name: 'Evangelist Jane Smith', designation: 'Guest Speaker' },
+          ],
+        }),
+      activities: z
+        .array(z.string())
+        .optional()
+        .default([])
+        .openapi({
+          example: ['Worship Sessions', 'Workshops', 'Outdoor Games'],
+        }),
     })
     .optional(),
   registration_deadline: isoDate.nullish(),

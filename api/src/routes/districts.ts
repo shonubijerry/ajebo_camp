@@ -5,9 +5,9 @@ import { GetEndpoint } from './generic/get'
 import { UpdateEndpoint } from './generic/update'
 import { DeleteEndpoint } from './generic/delete'
 import { requestBodies, responseBodies } from '../schemas'
-import { AppContext } from '..'
 import { Prisma } from '@ajebo_camp/database'
 import { AwaitedReturnType } from './generic/types'
+import { AppContext } from '../types'
 
 const districtMeta = {
   collection: 'District' as const,

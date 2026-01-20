@@ -1,6 +1,4 @@
-import { Context } from 'hono'
-import { AppContext } from '../..'
-import { Env } from '../../env'
+import { AppContext } from '../../types'
 
 interface PaystackChargeEvent {
   event: string
@@ -45,16 +43,16 @@ async function verifyPaystackSignature(
     false,
     ['sign'],
   )
-  
+
   const signatureBuffer = await crypto.subtle.sign(
     'HMAC',
     key,
     encoder.encode(payload),
   )
-  
+
   const hashArray = Array.from(new Uint8Array(signatureBuffer))
-  const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-  
+  const hash = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+
   return hash === signature
 }
 
@@ -78,7 +76,11 @@ export async function paystackWebhook(c: AppContext) {
     const rawBody = await c.req.text()
 
     // Verify signature
-    const isValid = await verifyPaystackSignature(rawBody, signature, paystackSecret)
+    const isValid = await verifyPaystackSignature(
+      rawBody,
+      signature,
+      paystackSecret,
+    )
     if (!isValid) {
       return c.json({ success: false, error: 'Invalid signature' }, 401)
     }
@@ -100,10 +102,7 @@ export async function paystackWebhook(c: AppContext) {
 
     if (!campite) {
       console.error(`Campite not found for payment reference: ${reference}`)
-      return c.json(
-        { success: false, error: 'Campite not found' },
-        404,
-      )
+      return c.json({ success: false, error: 'Campite not found' }, 404)
     }
 
     // Check if payment already exists
@@ -112,10 +111,7 @@ export async function paystackWebhook(c: AppContext) {
     })
 
     if (existingPayment) {
-      return c.json(
-        { success: true, message: 'Payment already recorded' },
-        200,
-      )
+      return c.json({ success: true, message: 'Payment already recorded' }, 200)
     }
 
     // Create payment record
