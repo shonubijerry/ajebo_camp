@@ -16,7 +16,7 @@ export abstract class GetEndpoint extends OpenAPIEndpoint {
         this.meta.description ??
         `Endpoint to get ${this.meta.collection?.toLowerCase()}`,
       security: this.meta.security ?? [{ bearer: [] }],
-      request: this.meta.requestSchema?.shape,
+      request: this.meta.requestSchema?.omit({ body: true }).shape,
       responses: {
         '200': {
           description: `Operation successfully`,

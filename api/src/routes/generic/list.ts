@@ -1,10 +1,14 @@
 import { contentJson } from 'chanfana'
 import { z } from '@hono/zod-openapi'
 import { AppContext } from '../../types'
-import { GenericError, parseQuerySort, queryStringToPrismaWhere } from './query'
+import {
+  GenericError,
+  parseQuerySort,
+  queryStringToPrismaWhere,
+  WhereNode,
+} from './query'
 import { OpenAPIEndpoint } from './create'
 import { Prisma } from '@ajebo_camp/database'
-import { AwaitedReturnType } from './types'
 import { requirePermissions } from '../../middlewares/authorize'
 import { Permission } from '../../lib/permissions'
 
@@ -62,12 +66,14 @@ export const responseListSchema = <T extends z.ZodTypeAny>(itemSchema: T) =>
  * @template TOrderByInput   Prisma orderBy input type
  */
 export abstract class ListEndpoint<
-  TWhereInput,
-  TOrderByInput,
+  TWhereInput = WhereNode,
+  TOrderByInput = Record<string, 'asc' | 'desc'>,
 > extends OpenAPIEndpoint {
   /** Zod schema for query parameters */
   abstract meta: {
-    requestSchema: typeof listRequestQuerySchema
+    requestSchema: z.ZodObject<{
+      query?: typeof listRequestQuerySchema
+    }>
     responseSchema: z.AnyZodObject
     tag?: string
     summary?: string
@@ -86,11 +92,13 @@ export abstract class ListEndpoint<
   /**
    * Optional hook to mutate or replace input before persistence
    */
-  async preAction() {
-    const validated = await this.getValidatedData()
-    const { query } = validated
+  async getPagination() {
+    const validated = await this.preAction()
+    const { query } = validated as {
+      query: z.infer<typeof listRequestQuerySchema>
+    }
 
-    const where = queryStringToPrismaWhere<TWhereInput>(query.filter)
+    const where = queryStringToPrismaWhere(query.filter) as TWhereInput
     const per_page = Math.min(
       Number(query.per_page ?? this.pageSize),
       this.maxPageSize,
@@ -100,7 +108,7 @@ export abstract class ListEndpoint<
       return {
         page: 0,
         where,
-        orderBy: parseQuerySort<TOrderByInput>(query.orderBy),
+        orderBy: parseQuerySort(query.orderBy) as TOrderByInput,
       }
     }
 
@@ -113,15 +121,8 @@ export abstract class ListEndpoint<
       take: per_page,
       skip,
       where,
-      orderBy: parseQuerySort<TOrderByInput>(query.orderBy),
+      orderBy: parseQuerySort(query.orderBy) as TOrderByInput,
     }
-  }
-
-  async action(
-    c: AppContext,
-    data: AwaitedReturnType<typeof this.preAction>,
-  ): Promise<Response | { data: unknown; total?: number }> {
-    throw new Error('action implemented for ' + this.constructor.name)
   }
 
   getSchema() {
@@ -159,9 +160,9 @@ export abstract class ListEndpoint<
 
   async handle(c: AppContext) {
     requirePermissions(c, this.meta.permission)
-    const params = await this.preAction()
+    const params = await this.getPagination()
 
-    const result = await this.action(c, params)
+    const result = await this.action(c)
 
     if (result instanceof Response) {
       return result
@@ -170,14 +171,14 @@ export abstract class ListEndpoint<
     return c.json(
       {
         success: true,
-        data: result.data,
+        data: result?.data,
         ...(params.page && {
           meta: {
             page: params.page,
             per_page: params.take,
-            total: result.total,
+            total: result?.total,
             total_pages: Math.ceil(
-              (result.total ?? 0) / (params.take ?? this.pageSize),
+              ((result?.total as number) ?? 0) / (params.take ?? this.pageSize),
             ),
           },
         }),

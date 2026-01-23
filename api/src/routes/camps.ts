@@ -7,51 +7,12 @@ import { DeleteEndpoint } from './generic/delete'
 import { requestBodies, responseBodies } from '../schemas'
 import { AppContext } from '../types'
 import { Prisma } from '@ajebo_camp/database'
-import { AwaitedReturnType } from './generic/types'
 import { AuthenticatedUser } from '../middlewares/auth'
+import { parseCampFormData } from '../lib/parseFormData'
 
 const campMeta = {
   collection: 'Camp' as const,
   responseSchema: responseBodies.camp,
-}
-
-// Helper function to parse camp form data
-function parseCampFormData(formData: FormData): unknown {
-  const premiumFeesRaw = formData.get('premium_fees')?.toString() || '[]'
-  let premiumFees: number[] = []
-  try {
-    premiumFees = JSON.parse(premiumFeesRaw) as number[]
-  } catch {
-    premiumFees = []
-  }
-
-  let highlights = undefined
-  const highlightsRaw = formData.get('highlights')?.toString()
-  if (highlightsRaw) {
-    try {
-      highlights = JSON.parse(highlightsRaw) as string[]
-    } catch {
-      highlights = undefined
-    }
-  }
-
-  return {
-    title: formData.get('title')?.toString() || '',
-    theme: formData.get('theme')?.toString() || null,
-    verse: formData.get('verse')?.toString() || null,
-    entity_id: formData.get('entity_id')?.toString() || '',
-    banner: null,
-    year: Number(formData.get('year')),
-    fee: Number(formData.get('fee')),
-    premium_fees: premiumFees,
-    start_date: formData.get('start_date')?.toString() || '',
-    end_date: formData.get('end_date')?.toString() || '',
-    highlights: highlights,
-    registration_deadline:
-      formData.get('registration_deadline')?.toString() || null,
-    contact_email: formData.get('contact_email')?.toString() || null,
-    contact_phone: formData.get('contact_phone')?.toString() || null,
-  }
 }
 
 // Helper function to upload banner to R2
@@ -124,15 +85,15 @@ export class ListCampsEndpoint extends ListEndpoint<
 > {
   meta = {
     ...campMeta,
-    requestSchema: listRequestQuerySchema,
+    requestSchema: z.object({
+      query: listRequestQuerySchema,
+    }),
     permission: 'camp:view' as const,
   }
   protected pageSize = 25
 
-  async action(
-    c: AppContext,
-    params: AwaitedReturnType<typeof this.preAction>,
-  ) {
+  async action(c: AppContext) {
+    const params = await this.getPagination()
     const [data, total] = await Promise.all([
       c.env.PRISMA.camp.findMany({
         where: params.where,
@@ -212,16 +173,13 @@ export class DeleteCampEndpoint extends DeleteEndpoint {
     ...campMeta,
     requestSchema: z.object({
       params: responseBodies.camp.pick({ id: true }),
-      query: z.object({
-        soft: z.boolean().optional(),
-      }),
     }),
     permission: 'camp:delete' as const,
   }
 
-  action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {
-    const { where } = input
+  async action(c: AppContext) {
+    const { params } = await this.whereInput()
 
-    return c.env.PRISMA.camp.delete({ where })
+    return c.env.PRISMA.camp.delete({ where: { id: params?.id } })
   }
 }

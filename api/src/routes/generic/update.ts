@@ -16,15 +16,19 @@ export abstract class UpdateEndpoint extends OpenAPIEndpoint {
       request: this.meta.requestSchema
         ? {
             ...this.meta.requestSchema.shape,
-            body: this.meta.supportsFormData
-              ? {
-                  content: {
-                    'multipart/form-data': {
-                      schema: this.meta.requestSchema.shape.body,
+            body: this.meta.requestSchema.shape.body
+              ? this.meta.supportsFormData
+                ? {
+                    content: {
+                      'multipart/form-data': {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                        schema: this.meta.requestSchema.shape.body,
+                      },
                     },
-                  },
-                }
-              : contentJson(this.meta.requestSchema.shape.body),
+                  }
+                : // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                  contentJson(this.meta.requestSchema.shape.body)
+              : undefined,
           }
         : undefined,
       responses: {

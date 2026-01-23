@@ -6,7 +6,6 @@ import { UpdateEndpoint } from './generic/update'
 import { DeleteEndpoint } from './generic/delete'
 import { requestBodies, responseBodies } from '../schemas'
 import { Prisma } from '@ajebo_camp/database'
-import { AwaitedReturnType } from './generic/types'
 import { AppContext } from '../types'
 
 const districtMeta = {
@@ -34,15 +33,16 @@ export class ListDistrictsEndpoint extends ListEndpoint<
 > {
   meta = {
     ...districtMeta,
-    requestSchema: listRequestQuerySchema,
+    requestSchema: z.object({
+      query: listRequestQuerySchema,
+    }),
     permission: 'district:view' as const,
   }
   protected pageSize = 25
 
-  async action(
-    c: AppContext,
-    params: AwaitedReturnType<typeof this.preAction>,
-  ) {
+  async action(c: AppContext) {
+    const params = await this.getPagination()
+
     if (!params.page) {
       const result = await c.env.PRISMA.district.findMany({
         where: params.where,
@@ -77,8 +77,25 @@ export class GetDistrictEndpoint extends GetEndpoint {
     permission: 'district:view' as const,
   }
 
-  action(c: AppContext, { params }: typeof this.meta.requestSchema._type) {
-    return c.env.PRISMA.district.findFirst({ where: { id: params.id } })
+  async action(
+    c: AppContext,
+    { params }: typeof this.meta.requestSchema._type,
+  ) {
+    const result = await c.env.PRISMA.district.findFirst({
+      where: { id: params.id },
+    })
+
+    if (!result) {
+      return c.json(
+        {
+          success: false,
+          errors: [{ code: 'not_found', message: 'District not found' }],
+        },
+        404,
+      )
+    }
+
+    return result
   }
 }
 
@@ -115,9 +132,9 @@ export class DeleteDistrictEndpoint extends DeleteEndpoint {
     permission: 'district:delete' as const,
   }
 
-  action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {
-    const { where } = input
+  async action(c: AppContext) {
+    const { params } = await this.whereInput()
 
-    return c.env.PRISMA.district.delete({ where })
+    return c.env.PRISMA.district.delete({ where: { id: params?.id } })
   }
 }

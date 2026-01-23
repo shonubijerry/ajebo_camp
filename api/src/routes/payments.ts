@@ -3,8 +3,6 @@ import { ListEndpoint, listRequestQuerySchema } from './generic/list'
 import { GetEndpoint } from './generic/get'
 import { responseBodies } from '../schemas'
 import { Prisma } from '@ajebo_camp/database'
-import { AwaitedReturnType } from './generic/types'
-import { permission } from 'process'
 import { AppContext } from '../types'
 
 const paymentMeta = {
@@ -19,14 +17,14 @@ export class ListPaymentsEndpoint extends ListEndpoint<
 > {
   meta = {
     ...paymentMeta,
-    requestSchema: listRequestQuerySchema,
+    requestSchema: z.object({
+      query: listRequestQuerySchema,
+    }),
   }
   protected pageSize = 25
 
-  async action(
-    c: AppContext,
-    params: AwaitedReturnType<typeof this.preAction>,
-  ) {
+  async action(c: AppContext) {
+    const params = await this.getPagination()
     const [data, total] = await Promise.all([
       c.env.PRISMA.payment.findMany({
         where: params.where,

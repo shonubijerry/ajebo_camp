@@ -3,7 +3,6 @@ import {
   getPermissionsForRole,
   hasAllPermissions,
   Permission,
-  Role,
 } from '../lib/permissions'
 import { AppContext } from '../types'
 
@@ -22,7 +21,7 @@ export const requirePermissions = (
     )
   }
 
-  const permissions = getPermissionsForRole(c.user.role as Role)
+  const permissions = getPermissionsForRole(c.user.role)
   if (!hasAllPermissions(permissions, required)) {
     return c.json(
       {

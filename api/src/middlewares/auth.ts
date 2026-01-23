@@ -2,8 +2,9 @@ import { verify } from 'hono/jwt'
 import { z } from 'zod'
 import { AppContext } from '../types'
 import { userResponse } from '../schemas'
-import { getPermissionsForRole, Role } from '../lib/permissions'
+import { getPermissionsForRole } from '../lib/permissions'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const auth = userResponse
   .pick({
     email: true,
@@ -51,13 +52,14 @@ export const authMiddleware = async (
       token,
       c.env.JWT_SECRET,
     )) as BaseAuthenticatedUser
-    const permissions = getPermissionsForRole(payload.role as Role)
+    const permissions = getPermissionsForRole(payload.role)
 
     c.user = {
       ...payload,
       permissions,
     }
     await next()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
     return c.json(
       { success: false, errors: [{ code: 4011, message: 'Invalid token' }] },

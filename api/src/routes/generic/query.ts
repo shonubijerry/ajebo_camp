@@ -42,7 +42,47 @@ type JsonValue =
   | null
   | JsonValue[]
   | { [key: string]: JsonValue }
-type PrismaWhere = Record<string, any>
+
+type WhereEntry = JsonValue | WhereNode
+
+export interface WhereNode {
+  [key: string]: WhereEntry
+}
+
+function isJsonValue(value: unknown): value is JsonValue {
+  if (value === null) return true
+  const kind = typeof value
+
+  if (kind === 'string' || kind === 'number' || kind === 'boolean') return true
+
+  if (Array.isArray(value)) return value.every(isJsonValue)
+
+  if (isRecord(value)) {
+    return Object.values(value).every(isJsonValue)
+  }
+
+  return false
+}
+
+function isWhereNode(value: WhereEntry): value is WhereNode {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function ensureNode(container: WhereNode, key: string): WhereNode {
+  const existing = container[key]
+
+  if (existing && isWhereNode(existing)) {
+    return existing
+  }
+
+  const next: WhereNode = {}
+  container[key] = next
+  return next
+}
 
 /**
  * Parse nested bracket notation from query params
@@ -71,10 +111,10 @@ function parseBracketNotation(key: string): string[] {
   const where3 = queryParamsToPrismaWhere(advancedParams)
   ```
  */
-export function queryParamsToPrismaWhere<T>(
+export function queryParamsToPrismaWhere(
   queryParams: Record<string, string | string[]>,
-): T {
-  const where: PrismaWhere = {}
+): WhereNode {
+  const where: WhereNode = {}
 
   for (const [key, value] of Object.entries(queryParams)) {
     const parts = parseBracketNotation(key)
@@ -86,31 +126,24 @@ export function queryParamsToPrismaWhere<T>(
       // Field with operator: [firstname][contains]=string
       const [field, operator] = parts
 
-      if (!where[field]) {
-        where[field] = {}
-      }
-
-      where[field][operator] = parseValue(value)
+      const target = ensureNode(where, field)
+      target[operator] = parseValue(value)
     } else if (parts.length > 2) {
       // Nested operators: [user][name][contains]=string
-      let current = where
+      let current: WhereNode = where
 
       for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i]
-        if (!current[part]) {
-          current[part] = {}
-        }
+        current = ensureNode(current, part)
         if (i === parts.length - 2) {
           // Last level before operator
-          current[part][parts[parts.length - 1]] = parseValue(value)
-        } else {
-          current = current[part]
+          current[parts[parts.length - 1]] = parseValue(value)
         }
       }
     }
   }
 
-  return where as T
+  return where
 }
 
 /**
@@ -133,11 +166,8 @@ function parseValue(value: string | string[]): JsonValue {
 
   // Try parsing as JSON array or object
   if (value.startsWith('[') || value.startsWith('{')) {
-    try {
-      return JSON.parse(value)
-    } catch {
-      // If parsing fails, return as string
-    }
+    const parsed = JSON.parse(value)
+    if (isJsonValue(parsed)) return parsed
   }
 
   return value
@@ -155,7 +185,11 @@ function parseValue(value: string | string[]): JsonValue {
  const where2 = queryStringToPrismaWhere(queryString);
 ```
  */
-export function queryStringToPrismaWhere<T = PrismaWhere>(queryString: string) {
+export function queryStringToPrismaWhere<T extends WhereNode = WhereNode>(
+  queryString?: string,
+): T {
+  if (!queryString) return {} as T
+
   const params = new URLSearchParams(queryString)
   const queryParams: Record<string, string | string[]> = {}
 
@@ -172,7 +206,7 @@ export function queryStringToPrismaWhere<T = PrismaWhere>(queryString: string) {
     }
   }
 
-  return queryParamsToPrismaWhere<T>(queryParams)
+  return queryParamsToPrismaWhere(queryParams) as T
 }
 
 /**
@@ -186,12 +220,12 @@ export function queryStringToPrismaWhere<T = PrismaWhere>(queryString: string) {
   // Result: { firstname: 'desc', created_at: 'asc' }
   ```
  */
-export function parseQuerySort<T = Record<string, 'asc' | 'desc'>>(
-  queryString: string,
-): T {
+export function parseQuerySort<
+  T extends Record<string, 'asc' | 'desc'> = Record<string, 'asc' | 'desc'>,
+>(queryString = 'desc'): T {
   if (!queryString) return {} as T
 
-  const result: Record<string, 'asc' | 'desc'>[] = []
+  const result: Record<string, 'asc' | 'desc'> = {}
 
   // Split by & to get individual parameters
   const params = queryString.split('&')
@@ -201,8 +235,8 @@ export function parseQuerySort<T = Record<string, 'asc' | 'desc'>>(
     const match = param.match(/\[([^\]]+)\]=(asc|desc)/)
     if (match) {
       const key = match[1]
-      const value = match[2].replace(/'/g, '') as 'asc' | 'desc'
-      result.push({ [key]: value })
+      const direction = match[2].replace(/'/g, '') === 'asc' ? 'asc' : 'desc'
+      result[key] = direction
     }
   }
 

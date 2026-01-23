@@ -1,31 +1,16 @@
-import { contentJson, OpenAPIRoute, OpenAPIRouteSchema } from 'chanfana'
+import { contentJson, OpenAPIRouteSchema } from 'chanfana'
 import { GenericError } from './query'
-import { AppContext } from '../../types'
-import { AwaitedReturnType } from './types'
 import { OpenAPIEndpoint } from './create'
+import { z } from 'zod'
 
 export abstract class DeleteEndpoint extends OpenAPIEndpoint {
-  /**
-   * OpenAPI schema (resolved lazily)
-   */
-  async preAction() {
-    const input = await this.getValidatedData()
-
-    return {
-      where: { id: input.params.id },
-    }
-  }
-
-  async action(
-    c: AppContext,
-    data: AwaitedReturnType<typeof this.preAction>,
-  ): Promise<Response | unknown> {
-    throw new Error('action implemented for ' + this.constructor.name)
-  }
-
   getSchema(): OpenAPIRouteSchema {
     return {
-      request: this.meta.requestSchema?.shape,
+      request: this.meta.requestSchema?.omit({ body: true }).extend({
+        params: z.object({
+          id: z.string(),
+        }),
+      }).shape,
       tags: this.meta.tag ? [this.meta.tag] : [String(this.meta.collection)],
       summary:
         this.meta.summary ?? `Delete ${this.meta.collection?.toLowerCase()}`,
@@ -51,5 +36,9 @@ export abstract class DeleteEndpoint extends OpenAPIEndpoint {
         },
       },
     }
+  }
+
+  async whereInput() {
+    return (await this.preAction()) as { params?: { id: string } }
   }
 }

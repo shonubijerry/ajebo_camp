@@ -6,7 +6,6 @@ import { UpdateEndpoint } from './generic/update'
 import { DeleteEndpoint } from './generic/delete'
 import { requestBodies, responseBodies } from '../schemas'
 import { Prisma } from '@ajebo_camp/database'
-import { AwaitedReturnType } from './generic/types'
 import { AppContext } from '../types'
 
 const campAllocationMeta = {
@@ -34,15 +33,16 @@ export class ListCampAllocationsEndpoint extends ListEndpoint<
 > {
   meta = {
     ...campAllocationMeta,
-    requestSchema: listRequestQuerySchema,
+    requestSchema: z.object({
+      query: listRequestQuerySchema,
+    }),
     permission: 'camp-allocation:view' as const,
   }
   protected pageSize = 25
 
-  async action(
-    c: AppContext,
-    params: AwaitedReturnType<typeof this.preAction>,
-  ) {
+  async action(c: AppContext) {
+    const params = await this.getPagination()
+
     const [data, total] = await Promise.all([
       c.env.PRISMA.camp_Allocation.findMany({
         where: params.where,
@@ -69,8 +69,25 @@ export class GetCampAllocationEndpoint extends GetEndpoint {
     permission: 'camp-allocation:view' as const,
   }
 
-  action(c: AppContext, { params }: typeof this.meta.requestSchema._type) {
-    return c.env.PRISMA.camp_Allocation.findFirst({ where: { id: params.id } })
+  async action(
+    c: AppContext,
+    { params }: typeof this.meta.requestSchema._type,
+  ) {
+    const result = await c.env.PRISMA.camp_Allocation.findFirst({
+      where: { id: params.id },
+    })
+
+    if (!result) {
+      return c.json(
+        {
+          success: false,
+          errors: [{ code: 'not_found', message: 'Camp allocation not found' }],
+        },
+        404,
+      )
+    }
+
+    return result
   }
 }
 
@@ -107,9 +124,9 @@ export class DeleteCampAllocationEndpoint extends DeleteEndpoint {
     permission: 'camp-allocation:delete' as const,
   }
 
-  action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {
-    const { where } = input
+  async action(c: AppContext) {
+    const { params } = await this.whereInput()
 
-    return c.env.PRISMA.camp_Allocation.delete({ where })
+    return c.env.PRISMA.camp_Allocation.delete({ where: { id: params?.id } })
   }
 }

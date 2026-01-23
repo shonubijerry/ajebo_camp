@@ -6,7 +6,6 @@ import { UpdateEndpoint } from './generic/update'
 import { DeleteEndpoint } from './generic/delete'
 import { requestBodies, responseBodies } from '../schemas'
 import { Prisma } from '@ajebo_camp/database'
-import { AwaitedReturnType } from './generic/types'
 import { AuthenticatedUser } from '../middlewares/auth'
 import {
   getPermissionsForRole,
@@ -52,14 +51,14 @@ export class ListUsersEndpoint extends ListEndpoint<
 > {
   meta = {
     ...userMeta,
-    requestSchema: listRequestQuerySchema,
+    requestSchema: z.object({
+      query: listRequestQuerySchema,
+    }),
   }
   protected pageSize = 25
 
-  async action(
-    c: AppContext,
-    params: AwaitedReturnType<typeof this.preAction>,
-  ) {
+  async action(c: AppContext) {
+    const params = await this.getPagination()
     const [data, total] = await Promise.all([
       c.env.PRISMA.user.findMany({
         where: params.where,
@@ -152,9 +151,9 @@ export class DeleteUserEndpoint extends DeleteEndpoint {
     }),
   }
 
-  async action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {
-    const { where } = input
+  async action(c: AppContext) {
+    const { params } = await this.whereInput()
 
-    return c.env.PRISMA.user.delete({ where })
+    return c.env.PRISMA.user.delete({ where: { id: params?.id } })
   }
 }

@@ -1,10 +1,9 @@
 import { OpenAPIRoute, OpenAPIRouteSchema, contentJson } from 'chanfana'
-import { z } from 'zod'
+import { AnyZodObject, z } from 'zod'
 import { GenericError } from './query'
 import { AppContext } from '../../types'
 import { Prisma } from '@ajebo_camp/database'
-import { AwaitedReturnType } from './types'
-import { successRes } from '../../lib/response'
+import { errorRes, successRes } from '../../lib/response'
 import { requirePermissions } from '../../middlewares/authorize'
 import { Permission } from '../../lib/permissions'
 
@@ -18,7 +17,12 @@ import { Permission } from '../../lib/permissions'
  */
 export abstract class OpenAPIEndpoint extends OpenAPIRoute {
   abstract meta: {
-    requestSchema: z.AnyZodObject | null
+    requestSchema: z.ZodObject<{
+      body?: AnyZodObject
+      query?: AnyZodObject
+      params?: AnyZodObject
+      headers?: AnyZodObject
+    }> | null
     responseSchema: z.AnyZodObject | z.ZodString
     tag?: string
     summary?: string
@@ -32,18 +36,23 @@ export abstract class OpenAPIEndpoint extends OpenAPIRoute {
   /**
    * Optional hook to mutate or replace input before persistence
    */
-  async preAction(): Promise<
-    typeof this.meta.requestSchema extends z.AnyZodObject
-      ? (typeof this.meta.requestSchema)['_type']
-      : unknown
-  > {
-    return this.getValidatedData()
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async preAction() {
+    return (await this.getValidatedData()) as {
+      body?: unknown
+      query?: unknown
+      params?: unknown
+      headers?: unknown
+    }
   }
 
   action(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     c: AppContext,
-    data: AwaitedReturnType<typeof this.preAction>,
-  ): Promise<Response | unknown> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    data?: Awaited<ReturnType<typeof this.preAction>>,
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  ): Promise<Response | Record<string, unknown> | null> {
     throw new Error('action implemented for ' + this.constructor.name)
   }
 
@@ -62,15 +71,19 @@ export abstract class OpenAPIEndpoint extends OpenAPIRoute {
       request: this.meta.requestSchema
         ? {
             ...this.meta.requestSchema.shape,
-            body: this.meta.supportsFormData
-              ? {
-                  content: {
-                    'multipart/form-data': {
-                      schema: this.meta.requestSchema.shape.body,
+            body: this.meta.requestSchema.shape.body
+              ? this.meta.supportsFormData
+                ? {
+                    content: {
+                      'multipart/form-data': {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                        schema: this.meta.requestSchema.shape.body,
+                      },
                     },
-                  },
-                }
-              : contentJson(this.meta.requestSchema.shape.body),
+                  }
+                : // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                  contentJson(this.meta.requestSchema.shape.body)
+              : undefined,
           }
         : undefined,
       responses: {
@@ -107,6 +120,10 @@ export abstract class OpenAPIEndpoint extends OpenAPIRoute {
 
     if (result instanceof Response) {
       return result
+    }
+
+    if (!result) {
+      return errorRes(c, ['Data not found'], 404)
     }
 
     return successRes(c, result)

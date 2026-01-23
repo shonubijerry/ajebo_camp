@@ -7,7 +7,6 @@ import { DeleteEndpoint } from './generic/delete'
 import { requestBodies, responseBodies } from '../schemas'
 import { AppContext } from '../types'
 import { Prisma } from '@ajebo_camp/database'
-import { AwaitedReturnType } from './generic/types'
 
 const entityMeta = {
   collection: 'Entity' as const,
@@ -34,15 +33,15 @@ export class ListEntitiesEndpoint extends ListEndpoint<
 > {
   meta = {
     ...entityMeta,
-    requestSchema: listRequestQuerySchema,
+    requestSchema: z.object({
+      query: listRequestQuerySchema,
+    }),
     permission: 'entity:view' as const,
   }
   protected pageSize = 25
 
-  async action(
-    c: AppContext,
-    params: AwaitedReturnType<typeof this.preAction>,
-  ) {
+  async action(c: AppContext) {
+    const params = await this.getPagination()
     const [data, total] = await Promise.all([
       c.env.PRISMA.entity.findMany({
         where: params.where,
@@ -68,7 +67,10 @@ export class GetEntityEndpoint extends GetEndpoint {
     permission: 'entity:view' as const,
   }
 
-  action(c: AppContext, { params }: typeof this.meta.requestSchema._type) {
+  async action(
+    c: AppContext,
+    { params }: typeof this.meta.requestSchema._type,
+  ) {
     return c.env.PRISMA.entity.findFirst({ where: { id: params.id } })
   }
 }
@@ -106,9 +108,9 @@ export class DeleteEntityEndpoint extends DeleteEndpoint {
     permission: 'entity:delete' as const,
   }
 
-  action(c: AppContext, input: AwaitedReturnType<typeof this.preAction>) {
-    const { where } = input
+  async action(c: AppContext) {
+    const { params } = await this.whereInput()
 
-    return c.env.PRISMA.entity.delete({ where })
+    return c.env.PRISMA.entity.delete({ where: { id: params?.id } })
   }
 }

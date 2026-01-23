@@ -36,7 +36,9 @@ export class GetMediaEndpoint extends OpenAPIRoute {
   }
 
   async handle(c: AppContext) {
-    const { params } = await this.getValidatedData()
+    const { params } = (await this.getValidatedData()) as {
+      params: { key: string }
+    }
 
     const object = await c.env.MEDIA_BUCKET.get(decodeURIComponent(params.key))
 
