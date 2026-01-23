@@ -1,4 +1,4 @@
-import { JSONQueryPayload, UpdateJSONPayload } from './db_schema'
+import { JSONQueryPayload, UpdateJSONPayload } from "./db_schema";
 
 export const prepareJsonUpsertQuery = ({
   table,
@@ -11,8 +11,8 @@ export const prepareJsonUpsertQuery = ({
         UPDATE ${table}
         SET ${field} = json_set(${field}, '${keyPath}', '${String(value)}')
         WHERE ${where};
-    `
-}
+    `;
+};
 
 export const prepareJsonReadQuery = ({
   table,
@@ -20,5 +20,5 @@ export const prepareJsonReadQuery = ({
   keyPath,
   where,
 }: JSONQueryPayload) => {
-  return `SELECT json_extract(${field}, '${keyPath}') as value FROM ${table} WHERE ${where}`
-}
+  return `SELECT json_extract(${field}, '${keyPath}') as value FROM ${table} WHERE ${where}`;
+};

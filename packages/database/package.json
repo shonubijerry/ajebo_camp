@@ -15,6 +15,7 @@
     "migrate:prisma-first": "npx prisma migrate diff --from-empty --to-schema ./prisma/schema.prisma --script --output",
     "migrate:prisma-afterwards": "npx prisma migrate diff --from-config-datasource --to-schema ./prisma/schema.prisma --script --output",
     "test": "vitest",
+    "lint": "eslint . --max-warnings 0 --fix --ext .js,.jsx,.ts,.tsx",
     "cf-typegen": "wrangler types"
   },
   "devDependencies": {
@@ -28,8 +29,9 @@
     "wrangler": "^4.12.0"
   },
   "dependencies": {
+    "@hono/zod-openapi": "^0.9.10",
     "@prisma/adapter-d1": "^7.2.0",
     "@prisma/client": "^7.2.0",
-    "zod": "^3.22.3"
+    "zod": "^4.3.6"
   }
 }
