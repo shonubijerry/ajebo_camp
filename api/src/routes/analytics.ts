@@ -70,6 +70,7 @@ export class GetDashboardAnalyticsEndpoint extends OpenAPIRoute {
         camp_id: z.string().optional(),
       }),
     },
+    security: [{ bearer: [] }],
     responses: {
       '200': {
         description: 'Dashboard analytics',
@@ -157,6 +158,7 @@ export class GetDetailedAnalyticsEndpoint extends OpenAPIRoute {
     request: {
       query: analyticsQuerySchema,
     },
+    security: [{ bearer: [] }],
     responses: {
       '200': {
         description: 'Detailed analytics',
@@ -169,6 +171,9 @@ export class GetDetailedAnalyticsEndpoint extends OpenAPIRoute {
         },
       },
     },
+  }
+  meta = {
+    permission: 'analytics:view' as const,
   }
 
   async handle(c: AppContext): Promise<{ data: CampDetailedAnalytics }> {
