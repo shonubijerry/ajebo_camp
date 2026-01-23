@@ -37,7 +37,7 @@ export const prismaCampExtension = {
 
 export default class extends WorkerEntrypoint<Env> {
   fetch() {
-    return new Response("ok");
+    return new Response("running");
   }
 }
 

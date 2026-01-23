@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { z } from 'zod'
 import { OpenAPIRoute } from 'chanfana'
 import { Prisma } from '@ajebo_camp/database'
