@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { ListEndpoint, listRequestQuerySchema } from './generic/list'
 import { GetEndpoint } from './generic/get'
-import { responseBodies } from '../schemas'
+import { responseBodies } from '@ajebo_camp/database'
 import { Prisma } from '@ajebo_camp/database'
 import { AppContext } from '../types'
 

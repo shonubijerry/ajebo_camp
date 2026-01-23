@@ -1,7 +1,7 @@
 import { verify } from 'hono/jwt'
 import { z } from 'zod'
 import { AppContext } from '../types'
-import { userResponse } from '../schemas'
+import { userResponse } from '@ajebo_camp/database'
 import { getPermissionsForRole } from '../lib/permissions'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { OpenAPIEndpoint } from '../generic/create'
 import { sign } from 'hono/jwt'
-import { requestBodies, userResponse } from '../../schemas'
+import { requestBodies, userResponse } from '@ajebo_camp/database'
 import { errorRes } from '../../lib/response'
 import { hash } from '../../lib/encrypt'
 import { getPermissionsForRole, Role } from '../../lib/permissions'

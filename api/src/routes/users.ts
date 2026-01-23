@@ -4,8 +4,7 @@ import { ListEndpoint, listRequestQuerySchema } from './generic/list'
 import { GetEndpoint } from './generic/get'
 import { UpdateEndpoint } from './generic/update'
 import { DeleteEndpoint } from './generic/delete'
-import { requestBodies, responseBodies } from '../schemas'
-import { Prisma } from '@ajebo_camp/database'
+import { requestBodies, responseBodies, Prisma } from '@ajebo_camp/database'
 import { AuthenticatedUser } from '../middlewares/auth'
 import {
   getPermissionsForRole,

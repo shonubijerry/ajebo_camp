@@ -3,7 +3,7 @@ import { OpenAPIEndpoint } from '../../generic/create'
 import { hash } from '../../../lib/encrypt'
 import { sign } from 'hono/jwt'
 import { AppContext } from '../../../types'
-import { userResponse } from '../../../schemas'
+import { userResponse } from '@ajebo_camp/database'
 
 const ChangePasswordPublicSchema = z.object({
   password: z.string().min(8),
