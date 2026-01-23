@@ -19,7 +19,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
+      WRANGLER_ENV: ${{ github.event_name == 'workflow_dispatch' && inputs.wrangler_env || '' }}
       NEXT_TELEMETRY_DISABLED: 1
+    environment: ${{ (github.event_name == 'workflow_dispatch' && inputs.wrangler_env != '' && inputs.wrangler_env) || 'production' }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,6 +32,7 @@ jobs:
         with:
           node-version: 24
           cache: npm
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         working-directory: ui
@@ -43,7 +47,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           workingDirectory: ui
-          command: npm run deploy -- --env production
+          command: deploy --env ${{ env.WRANGLER_ENV }}
         env:
           NEXTJS_ENV: 'production'
           NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
