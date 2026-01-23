@@ -40,7 +40,7 @@
   "env": {
     "production": {
       "name": "ajebo_camp_api_production",
-      "route": "https://api.ajebo.camp/*",
+      // "route": "https://api.ajebo.camp/*",
       "vars": {
         "ENVIRONMENT": "production"
       },
