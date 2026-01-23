@@ -44,6 +44,8 @@ jobs:
       - name: Generate Prisma Client
         working-directory: packages/database  
         run: npm run prisma:generate
+        env:
+          DATABASE_URL: ''
 
       - name: Run lint
         working-directory: api
