@@ -38,7 +38,7 @@ export default function CampCampitesPageContent({ campId }: Props) {
     },
   ]
 
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:6001'
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:6001'
 
   const handleExport = useCallback(async () => {
     try {

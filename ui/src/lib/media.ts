@@ -11,6 +11,6 @@ export function getMediaUrl(path: string | null | undefined): string | null {
   }
 
   // Local development - prepend API URL
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:6001'
+  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:6001'
   return `${apiUrl}/api/v1/media/${encodeURIComponent(path)}`
 }

@@ -101,7 +101,7 @@ export default function CampForm({
   )
 
   const token = localStorage.getItem('token')
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:6001'
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:6001'
 
   // Helper to format date for display in input
   const formatDateForInput = (value: string | null | undefined): string => {
