@@ -19,7 +19,6 @@ declare module '@mui/material/styles' {
     900: string
   }
 
-  // eslint-disable-next-line
   interface PaletteColor extends ColorRange {}
 
   interface Palette {

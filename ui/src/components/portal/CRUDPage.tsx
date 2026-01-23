@@ -87,7 +87,6 @@ export default function CRUDPage<
   // @ts-expect-error -- TS cannot infer string index signature here
   const deleteMutation = $api.useMutation('delete', deleteEndpoint)
 
-  // eslint-disable-next-line
   const result = $api.useQuery('get', listEndpoint as any, {
     params: { query: { page: 1, per_page: 100, filter, orderBy } },
   })

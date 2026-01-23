@@ -23,6 +23,7 @@ import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import { useApi } from '@/lib/api/useApi'
 import { CreateCampRequest } from '@/interfaces'
 import { getMediaUrl } from '@/lib/media'
+import Image from 'next/image'
 
 interface CampAllocation {
   id?: string
@@ -428,15 +429,14 @@ export default function CampForm({
               />
             </Button>
             {bannerPreview && (
-              <Box sx={{ mt: 1 }}>
-                <img
+              <Box sx={{ mt: 1, position: 'relative', height: 200 }}>
+                <Image
                   src={bannerPreview}
                   alt="Banner preview"
-                  style={{
-                    maxWidth: '100%',
-                    maxHeight: '200px',
-                    objectFit: 'contain',
-                  }}
+                  fill
+                  sizes="(max-width: 600px) 100vw, 600px"
+                  style={{ objectFit: 'contain' }}
+                  priority
                 />
               </Box>
             )}
@@ -448,15 +448,15 @@ export default function CampForm({
             <Typography variant="body2" sx={{ mb: 1 }}>
               Banner Image
             </Typography>
-            <img
-              src={getMediaUrl(camp.banner) || ''}
-              alt="Camp banner"
-              style={{
-                maxWidth: '100%',
-                maxHeight: '200px',
-                objectFit: 'contain',
-              }}
-            />
+            <Box sx={{ position: 'relative', height: 200 }}>
+              <Image
+                src={getMediaUrl(camp.banner) || ''}
+                alt="Camp banner"
+                fill
+                sizes="(max-width: 600px) 100vw, 600px"
+                style={{ objectFit: 'contain' }}
+              />
+            </Box>
           </Box>
         )}
 
