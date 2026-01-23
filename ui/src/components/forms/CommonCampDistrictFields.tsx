@@ -17,7 +17,8 @@ type CampDistrictFormValues = { camp_id: string; district_id?: string }
 type DistrictOption = { id: string; name: string; inputValue?: string }
 
 interface CommonCampDistrictFieldsProps {
-  control: Control<CampDistrictFormValues>
+  // @eslint-disable-next-line no-any
+  control: Control<any>
   camps: { id: string; title: string; year?: number }[]
   filteredDistricts: DistrictOption[]
   districtSearch: string
