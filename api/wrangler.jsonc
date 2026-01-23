@@ -16,8 +16,7 @@
     "enabled": true
   },
   "vars": {
-    "ENVIRONMENT": "development",
-    "R2_PUBLIC_BASE_URL": "https://ajebo-camp-media.r2.dev"
+    "ENVIRONMENT": "development"
   },
   "services": [
     {
