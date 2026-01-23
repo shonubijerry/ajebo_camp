@@ -58,7 +58,7 @@ jobs:
           SALT_ROUND: ${{ secrets.SALT_ROUND }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           PAYSTACK_SECRET_KEY: ${{ secrets.PAYSTACK_SECRET_KEY }}
-          R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}
+          R2_PUBLIC_BASE_URL: ${{ vars.R2_PUBLIC_BASE_URL }}
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           environment: ${{ env.WRANGLER_ENV != '' && env.WRANGLER_ENV || 'production' }}

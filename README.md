@@ -118,7 +118,7 @@ R2_PUBLIC_BASE_URL=https://ajebo-camp-media.r2.dev
 
 ### UI (.env.local)
 ```
-NEXT_PUBLIC_API_URL=http://localhost:6001
+NEXT_PUBLIC_API_BASE_URL=http://localhost:6001
 NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=pk_test_your-paystack-public-key
 ```
 
