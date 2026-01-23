@@ -33,9 +33,17 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Install dependencies
+      - name: Install API dependencies
         working-directory: api
         run: npm ci
+
+      - name: Install database dependencies
+        working-directory: packages/database
+        run: npm ci
+
+      - name: Generate Prisma Client
+        working-directory: packages/database  
+        run: npm run prisma:generate
 
       - name: Run lint
         working-directory: api
