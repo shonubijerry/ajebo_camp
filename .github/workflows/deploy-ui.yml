@@ -47,6 +47,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           workingDirectory: ui
+          preCommands: npm run build:opennextjs
           command: deploy --env ${{ env.WRANGLER_ENV }}
         env:
           NEXTJS_ENV: 'production'
