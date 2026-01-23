@@ -35,7 +35,7 @@ export class SignupEndpoint extends OpenAPIEndpoint {
       return errorRes(c, 'User with email already exists', 409)
     }
 
-    if (role) {
+    if (role && role !== 'user') {
       return errorRes(c, 'Method not allowed', 403)
     }
 
