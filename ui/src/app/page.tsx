@@ -16,7 +16,7 @@ export default function HomePage() {
     const loadCamps = async () => {
       try {
         const result = await api.GET("/api/v1/camps/list", {
-          query: { page: 0, per_page: 100 },
+          params: { query: { page: 0, per_page: 100, orderBy: "[start_date]=desc" } },
         })
 
         if (!isMounted) return

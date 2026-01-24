@@ -22,6 +22,7 @@ const colors = {
   yellow: '#ffd100',
   navy: '#0b1c3f',
   light: '#f8fafc',
+  grey: '#8a8c8e',
 }
 
 function getCampStatus(camp: Camp) {
@@ -246,7 +247,7 @@ export default function CampsDisplay({ camps }: { camps: Camp[] }) {
                         bgcolor: colors.light,
                         backgroundImage: getMediaUrl(camp.banner)
                           ? `linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.55)), url(${getMediaUrl(camp.banner)})`
-                          : `linear-gradient(135deg, ${colors.blue}, ${colors.red})`,
+                          : `linear-gradient(135deg, ${colors.blue}, ${colors.grey})`,
                       }}
                     />
                     <CardContent

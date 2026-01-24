@@ -23,6 +23,8 @@ export class CreateDistrictEndpoint extends OpenAPIEndpoint {
   }
 
   async action(c: AppContext, { body }: typeof this.meta.requestSchema._type) {
+    body.name =
+      body.name.charAt(0).toUpperCase() + body.name.slice(1).toLowerCase()
     return c.env.PRISMA.district.create({ data: body })
   }
 }

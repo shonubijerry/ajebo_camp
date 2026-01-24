@@ -96,6 +96,7 @@ const CampsPageContent = () => {
       getDeleteMessage={(camp) =>
         `Are you sure you want to delete ${camp?.title}? This action cannot be undone.`
       }
+      orderBy="[created_at]=desc"
     />
   )
 }

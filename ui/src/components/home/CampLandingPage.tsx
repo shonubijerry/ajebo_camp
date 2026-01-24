@@ -30,8 +30,8 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
   const searchParams = useSearchParams()
   const campStatus = useMemo(
     () =>
-      camp.is_active ? 'Active' : camp.is_coming_soon ? 'Upcoming' : 'Closed',
-    [camp.is_active, camp.is_coming_soon],
+      camp.is_active ? 'Active' : 'Closed',
+    [camp.is_active],
   )
   const canRegister = camp.is_active
   const [registrationType, setRegistrationType] =
@@ -105,10 +105,8 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
     () =>
       canRegister
         ? registrationButtonLabel
-        : campStatus === 'Upcoming'
-          ? 'Registration Opens Soon'
-          : 'Registration Closed',
-    [canRegister, registrationButtonLabel, campStatus],
+        : 'Registration Closed',
+    [canRegister, registrationButtonLabel],
   )
 
   return (

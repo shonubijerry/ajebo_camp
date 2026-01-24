@@ -52,6 +52,7 @@ export default function IndividualRegistrationForm({
   const [submitting, setSubmitting] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   const [success, setSuccess] = React.useState(false)
+  const [showThankYou, setShowThankYou] = React.useState(false)
   const { paystackReady, setPaystackReady, processPayment } =
     usePaystackPayment()
   const {
@@ -136,6 +137,9 @@ export default function IndividualRegistrationForm({
     try {
       setSubmitting(true)
       setError(null)
+      setShowThankYou(false)
+
+      const isDonation = isFreeRegistration && (data.amount || 0) > 0
 
       // If amount is 0 or free registration, skip payment
       if (data.amount === 0 || (isFreeRegistration && data.amount === 0)) {
@@ -156,9 +160,10 @@ export default function IndividualRegistrationForm({
               data,
               (transaction as { reference: string }).reference,
             )
-            setSuccess(true)
+            setSuccess(!isDonation)
+            setShowThankYou(isDonation)
             reset()
-            setTimeout(() => onSuccess?.(), 2000)
+            setTimeout(() => onSuccess?.(), isDonation ? 5000 : 2000)
           } catch (err: unknown) {
             setError(
               (err as Error).message || 'Registration failed after payment',
@@ -231,6 +236,12 @@ export default function IndividualRegistrationForm({
       {success && (
         <Alert severity="success" sx={{ mb: 3 }}>
           Registration successful! Redirecting...
+        </Alert>
+      )}
+
+      {showThankYou && (
+        <Alert severity="success" sx={{ mb: 3 }}>
+          Thank you for your donation! Redirecting...
         </Alert>
       )}
 
@@ -398,21 +409,23 @@ export default function IndividualRegistrationForm({
             />
           </Grid>
 
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Controller
-              name="type"
-              control={control}
-              render={({ field }) => (
-                <FormControl fullWidth>
-                  <InputLabel>Campite Type</InputLabel>
-                  <Select {...field} label="Campite Type">
-                    <MenuItem value="regular">Regular</MenuItem>
-                    <MenuItem value="premium">Premium</MenuItem>
-                  </Select>
-                </FormControl>
-              )}
-            />
-          </Grid>
+          {!isFreeRegistration && (
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Controller
+                name="type"
+                control={control}
+                render={({ field }) => (
+                  <FormControl fullWidth>
+                    <InputLabel>Campite Type</InputLabel>
+                    <Select {...field} label="Campite Type">
+                      <MenuItem value="regular">Regular</MenuItem>
+                      <MenuItem value="premium">Premium</MenuItem>
+                    </Select>
+                  </FormControl>
+                )}
+              />
+            </Grid>
+          )}
 
           <Grid size={{ xs: 12, sm: 6 }}>
             {isFreeRegistration && campiteType === 'regular' ? (

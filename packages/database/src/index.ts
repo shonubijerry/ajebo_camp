@@ -15,7 +15,7 @@ export const prismaCampExtension = {
         },
         compute(camp: { start_date: Date; end_date: Date }) {
           const now = new Date();
-          return camp.start_date <= now && camp.end_date >= now;
+          return camp.end_date >= now;
         },
       },
       is_coming_soon: {
