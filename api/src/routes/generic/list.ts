@@ -27,8 +27,7 @@ export const listRequestQuerySchema = z.object({
   per_page: z
     .number()
     .int()
-    .max(100)
-    .default(20)
+    .default(25)
     .describe('Number of records per page.'),
   orderBy: z.string().optional().openapi({
     example: '[firstname]=desc&[created_at]=desc',
@@ -87,7 +86,7 @@ export abstract class ListEndpoint<
   protected pageSize = 25
 
   /** Maximum page size */
-  protected maxPageSize = 100
+  protected maxPageSize = 1000
 
   /**
    * Optional hook to mutate or replace input before persistence

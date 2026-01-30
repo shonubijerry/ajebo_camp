@@ -88,7 +88,7 @@ export default function CRUDPage<
   const deleteMutation = $api.useMutation('delete', deleteEndpoint)
 
   const result = $api.useQuery('get', listEndpoint as any, {
-    params: { query: { page: 1, per_page: 100, filter, orderBy } },
+    params: { query: { page: 1, per_page: 1000, filter, orderBy } },
   })
 
   const entities = React.useMemo(

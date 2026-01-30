@@ -281,6 +281,8 @@ export class ExportCampitesEndpoint extends OpenAPIEndpoint {
     c: AppContext & { user?: AuthenticatedUser },
     { query }: typeof this.meta.requestSchema._type,
   ) {
+    const districts = await c.env.PRISMA.district.findMany()
+    const districtMap = new Map(districts.map((d) => [d.id, d.name]))
     const campites = await c.env.PRISMA.campite.findMany({
       where: { camp_id: query.camp_id },
       orderBy: { created_at: 'desc' },
@@ -289,9 +291,10 @@ export class ExportCampitesEndpoint extends OpenAPIEndpoint {
     const headers = [
       'First Name',
       'Last Name',
+      'Gender',
       'Phone',
       'Email',
-      'Gender',
+      'District',
       'Amount',
       'Created At',
     ]
@@ -314,9 +317,10 @@ export class ExportCampitesEndpoint extends OpenAPIEndpoint {
     const rows = campites.map((c) => [
       c.firstname,
       c.lastname,
+      c.gender,
       c.phone,
       c.email ?? '',
-      c.gender,
+      districtMap.get(c.district_id ?? '') ?? '',
       c.amount ?? '',
       c.created_at ? new Date(c.created_at).toISOString() : '',
     ])

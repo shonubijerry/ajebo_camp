@@ -67,6 +67,7 @@ export default function DataTable<T>({
     pageIndex: 0,
     pageSize,
   })
+  const shouldScroll = data.length > 30
 
   const tableColumns = React.useMemo(() => {
     const cols: ColumnDef<T>[] = [...columns]
@@ -202,7 +203,14 @@ export default function DataTable<T>({
         />
       </Box>
 
-      <TableContainer sx={{ overflowX: 'auto', maxWidth: '100%' }}>
+      <TableContainer
+        sx={{
+          overflowX: 'auto',
+          maxWidth: '100%',
+          maxHeight: shouldScroll ? 800 : 'none',
+          overflowY: shouldScroll ? 'auto' : 'visible',
+        }}
+      >
         <Table
           stickyHeader
           aria-label="data table"
@@ -367,7 +375,7 @@ export default function DataTable<T>({
           </>
         ) : (
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25, 50]}
+            rowsPerPageOptions={[25, 50, 100, 200]}
             component="div"
             count={table.getFilteredRowModel().rows.length}
             rowsPerPage={pagination.pageSize}
