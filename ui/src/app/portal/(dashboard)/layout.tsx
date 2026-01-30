@@ -13,13 +13,13 @@ export default function DashboardRoutesLayout({
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem('token')
     if (!token) {
-      router.push('/admin')
+      router.push('/portal')
     }
   }
 
   const handleLogout = () => {
     localStorage.removeItem('token')
-    router.push('/admin')
+    router.push('/portal')
   }
 
   return <DashboardLayout onLogout={handleLogout}>{children}</DashboardLayout>

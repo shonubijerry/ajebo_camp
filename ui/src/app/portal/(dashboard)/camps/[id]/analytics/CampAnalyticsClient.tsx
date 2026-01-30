@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from 'react'
 import {
   Box,
+  Button,
   Chip,
   Divider,
   Grid,
@@ -18,6 +19,7 @@ import {
   Groups as GroupsIcon,
   Map as MapIcon,
   HourglassEmpty as PendingIcon,
+  Download as DownloadIcon,
 } from '@mui/icons-material'
 import {
   PieChart,
@@ -39,28 +41,32 @@ import { useApi } from '@/lib/api/useApi'
 import { DetailedAnalytics } from '@/interfaces'
 import { useAuth } from '@/hooks/useAuth'
 import { ForbiddenPage } from '@/components/permissions/ForbiddenPage'
-import { PERIODS } from '@/lib/chart'
+import { formatter, PERIODS } from '@/lib/chart'
 import {
   ChartCard,
   pieColors,
   renderCustomizedLabel,
   currency,
-  CustomTooltip,
 } from '@/lib/chart'
+import { downloadAsXlsx } from './download'
 
 type Props = { campId: string }
 
 export default function CampAnalyticsPageContent({ campId }: Props) {
   const { $api } = useApi()
   const { hasPermission, isLoading: isAuthLoading } = useAuth()
-  const [period, setPeriod] =
-    useState<(typeof PERIODS)[number]['value']>('month')
+  const [period, setPeriod] = useState<(typeof PERIODS)[number]['value']>('all')
 
   const analyticsQuery = $api.useQuery('get', '/api/v1/analytics/detailed', {
     params: { query: { period, camp_id: campId } },
   })
 
+  const campQuery = $api.useQuery('get', '/api/v1/camps/{id}', {
+    params: { path: { id: campId } },
+  })
+
   const analytics = analyticsQuery.data?.data as DetailedAnalytics | undefined
+  const camp = campQuery.data?.data
   const overview = analytics?.overview
 
   const statCards = useMemo(
@@ -119,23 +125,34 @@ export default function CampAnalyticsPageContent({ campId }: Props) {
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Box>
           <Typography variant="h5" sx={{ fontWeight: 700 }}>
-            Camp Analytics
+            {camp?.title} Analytics
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Detailed breakdown for this camp.
+            Detailed breakdown for this camp
           </Typography>
         </Box>
-        <Stack direction="row" spacing={1}>
-          {PERIODS.map((p) => (
-            <Chip
-              key={p.value}
-              label={p.label}
-              color={period === p.value ? 'primary' : 'default'}
-              variant={period === p.value ? 'filled' : 'outlined'}
-              onClick={() => setPeriod(p.value)}
-            />
-          ))}
-        </Stack>
+        <Box display="flex" alignItems="center" gap={2}>
+          <Button
+            variant="outlined"
+            startIcon={<DownloadIcon />}
+            onClick={() => downloadAsXlsx(camp?.title || '', period, analytics)}
+            disabled={analyticsQuery.isLoading}
+            size="small"
+          >
+            Download
+          </Button>
+          <Stack direction="row" spacing={1}>
+            {PERIODS.map((p) => (
+              <Chip
+                key={p.value}
+                label={p.label}
+                color={period === p.value ? 'primary' : 'default'}
+                variant={period === p.value ? 'filled' : 'outlined'}
+                onClick={() => setPeriod(p.value)}
+              />
+            ))}
+          </Stack>
+        </Box>
       </Stack>
 
       <Grid container spacing={3}>
@@ -174,7 +191,6 @@ export default function CampAnalyticsPageContent({ campId }: Props) {
                     <Cell key={idx} fill={pieColors[idx % pieColors.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -191,14 +207,35 @@ export default function CampAnalyticsPageContent({ campId }: Props) {
                 <Pie
                   dataKey="value"
                   data={typeBreakdown.map((t) => ({
-                    name: `${t.type} count` || 'Unknown',
-                    value: t.count,
+                    name: `${t.type} revenue` || 'Unknown',
+                    value: t.revenue,
+                    currency: currency.format(t.revenue),
                   }))}
                   cx="50%"
                   cy="50%"
                   outerRadius="50%"
                   labelLine={false}
-                  label={renderCustomizedLabel}
+                >
+                  {typeBreakdown.map((_, idx) => (
+                    <>
+                      <Cell
+                        key={idx}
+                        fill={pieColors[(idx + 3) % pieColors.length]}
+                      ></Cell>
+                    </>
+                  ))}
+                </Pie>
+                <Pie
+                  dataKey="value"
+                  data={typeBreakdown.map((t) => ({
+                    name: `${t.type} count` || 'Unknown',
+                    value: t.count,
+                  }))}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius="55%"
+                  outerRadius="80%"
+                  labelLine={false}
                 >
                   {typeBreakdown.map((_, idx) => (
                     <Cell
@@ -207,36 +244,7 @@ export default function CampAnalyticsPageContent({ campId }: Props) {
                     />
                   ))}
                 </Pie>
-                <Pie
-                  dataKey="value"
-                  data={typeBreakdown.map((t) => ({
-                    name: `${t.type} revenue` || 'Unknown',
-                    value: t.revenue,
-                    currency: currency.format(t.revenue),
-                  }))}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius="55%"
-                  outerRadius="80%"
-                  labelLine={false}
-                  label={renderCustomizedLabel}
-                  tooltipType="none"
-                >
-                  {typeBreakdown.map((_, idx) => (
-                    <Cell
-                      key={idx}
-                      fill={pieColors[(idx + 3) % pieColors.length]}
-                    >
-                      <Tooltip
-                        key={`tooltip-${idx}`}
-                        content={CustomTooltip}
-                        defaultIndex={idx}
-                      />
-                    </Cell>
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
+                <Legend formatter={formatter} />
               </PieChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -259,14 +267,12 @@ export default function CampAnalyticsPageContent({ campId }: Props) {
                   cy="50%"
                   outerRadius={80}
                   labelLine={false}
-                  label={renderCustomizedLabel}
                 >
                   {ageBreakdown.map((_, idx) => (
                     <Cell key={idx} fill={pieColors[idx % pieColors.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
-                <Legend />
+                <Legend formatter={formatter} />
               </PieChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -274,30 +280,38 @@ export default function CampAnalyticsPageContent({ campId }: Props) {
       </Grid>
 
       <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 12 }}>
           <ChartCard
             title="Campites by District"
             loading={analyticsQuery.isLoading}
           >
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={600}>
               <BarChart
                 data={districtBreakdown.map((d) => ({
                   name: d.district_name,
                   value: d.count,
                 }))}
-                layout="vertical"
+                layout="horizontal"
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
-                <YAxis type="category" dataKey="name" width={120} />
-                <Tooltip />
+                <XAxis type="category" dataKey="name" width={120} />
+                <YAxis type="number" />
+                <Tooltip
+                  contentStyle={{
+                    color: '#000',
+                    border: '1px solid #333',
+                    borderRadius: '8px',
+                  }}
+                />
                 <Legend />
                 <Bar dataKey="value" name="Campites" fill="#1976d2" />
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>
         </Grid>
+      </Grid>
 
+      <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 6 }}>
           <ChartCard
             title="Daily Registrations & Revenue"
@@ -326,9 +340,6 @@ export default function CampAnalyticsPageContent({ campId }: Props) {
             </ResponsiveContainer>
           </ChartCard>
         </Grid>
-      </Grid>
-
-      <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 6 }}>
           <ChartCard
             title="Recent Registrations"

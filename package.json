@@ -22,6 +22,7 @@
     "portal"
   ],
   "dependencies": {
-    "@prisma/adapter-d1": "^7.2.0"
+    "@prisma/adapter-d1": "^7.2.0",
+    "papaparse": "^5.5.3"
   }
 }

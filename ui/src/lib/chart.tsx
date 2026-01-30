@@ -1,5 +1,9 @@
 import { Card, CardContent, Skeleton, Typography } from '@mui/material'
 import { PieLabelRenderProps, TooltipContentProps } from 'recharts'
+import {
+  Formatter,
+  LegendPayload,
+} from 'recharts/types/component/DefaultLegendContent'
 
 export const PERIODS: {
   label: string
@@ -23,9 +27,9 @@ export const pieColors = [
   '#2e7d32',
   '#ed6c02',
   '#9c27b0',
-  '#0288d1',
   '#c2185b',
   '#00796b',
+  '#0288d1',
 ]
 const RADIAN = Math.PI / 180
 
@@ -83,27 +87,17 @@ export const ChartCard = ({ title, loading, children }: ChartCardProps) => (
   </Card>
 )
 
-export const CustomTooltip = ({
-  active,
-  payload,
-}: TooltipContentProps<string | number, string>) => {
-  if (!active || !payload[0]?.payload?.currency) {
-    return null
-  }
-
-  const isVisible = active && payload && payload.length
-
+export const formatter: Formatter = (
+  label,
+  entry: LegendPayload & {
+    payload?: { currency?: string; value?: string | number }
+  },
+) => {
+  ;`1a23`
+  const isVisible = label && entry != null
   return (
-    <div
-      className="custom-tooltip"
-      style={{ visibility: isVisible ? 'visible' : 'hidden' }}
-    >
-      {isVisible && (
-        <span
-          className="label"
-          style={{ background: 'white', padding: '10px' }}
-        >{`${payload[0].name} : ${payload[0]?.payload?.currency ?? payload[0].value}`}</span>
-      )}
-    </div>
+    isVisible && (
+      <span>{`${label}: ${entry.payload?.currency ?? entry.payload?.value}`}</span>
+    )
   )
 }
