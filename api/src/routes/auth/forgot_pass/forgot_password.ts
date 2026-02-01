@@ -37,9 +37,7 @@ export class ForgotPassword extends OpenAPIEndpoint {
     await c.env.PRISMA.user.update({
       where: { id: user.id },
       data: {
-        meta: {
-          forgot_token: forgotToken,
-        },
+        forgot_token: forgotToken,
       },
     })
 

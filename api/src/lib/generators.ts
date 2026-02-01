@@ -1,3 +1,7 @@
+import { createHash, randomUUID } from 'crypto'
+import { Env } from '../env'
+import * as qr from 'qr-image'
+
 /**
  * @param length lenght of the string
  * @param isAlphanumeric should be number and letter
@@ -46,4 +50,36 @@ export function modEmailPhone(email: string, phoneNumber: string | null) {
   }
 
   return { transformedEmail, transformedPhoneNumber }
+}
+
+export function uuidTo8Digit(uuid = randomUUID()): string {
+  const hash = createHash('sha256').update(uuid).digest('hex')
+  // Take first 8 hex characters and convert to decimal
+  const hashHex = hash.substring(0, 8)
+  const code = parseInt(hashHex, 16) % 100000000
+  // Pad with leading zeros to ensure 8 digits
+  return code.toString().padStart(8, '0')
+}
+
+export const generateRegistrationNumber = async (env: Env) => {
+  let code = uuidTo8Digit()
+  let attempt = 0
+  const maxAttempts = 100
+
+  while (
+    (await env.PRISMA.campite.count({ where: { registration_no: code } })) > 0
+  ) {
+    attempt++
+    if (attempt >= maxAttempts) {
+      throw new Error('Failed to generate unique code after maximum attempts')
+    }
+
+    code = uuidTo8Digit()
+  }
+
+  return code
+}
+
+export const generateQrCode = (data: string) => {
+  return qr.imageSync(data, { type: 'png', size: 10 }).toString('base64')
 }

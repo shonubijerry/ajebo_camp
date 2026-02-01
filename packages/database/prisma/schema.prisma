@@ -90,18 +90,19 @@ enum UserRole {
 }
 
 model User {
-  id         String    @id @default(uuid())
-  firstname  String
-  lastname   String
-  email      String    @unique
-  phone      String?
-  password   String?
+  id           String    @id @default(uuid())
+  firstname    String
+  lastname     String
+  email        String    @unique
+  phone        String?
+  password     String?
+  forgot_token String?
   /// [UserMeta]
-  meta       Json      @default("{}")
-  role       UserRole  @default(user)
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  deleted_at DateTime?
+  meta         Json      @default("{}")
+  role         UserRole  @default(user)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  deleted_at   DateTime?
 
   campites Campite[]
   payments Payment[]
@@ -117,6 +118,7 @@ enum CampiteType {
 
 model Campite {
   id              String      @id @default(uuid())
+  registration_no String      @unique
   firstname       String
   lastname        String
   email           String?

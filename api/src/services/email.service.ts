@@ -1,4 +1,4 @@
-import { Resend } from 'resend'
+import { Attachment, Resend } from 'resend'
 import { Env } from '../env'
 import { ApiException } from 'chanfana'
 
@@ -8,7 +8,7 @@ import { ApiException } from 'chanfana'
  * @param data
  * @returns
  */
-export const sendMail = (
+export const sendMail = async (
   env: Env,
   data: {
     to: string | string[]
@@ -26,6 +26,30 @@ export const sendMail = (
       to: data.to,
       subject: data.subject,
       template: data.template,
+    })
+    .then((resp) => {
+      if (resp.error) {
+        throw new ApiException(JSON.stringify(resp.error))
+      }
+    })
+}
+
+export const sendHtmlMail = async (
+  env: Env,
+  to: string,
+  subject: string,
+  html: string,
+  attachments?: Attachment[],
+) => {
+  const resend = new Resend(env.RESEND_API_KEY)
+
+  return resend.emails
+    .send({
+      to,
+      from: 'reg@equaex.com',
+      subject,
+      html,
+      attachments,
     })
     .then((resp) => {
       if (resp.error) {

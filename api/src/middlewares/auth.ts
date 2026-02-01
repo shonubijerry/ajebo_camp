@@ -1,29 +1,9 @@
 import { verify } from 'hono/jwt'
-import { z } from 'zod'
 import { AppContext } from '../types'
-import { userResponse } from '@ajebo_camp/database'
 import { getPermissionsForRole } from '../lib/permissions'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const auth = userResponse
-  .pick({
-    email: true,
-    role: true,
-  })
-  .extend({
-    sub: z.string(),
-  })
-
-type BaseAuthenticatedUser = typeof auth._type
-
-export type AuthenticatedUser = BaseAuthenticatedUser & {
-  permissions: ReturnType<typeof getPermissionsForRole>
-}
-
 export const authMiddleware = async (
-  c: AppContext & {
-    user?: AuthenticatedUser
-  },
+  c: AppContext,
   next: () => Promise<unknown>,
 ) => {
   const authHeader = c.req.header('Authorization')
@@ -47,11 +27,10 @@ export const authMiddleware = async (
         500,
       )
     }
-    // verify token — consumer may need to adjust depending on `hono/jwt` version
-    const payload = (await verify(
-      token,
-      c.env.JWT_SECRET,
-    )) as BaseAuthenticatedUser
+
+    const payload = (await verify(token, c.env.JWT_SECRET)) as NonNullable<
+      AppContext['user']
+    >
     const permissions = getPermissionsForRole(payload.role)
 
     c.user = {

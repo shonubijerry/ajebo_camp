@@ -32,11 +32,7 @@ export class ChangePasswordPublic extends OpenAPIEndpoint {
   ) {
     const user = await c.env.PRISMA.user.findFirst({
       where: {
-        meta: {
-          equals: {
-            forgot_token: params.code,
-          },
-        },
+        forgot_token: params.code,
       },
     })
 
@@ -59,9 +55,7 @@ export class ChangePasswordPublic extends OpenAPIEndpoint {
       where: { id: user.id },
       data: {
         password: newPass,
-        meta: {
-          forgot_token: null,
-        },
+        forgot_token: null,
       },
     })
 
@@ -71,10 +65,7 @@ export class ChangePasswordPublic extends OpenAPIEndpoint {
         data: {
           ...user,
           token,
-          meta: {
-            ...user.meta,
-            forgot_token: undefined,
-          },
+          forgot_token: null,
           password: undefined,
         } satisfies Record<string, unknown>,
       },

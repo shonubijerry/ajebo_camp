@@ -6,8 +6,10 @@ import { UpdateEndpoint } from './generic/update'
 import { DeleteEndpoint } from './generic/delete'
 import { requestBodies, responseBodies } from '@ajebo_camp/database'
 import { AppContext } from '../types'
-import { AuthenticatedUser } from '../middlewares/auth'
 import { Prisma } from '@ajebo_camp/database'
+import { generateQrCode, generateRegistrationNumber } from '../lib/generators'
+import { sendHtmlMail } from '../services/email.service'
+import { registrationSuccessTemplate } from '../templates/registration-success'
 
 const campiteMeta = {
   collection: 'Campite' as const,
@@ -36,7 +38,7 @@ export class CreateCampiteEndpoint extends OpenAPIEndpoint {
     }
 
     if (!camp.is_active) {
-      throw new Error('Camp not found')
+      throw new Error('Registration for this camp is closed')
     }
 
     const availableItems = allocations.map((allocation) => {
@@ -49,13 +51,37 @@ export class CreateCampiteEndpoint extends OpenAPIEndpoint {
       (item) => item[Math.floor(Math.random() * item.length)] ?? '',
     )
 
-    return c.env.PRISMA.campite.create({
+    const campite = await c.env.PRISMA.campite.create({
       data: {
         ...body,
         amount: camp.fee,
+        registration_no: await generateRegistrationNumber(c.env),
         allocated_items: allocated_items.join(','),
       },
     })
+
+    if (campite.email) {
+      await sendHtmlMail(
+        c.env,
+        campite.email,
+        `${camp.title} Registration Successful`,
+        registrationSuccessTemplate({
+          first_name: campite.firstname,
+          registration_number: campite.registration_no,
+          camp_name: camp.title,
+        }),
+        [
+          {
+            filename: 'qr-code.png',
+            content: generateQrCode(campite.registration_no),
+            contentId: 'qr-code',
+            contentType: 'image/png',
+          },
+        ],
+      )
+    }
+
+    return campite
   }
 }
 
@@ -72,7 +98,7 @@ export class ListCampitesEndpoint extends ListEndpoint<
   }
   protected pageSize = 25
 
-  async action(c: AppContext & { user?: AuthenticatedUser }) {
+  async action(c: AppContext) {
     const params = await this.getPagination()
 
     // Scope regular users to their own campites
@@ -107,7 +133,7 @@ export class GetCampiteEndpoint extends GetEndpoint {
   }
 
   async action(
-    c: AppContext & { user?: AuthenticatedUser },
+    c: AppContext,
     { params }: typeof this.meta.requestSchema._type,
   ) {
     const where: Prisma.CampiteWhereInput = { id: params.id }
@@ -208,10 +234,16 @@ export class BulkCreateCampitesEndpoint extends OpenAPIEndpoint {
       throw new Error('At least one campite is required')
     }
 
-    const [camp, allocations] = await Promise.all([
+    const [camp, allocations, user, oneRegisteredCampite] = await Promise.all([
       c.env.PRISMA.camp.findUnique({ where: { id: camp_id } }),
       c.env.PRISMA.camp_Allocation.findMany({ where: { camp_id } }),
+      c.env.PRISMA.user.findUnique({ where: { id: user_id } }),
+      c.env.PRISMA.campite.findFirst({ where: { user_id, camp_id } }),
     ])
+
+    if (!user) {
+      throw new Error('User not found')
+    }
 
     if (!camp) {
       throw new Error('Camp not found')
@@ -243,6 +275,7 @@ export class BulkCreateCampitesEndpoint extends OpenAPIEndpoint {
             camp_id,
             user_id,
             district_id,
+            registration_no: await generateRegistrationNumber(c.env),
             payment_ref: payment_ref || null,
             type: 'regular',
             amount: camp.fee,
@@ -255,6 +288,31 @@ export class BulkCreateCampitesEndpoint extends OpenAPIEndpoint {
           `Failed to create campite ${campite.firstname} ${campite.lastname}: ${(error as Error).message}`,
         )
       }
+    }
+
+    if (createdCampites.length && user.email) {
+      const registrationNo = oneRegisteredCampite
+        ? `BULK-${oneRegisteredCampite.registration_no}`
+        : `BULK-${createdCampites[0].registration_no}`
+
+      await sendHtmlMail(
+        c.env,
+        user.email || '',
+        `${camp.title} Registration Successful`,
+        registrationSuccessTemplate({
+          first_name: user.firstname || '',
+          registration_number: registrationNo,
+          camp_name: camp.title,
+        }),
+        [
+          {
+            filename: 'qr-code.png',
+            content: generateQrCode(registrationNo),
+            contentId: 'qr-code',
+            contentType: 'image/png',
+          },
+        ],
+      )
     }
 
     return {
@@ -277,10 +335,7 @@ export class ExportCampitesEndpoint extends OpenAPIEndpoint {
     permission: 'campite:export' as const,
   }
 
-  async action(
-    c: AppContext & { user?: AuthenticatedUser },
-    { query }: typeof this.meta.requestSchema._type,
-  ) {
+  async action(c: AppContext, { query }: typeof this.meta.requestSchema._type) {
     const districts = await c.env.PRISMA.district.findMany()
     const districtMap = new Map(districts.map((d) => [d.id, d.name]))
     const campites = await c.env.PRISMA.campite.findMany({

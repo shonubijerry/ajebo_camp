@@ -23,6 +23,7 @@ export const userCreate = z.object({
     .transform((v) => v.toLowerCase())
     .openapi({ example: "ada.okafor@example.com" }),
   phone: z.string().nullish().openapi({ example: "+2348012345678" }),
+  password: z.string().nullish().openapi({ example: "securePassword123" }),
   role: z
     .enum(["user", "staff", "admin"])
     .optional()
@@ -30,7 +31,10 @@ export const userCreate = z.object({
     .openapi({ example: "user" }),
 });
 
-export const userResponse = userCreate.extend(basedSchemas);
+export const userResponse = userCreate.extend(basedSchemas).extend({
+  forgot_token: z.string().nullish().openapi({ example: "token_abc123" }),
+  meta: z.record(z.unknown()).optional().default({}).openapi({ example: {} }),
+});
 
 // Entity
 export const entityCreate = z.object({
@@ -137,6 +141,7 @@ export const campAllocationResponse = campAllocationCreate.extend(basedSchemas);
 // Campite
 export const campiteCreate = z
   .object({
+    registration_no: z.string().min(1).openapi({ example: "REG-2025-001" }),
     firstname: z.string().min(1).openapi({ example: "John" }),
     lastname: z.string().min(1).openapi({ example: "Doe" }),
     email: z
@@ -149,14 +154,14 @@ export const campiteCreate = z
     gender: z.string().min(1).openapi({ example: "male" }),
     camp_id: z.string().openapi({ example: "camp_123" }),
     user_id: z.string().openapi({ example: "user_456" }),
-    district_id: z.string().optional().openapi({ example: "district_789" }),
+    district_id: z.string().nullish().openapi({ example: "district_789" }),
     payment_ref: z.string().nullish().openapi({ example: "pay_ref_001" }),
     type: z
       .enum(["regular", "premium"])
       .optional()
       .default("regular")
       .openapi({ example: "regular" }),
-    amount: z.number().int().openapi({ example: 5000 }),
+    amount: z.number().int().nullish().openapi({ example: 5000 }),
     allocated_items: z
       .string()
       .optional()

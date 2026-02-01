@@ -5,7 +5,6 @@ import { GetEndpoint } from './generic/get'
 import { UpdateEndpoint } from './generic/update'
 import { DeleteEndpoint } from './generic/delete'
 import { requestBodies, responseBodies, Prisma } from '@ajebo_camp/database'
-import { AuthenticatedUser } from '../middlewares/auth'
 import {
   getPermissionsForRole,
   PermissionsSchema,
@@ -118,7 +117,7 @@ export class GetCurrentUserEndpoint extends OpenAPIEndpoint {
     }),
   }
 
-  async action(c: AppContext & { user?: AuthenticatedUser }) {
+  async action(c: AppContext) {
     if (!c.user?.sub) {
       throw new Error('Unauthorized')
     }

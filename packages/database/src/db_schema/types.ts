@@ -1,11 +1,8 @@
 import { z } from "zod";
 
-export const zodRecord = z.record(z.number());
-
 const defaultDate = new Date().toISOString().slice(0, 10);
 
-export const dateSchema = z
-  .string()
+export const dateSchema = z.iso
   .datetime()
   .default(defaultDate)
   .describe("Defaults to today");

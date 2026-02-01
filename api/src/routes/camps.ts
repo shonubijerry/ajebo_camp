@@ -7,7 +7,6 @@ import { DeleteEndpoint } from './generic/delete'
 import { requestBodies, responseBodies } from '@ajebo_camp/database'
 import { AppContext } from '../types'
 import { Prisma } from '@ajebo_camp/database'
-import { AuthenticatedUser } from '../middlewares/auth'
 import { parseCampFormData } from '../lib/parseFormData'
 
 const campMeta = {
@@ -50,11 +49,7 @@ export class CreateCampEndpoint extends OpenAPIEndpoint {
     supportsFormData: true,
   }
 
-  async action(
-    c: AppContext & {
-      user?: AuthenticatedUser
-    },
-  ) {
+  async action(c: AppContext) {
     const formData = await c.req.formData()
     const file = formData.get('banner')
     const bodyInput = parseCampFormData(formData)

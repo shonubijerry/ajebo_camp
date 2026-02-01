@@ -1,4 +1,3 @@
-import { AuthenticatedUser } from './auth'
 import {
   getPermissionsForRole,
   hasAllPermissions,
@@ -7,7 +6,7 @@ import {
 import { AppContext } from '../types'
 
 export const requirePermissions = (
-  c: AppContext & { user?: AuthenticatedUser },
+  c: AppContext,
   required?: Permission | Permission[],
 ) => {
   if (!required) {
