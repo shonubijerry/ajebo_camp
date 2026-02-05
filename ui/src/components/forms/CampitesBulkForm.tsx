@@ -114,8 +114,15 @@ export default function CampitesBulkForm({
   // Fetch data
   const campiteMutation = $api.useMutation('post', '/api/v1/campites/bulk')
   const currentUserQuery = $api.useQuery('get', '/api/v1/users/me')
+  const currentDate = React.useMemo(() => new Date().toISOString(), [])
   const campsQuery = $api.useQuery('get', '/api/v1/camps/list', {
-    params: { query: { page: 0, per_page: 100 } },
+    params: {
+      query: {
+        page: 0,
+        per_page: 1000,
+        filter: `[end_date][gt]=${currentDate}`,
+      },
+    },
   })
 
   const currentUser = currentUserQuery.data?.data

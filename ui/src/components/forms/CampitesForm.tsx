@@ -55,8 +55,15 @@ export default function CampitesForm({
   const createMutation = $api.useMutation('post', '/api/v1/campites')
   const updateMutation = $api.useMutation('patch', '/api/v1/campites/{id}')
 
+  const currentDate = React.useMemo(() => new Date().toISOString(), [])
   const campsQuery = $api.useQuery('get', '/api/v1/camps/list', {
-    params: { query: { page: 1, per_page: 100 } },
+    params: {
+      query: {
+        page: 0,
+        per_page: 1000,
+        filter: `[end_date][gt]=${currentDate}`,
+      },
+    },
   })
 
   const allocationsQuery = $api.useQuery(
