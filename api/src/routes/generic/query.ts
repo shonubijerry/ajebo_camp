@@ -148,13 +148,22 @@ export function queryParamsToPrismaWhere(
 
 /**
  * Parse string value to appropriate type
+ * To keep a numeric string as a string, wrap it in quotes: "123" -> "123"
  */
 function parseValue(value: string | string[]): JsonValue {
   if (Array.isArray(value)) {
     return value.map((v) => parseValue(v))
   }
 
-  // Try parsing as number
+  // Handle quoted strings - keep as string without type conversion
+  if (
+    (value.startsWith('"') && value.endsWith('"')) ||
+    (value.startsWith("'") && value.endsWith("'"))
+  ) {
+    return value.slice(1, -1)
+  }
+
+  // // Try parsing as number
   if (!isNaN(Number(value)) && value.trim() !== '') {
     return Number(value)
   }

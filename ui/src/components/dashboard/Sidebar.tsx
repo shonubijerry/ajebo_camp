@@ -24,6 +24,7 @@ import {
   Logout as LogoutIcon,
   Groups3 as Groups3Icon,
   Groups2 as Groups2Icon,
+  QrCodeScanner,
 } from '@mui/icons-material'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -55,15 +56,22 @@ const defaultNavItems: NavItem[] = [
     requiredPermissions: ['dashboard:view'],
   },
   {
-    label: 'Profile',
-    href: '/portal/profile',
-    icon: <PersonIcon />,
+    label: 'Camps',
+    href: '/portal/camps',
+    icon: <CampingIcon />,
+    requiredPermissions: ['camp:view'],
   },
   {
     label: 'Campites',
     href: '/portal/campites',
     icon: <Groups3Icon />,
     requiredPermissions: ['campite:view'],
+  },
+  {
+    label: 'Camp Allocations',
+    href: '/portal/camp-allocations',
+    icon: <ReceiptLongIcon />,
+    requiredPermissions: ['camp-allocation:view'],
   },
   {
     label: 'Users',
@@ -78,22 +86,21 @@ const defaultNavItems: NavItem[] = [
     requiredPermissions: ['entity:view'],
   },
   {
-    label: 'Camps',
-    href: '/portal/camps',
-    icon: <CampingIcon />,
-    requiredPermissions: ['camp:view'],
-  },
-  {
     label: 'Districts',
     href: '/portal/districts',
     icon: <MapIcon />,
     requiredPermissions: ['district:view'],
   },
   {
-    label: 'Camp Allocations',
-    href: '/portal/camp-allocations',
-    icon: <ReceiptLongIcon />,
-    requiredPermissions: ['camp-allocation:view'],
+    label: 'Checkin',
+    href: '/portal/checkin',
+    icon: <QrCodeScanner />,
+    requiredPermissions: ['campite:view', 'campite:update'],
+  },
+  {
+    label: 'Profile',
+    href: '/portal/profile',
+    icon: <PersonIcon />,
   },
 ]
 

@@ -9,10 +9,11 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-		"build:opennextjs": "opennextjs-cloudflare build",
-		"deploy": "npm run build:opennextjs && opennextjs-cloudflare deploy",
+    "build:opennextjs": "opennextjs-cloudflare build",
+    "deploy": "npm run build:opennextjs && opennextjs-cloudflare deploy",
     "upload": "npm run build:opennextjs && opennextjs-cloudflare upload",
     "preview": "npm run build:opennextjs && opennextjs-cloudflare preview",
+    "openapi:generate": "openapi-typescript http://localhost:6001/openapi.json -o ./src/lib/api/v1.d.ts",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts"
   },
   "dependencies": {
@@ -26,6 +27,7 @@
     "@opennextjs/cloudflare": "^1.14.4",
     "@paystack/inline-js": "^2.22.7",
     "@tanstack/react-table": "^8.21.3",
+    "@yudiel/react-qr-scanner": "^2.5.1",
     "next": "15.5.9",
     "openapi-fetch": "^0.15.0",
     "openapi-react-query": "^0.5.1",

@@ -100,6 +100,7 @@ export class ListCampitesEndpoint extends ListEndpoint<
 
   async action(c: AppContext) {
     const params = await this.getPagination()
+    console.log(params)
 
     // Scope regular users to their own campites
     if (c.user?.role === 'user') {
@@ -177,6 +178,46 @@ export class UpdateCampiteEndpoint extends UpdateEndpoint {
       where: { id: params.id },
       data: body,
     })
+  }
+}
+
+export class BulkUpdateCampitesEndpoint extends OpenAPIEndpoint {
+  meta = {
+    ...campiteMeta,
+    requestSchema: z.object({
+      body: z.object({
+        ids: z
+          .array(z.string().min(1))
+          .min(1)
+          .describe('Array of campite IDs to update'),
+        data: requestBodies.campite._def.schema
+          .pick({
+            checkin_at: true,
+          })
+          .partial()
+          .describe('Data to update'),
+      }),
+    }),
+    responseSchema: z.object({
+      success: z.boolean(),
+      count: z.number(),
+    }),
+    permission: 'campite:update' as const,
+  }
+
+  async action(c: AppContext, { body }: typeof this.meta.requestSchema._type) {
+    const { ids, data } = body
+
+    // Update all campites with the given IDs
+    const result = await c.env.PRISMA.campite.updateMany({
+      where: { id: { in: ids } },
+      data,
+    })
+
+    return {
+      success: true,
+      count: result.count,
+    }
   }
 }
 

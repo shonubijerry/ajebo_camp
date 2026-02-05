@@ -141,7 +141,11 @@ export const campAllocationResponse = campAllocationCreate.extend(basedSchemas);
 // Campite
 export const campiteCreate = z
   .object({
-    registration_no: z.string().min(1).openapi({ example: "REG-2025-001" }),
+    registration_no: z.coerce
+      .string()
+      .trim()
+      .optional()
+      .openapi({ example: "REG-2025-001" }),
     firstname: z.string().min(1).openapi({ example: "John" }),
     lastname: z.string().min(1).openapi({ example: "Doe" }),
     email: z

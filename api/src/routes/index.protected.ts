@@ -24,6 +24,7 @@ import {
 import {
   CreateCampiteEndpoint,
   BulkCreateCampitesEndpoint,
+  BulkUpdateCampitesEndpoint,
   ExportCampitesEndpoint,
   DeleteCampiteEndpoint,
   GetCampiteEndpoint,
@@ -84,6 +85,7 @@ export const registerProtectedRoutes = (
   // Campite routes
   app.post('/campites', CreateCampiteEndpoint)
   app.post('/campites/bulk', BulkCreateCampitesEndpoint)
+  app.patch('/campites/bulk-update', BulkUpdateCampitesEndpoint)
   app.get('/campites/export', ExportCampitesEndpoint)
   app.get('/campites/list', ListCampitesEndpoint)
   app.get('/campites/:id', GetCampiteEndpoint)
