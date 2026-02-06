@@ -65,7 +65,7 @@ export function QuickInfoBar({ camp, formatMoney }: QuickInfoBarProps) {
             </Stack>
           </Grid>
 
-          {camp.highlights.location && (
+          {camp.highlights?.location && (
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Stack
                 direction="row"

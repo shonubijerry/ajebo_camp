@@ -60,30 +60,6 @@ export function KeyDetailsCard({ camp }: KeyDetailsCardProps) {
               {formatDate(camp.end_date)}
             </Typography>
           </Box>
-          {camp.capacity && (
-            <>
-              <Divider />
-              <Box>
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  fontWeight={600}
-                >
-                  Capacity
-                </Typography>
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <PeopleIcon sx={{ color: colors.red, fontSize: '1.2rem' }} />
-                  <Typography
-                    variant="body2"
-                    color={colors.navy}
-                    fontWeight={600}
-                  >
-                    {camp.capacity} participants
-                  </Typography>
-                </Stack>
-              </Box>
-            </>
-          )}
         </Stack>
       </CardContent>
     </Card>

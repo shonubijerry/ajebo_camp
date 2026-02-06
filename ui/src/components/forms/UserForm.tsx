@@ -55,7 +55,10 @@ export default function UserForm({
     try {
       setError(null)
       if (mode === 'create') {
-        await createMutation.mutateAsync({ body: data })
+        await createMutation.mutateAsync({ body: {
+          ...data,
+          password: data.password ?? undefined
+         } })
       } else if (mode === 'edit' && user?.id) {
         await updateMutation.mutateAsync({
           params: { path: { id: user.id } },

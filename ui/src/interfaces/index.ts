@@ -24,7 +24,7 @@ export type CreateUserRequest = NonNullable<
 >['content']['application/json']
 export type CreateCampRequest = NonNullable<
   paths['/api/v1/camps']['post']['requestBody']
->['content']['application/json']
+>['content']['multipart/form-data']
 export type CreateCampAllocationRequest = NonNullable<
   paths['/api/v1/camp-allocations']['post']['requestBody']
 >['content']['application/json']
@@ -33,7 +33,7 @@ export type UpdateUserRequest = NonNullable<
 >['content']['application/json']
 export type UpdateCampRequest = NonNullable<
   paths['/api/v1/camps/{id}']['patch']['requestBody']
->['content']['application/json']
+>['content']['multipart/form-data']
 export type UpdateCampAllocationRequest = NonNullable<
   paths['/api/v1/camp-allocations/{id}']['patch']['requestBody']
 >['content']['application/json']

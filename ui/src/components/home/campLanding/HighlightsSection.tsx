@@ -23,7 +23,9 @@ export function HighlightsSection({ highlights }: HighlightsSectionProps) {
   if (!highlights || Object.keys(highlights).length === 0) return null
 
   const renderContent = (
-    content: Camp['highlights'][keyof Camp['highlights']],
+    content: NonNullable<Camp['highlights']>[keyof NonNullable<
+      Camp['highlights']
+    >],
   ) => {
     if (typeof content === 'string') {
       return (

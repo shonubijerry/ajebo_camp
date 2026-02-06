@@ -136,9 +136,9 @@ export default function CampLandingPage({ camp }: CampLandingPageProps) {
           {/* Left Column - Main Info */}
           <Grid size={{ xs: 12, md: 8 }}>
             <Stack spacing={4}>
-              <AboutSection description={camp.description} />
+              <AboutSection description={camp.highlights?.description} />
               <HighlightsSection highlights={camp.highlights} />
-              <VenueSection venue={camp.venue} location={camp.location} />
+              <VenueSection venue='' location={camp.highlights?.location} />
             </Stack>
           </Grid>
 
