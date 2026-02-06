@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import {
   Box,
   Button,
@@ -58,9 +58,9 @@ export default function CheckinPage() {
   const devices = useDevices()
 
   // Request camera permissions (mobile only)
-  const requestCameraPermission = async () => {
+  const requestCameraPermission = useCallback(async () => {
     if (!isMobile) return false
-    
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { backgroundBlur: false },
@@ -76,7 +76,7 @@ export default function CheckinPage() {
       )
       return false
     }
-  }
+  }, [isMobile, setCameraPermissionDenied, setError])
 
   // Get available cameras on mount (mobile only)
   React.useEffect(() => {
@@ -102,7 +102,7 @@ export default function CheckinPage() {
     }
 
     getCameras()
-  }, [devices, isMobile])
+  }, [devices, isMobile, requestCameraPermission])
 
   // Handle QR code scan
   const handleScan = async (result: string) => {
@@ -165,9 +165,7 @@ export default function CheckinPage() {
           setCampites(fetchedCampites)
           // Select all campites by default that haven't been checked in
           const uncheckedIds = new Set(
-            fetchedCampites
-              .filter((c) => !c.checkin_at)
-              .map((c) => c.id)
+            fetchedCampites.filter((c) => !c.checkin_at).map((c) => c.id),
           )
           setSelectedIds(uncheckedIds)
         }
@@ -196,7 +194,7 @@ export default function CheckinPage() {
     setCheckInLoading(true)
     try {
       const idsArray = Array.from(selectedIds)
-      
+
       await fetchClient.PATCH('/api/v1/campites/bulk-update', {
         body: {
           ids: idsArray,
@@ -229,7 +227,7 @@ export default function CheckinPage() {
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const uncheckedIds = new Set(
-        campites.filter((c) => !c.checkin_at).map((c) => c.id)
+        campites.filter((c) => !c.checkin_at).map((c) => c.id),
       )
       setSelectedIds(uncheckedIds)
     } else {
@@ -249,7 +247,8 @@ export default function CheckinPage() {
   }
 
   const uncheckedCount = campites.filter((c) => !c.checkin_at).length
-  const allUncheckedSelected = uncheckedCount > 0 && selectedIds.size === uncheckedCount
+  const allUncheckedSelected =
+    uncheckedCount > 0 && selectedIds.size === uncheckedCount
 
   return (
     <Stack spacing={3}>
@@ -269,8 +268,8 @@ export default function CheckinPage() {
           {/* Mobile Only Message */}
           {!isMobile && (
             <Alert severity="info">
-              QR code scanning is available on mobile devices only. Please use manual entry below
-              or access this page from a mobile device.
+              QR code scanning is available on mobile devices only. Please use
+              manual entry below or access this page from a mobile device.
             </Alert>
           )}
 
@@ -379,7 +378,11 @@ export default function CheckinPage() {
 
           {/* Manual Entry - Always Available */}
           <TextField
-            label={isMobile ? "Or enter registration number manually" : "Enter registration number"}
+            label={
+              isMobile
+                ? 'Or enter registration number manually'
+                : 'Enter registration number'
+            }
             value={scannedCode}
             onChange={(e) => setScannedCode(e.target.value)}
             size="small"
@@ -424,7 +427,11 @@ export default function CheckinPage() {
       {campites.length > 0 && (
         <Card>
           <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <Box>
                 <Typography variant="h6">
                   {campites.length === 1
@@ -458,26 +465,42 @@ export default function CheckinPage() {
                 <TableRow sx={{ backgroundColor: 'action.hover' }}>
                   <TableCell padding="checkbox">
                     <Checkbox
-                      indeterminate={selectedIds.size > 0 && !allUncheckedSelected}
+                      indeterminate={
+                        selectedIds.size > 0 && !allUncheckedSelected
+                      }
                       checked={allUncheckedSelected}
                       onChange={handleSelectAll}
                       disabled={uncheckedCount === 0}
                     />
                   </TableCell>
-                  <TableCell><strong>Name</strong></TableCell>
-                  <TableCell><strong>Reg #</strong></TableCell>
-                  <TableCell><strong>Phone</strong></TableCell>
-                  <TableCell><strong>Gender</strong></TableCell>
-                  <TableCell><strong>Age Group</strong></TableCell>
-                  <TableCell><strong>Type</strong></TableCell>
-                  <TableCell><strong>Status</strong></TableCell>
+                  <TableCell>
+                    <strong>Name</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Reg #</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Phone</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Gender</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Age Group</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Type</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Status</strong>
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {campites.map((campite) => {
                   const isCheckedIn = !!campite.checkin_at
                   const isSelected = selectedIds.has(campite.id)
-                  
+
                   return (
                     <TableRow
                       key={campite.id}
@@ -485,7 +508,9 @@ export default function CheckinPage() {
                       selected={isSelected}
                       sx={{
                         cursor: isCheckedIn ? 'default' : 'pointer',
-                        backgroundColor: isCheckedIn ? 'action.disabledBackground' : undefined,
+                        backgroundColor: isCheckedIn
+                          ? 'action.disabledBackground'
+                          : undefined,
                         '&.Mui-selected': {
                           backgroundColor: 'primary.light',
                           '&:hover': {
@@ -519,13 +544,19 @@ export default function CheckinPage() {
                         <Chip
                           label={campite.gender}
                           size="small"
-                          color={campite.gender === 'Male' ? 'primary' : 'secondary'}
+                          color={
+                            campite.gender === 'Male' ? 'primary' : 'secondary'
+                          }
                           variant="outlined"
                         />
                       </TableCell>
                       <TableCell>{campite.age_group}</TableCell>
                       <TableCell>
-                        <Chip label={campite.type} size="small" variant="outlined" />
+                        <Chip
+                          label={campite.type}
+                          size="small"
+                          variant="outlined"
+                        />
                       </TableCell>
                       <TableCell>
                         {isCheckedIn ? (
@@ -536,7 +567,12 @@ export default function CheckinPage() {
                             color="success"
                           />
                         ) : (
-                          <Chip label="Pending" size="small" color="warning" variant="outlined" />
+                          <Chip
+                            label="Pending"
+                            size="small"
+                            color="warning"
+                            variant="outlined"
+                          />
                         )}
                       </TableCell>
                     </TableRow>

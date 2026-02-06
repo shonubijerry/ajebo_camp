@@ -6,3 +6,4 @@ mypipe
 next.config.mjs
 src/generated/prisma
 scripts
+vitest.config.mts
