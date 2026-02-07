@@ -10,6 +10,7 @@ import { Prisma } from '@ajebo_camp/database'
 import { generateQrCode, generateRegistrationNumber } from '../lib/generators'
 import { sendHtmlMail } from '../services/email.service'
 import { registrationSuccessTemplate } from '../templates/registration-success'
+import { success } from 'zod/v4'
 
 const campiteMeta = {
   collection: 'Campite' as const,
@@ -119,6 +120,75 @@ export class ListCampitesEndpoint extends ListEndpoint<
     ])
 
     return { data, total }
+  }
+}
+
+export class OfflineCampitesEndpoint extends OpenAPIEndpoint {
+  meta = {
+    ...campiteMeta,
+    requestSchema: z.object({
+      query: z.object({
+        page: z.coerce.number().min(1).default(1),
+        per_page: z.coerce.number().min(1).max(1000).default(500),
+        camp_id: z.string().optional(),
+      }),
+    }),
+    responseSchema: z.object({
+      data: z.array(
+        responseBodies.campite.pick({
+          id: true,
+          registration_no: true,
+          user_id: true,
+          camp_id: true,
+          firstname: true,
+          lastname: true,
+          phone: true,
+          gender: true,
+          age_group: true,
+          type: true,
+          checkin_at: true,
+        }),
+      ),
+    }),
+    permission: 'campite:view' as const,
+  }
+
+  async action(c: AppContext, { query }: typeof this.meta.requestSchema._type) {
+    const where: Prisma.CampiteWhereInput = {}
+
+    if (query.camp_id) {
+      where.camp_id = query.camp_id
+    }
+
+    // Scope regular users to their own campites
+    if (c.user?.role === 'user') {
+      throw new Error('Unauthorized') // Regular users should not access this endpoint
+    }
+
+    const skip = (query.page - 1) * query.per_page
+    const take = query.per_page
+
+    const data = await c.env.PRISMA.campite.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { created_at: 'desc' },
+      select: {
+        id: true,
+        registration_no: true,
+        user_id: true,
+        camp_id: true,
+        firstname: true,
+        lastname: true,
+        phone: true,
+        gender: true,
+        age_group: true,
+        type: true,
+        checkin_at: true,
+      },
+    })
+
+    return { success: true, data }
   }
 }
 

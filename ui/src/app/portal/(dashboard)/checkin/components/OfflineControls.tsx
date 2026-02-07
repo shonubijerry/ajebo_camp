@@ -26,8 +26,10 @@ interface OfflineControlsProps {
   onCampIdChange: (value: string) => void
   onStartCaching: () => void
   onSync: () => void
+  onClearCache: () => void
   isCaching: boolean
   isSyncing: boolean
+  isClearing: boolean
   cachedCount: number
   queueCount: number
   cacheReady: boolean
@@ -41,16 +43,20 @@ export function OfflineControls({
   onCampIdChange,
   onStartCaching,
   onSync,
+  onClearCache,
   isCaching,
   isSyncing,
+  isClearing,
   cachedCount,
   queueCount,
   cacheReady,
   isOnline,
 }: OfflineControlsProps) {
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [clearConfirmOpen, setClearConfirmOpen] = useState(false)
   const isLocked = queueCount > 0 || isCaching || isSyncing
   const canStart = !isCaching && !!campId && queueCount === 0
+  const canClear = !isClearing && (cachedCount > 0 || queueCount > 0)
 
   const selectedCampLabel =
     camps.find((c) => c.id === campId)?.title ?? 'Selected camp'
@@ -92,6 +98,15 @@ export function OfflineControls({
             sx={{ minWidth: 160 }}
           >
             {isSyncing ? <CircularProgress size={20} /> : 'Sync to Server'}
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => setClearConfirmOpen(true)}
+            disabled={!canClear}
+            sx={{ minWidth: 140 }}
+          >
+            {isClearing ? <CircularProgress size={20} /> : 'Clear Cache'}
           </Button>
         </Stack>
 
@@ -148,6 +163,39 @@ export function OfflineControls({
             variant="contained"
           >
             Start Checking
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={clearConfirmOpen}
+        onClose={() => setClearConfirmOpen(false)}
+      >
+        <DialogTitle>Clear offline cache?</DialogTitle>
+        <DialogContent>
+          <Stack spacing={1} sx={{ mt: 1 }}>
+            <Typography variant="body2">
+              This will remove cached campites and any queued check-ins from
+              this device.
+            </Typography>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setClearConfirmOpen(false)}
+            variant="outlined"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              setClearConfirmOpen(false)
+              onClearCache()
+            }}
+            variant="contained"
+            color="error"
+          >
+            Clear Cache
           </Button>
         </DialogActions>
       </Dialog>

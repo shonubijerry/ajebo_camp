@@ -16,10 +16,10 @@ import {
   Typography,
 } from '@mui/material'
 import { CheckCircle as CheckCircleIcon } from '@mui/icons-material'
-import { Campite } from '@/interfaces'
+import { OfflineCampite } from '@/interfaces'
 
 interface CampitesTableProps {
-  campites: Campite[]
+  campites: OfflineCampite[]
   scannedCode: string
   selectedIds: Set<string>
   checkInLoading: boolean

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import React, { useCallback, useMemo, useState } from 'react'
 import {
@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material'
 import { useDevices } from '@yudiel/react-qr-scanner'
-import { Camp, Campite } from '@/interfaces'
+import { Camp, OfflineCampite } from '@/interfaces'
 import { fetchClient } from '@/lib/api/client'
 import { OfflineControls } from './components/OfflineControls'
 import { ScannerControls } from './components/ScannerControls'
@@ -24,7 +24,7 @@ export default function CheckinPage() {
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([])
   const [selectedCamera, setSelectedCamera] = useState<string>('')
   const [scannedCode, setScannedCode] = useState('')
-  const [campites, setCampites] = useState<Campite[]>([])
+  const [campites, setCampites] = useState<OfflineCampite[]>([])
   const [camps, setCamps] = useState<Camp[]>([])
   const [isLoadingCamps, setIsLoadingCamps] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
@@ -43,10 +43,12 @@ export default function CheckinPage() {
     queueCount,
     isCaching,
     isSyncing,
+    isClearing,
     campId,
     setCampId,
     startCaching,
     syncQueue,
+    clearCache,
     lookupFromCache,
     queueCheckins,
   } = useCheckinCache()
@@ -103,6 +105,19 @@ export default function CheckinPage() {
       setError('Failed to sync check-ins. Please try again.')
     }
   }, [syncQueue])
+
+  const handleClearCache = useCallback(async () => {
+    setError('')
+    try {
+      await clearCache()
+      setCampites([])
+      setSelectedIds(new Set())
+      setScannedCode('')
+    } catch (err) {
+      console.error('Clear cache error:', err)
+      setError('Failed to clear cache. Please try again.')
+    }
+  }, [clearCache])
 
   // Request camera permissions (mobile only)
   const requestCameraPermission = useCallback(async () => {
@@ -206,7 +221,7 @@ export default function CheckinPage() {
         return
       }
 
-      const foundCampite = campiteResponse.data.data[0] as Campite
+      const foundCampite = campiteResponse.data.data[0]
 
       // If bulk code, fetch all campites for this user
       if (result.startsWith('BULK-')) {
@@ -224,7 +239,7 @@ export default function CheckinPage() {
         )
 
         if (userCampitesResponse.data?.data) {
-          const fetchedCampites = userCampitesResponse.data.data as Campite[]
+          const fetchedCampites = userCampitesResponse.data.data
           setCampites(fetchedCampites)
           // Select all campites by default that haven't been checked in
           const uncheckedIds = new Set(
@@ -341,8 +356,10 @@ export default function CheckinPage() {
         onCampIdChange={setCampId}
         onStartCaching={handleStartCaching}
         onSync={handleSyncQueue}
+        onClearCache={handleClearCache}
         isCaching={isCaching}
         isSyncing={isSyncing}
+        isClearing={isClearing}
         cachedCount={cachedCount}
         queueCount={queueCount}
         cacheReady={cacheReady}

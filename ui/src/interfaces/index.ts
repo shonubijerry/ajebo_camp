@@ -18,6 +18,8 @@ export type Payment =
   paths['/api/v1/payments/list']['get']['responses']['200']['content']['application/json']['data'][number]
 export type Campite =
   paths['/api/v1/campites/list']['get']['responses']['200']['content']['application/json']['data'][number]
+export type OfflineCampite =
+  paths['/api/v1/campites/offline']['get']['responses']['200']['content']['application/json']['data']['data'][number]
 
 export type CreateUserRequest = NonNullable<
   paths['/api/v1/users']['post']['requestBody']

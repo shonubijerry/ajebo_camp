@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Campite } from '@/interfaces'
+import { OfflineCampite } from '@/interfaces'
 import { fetchClient } from '@/lib/api/client'
 
 const DB_NAME = 'checkin-cache'
@@ -17,13 +17,14 @@ export function useCheckinCache() {
   const [queueCount, setQueueCount] = useState(0)
   const [isCaching, setIsCaching] = useState(false)
   const [isSyncing, setIsSyncing] = useState(false)
+  const [isClearing, setIsClearing] = useState(false)
   const [campId, setCampId] = useState('')
 
   const dbRef = useRef<IDBDatabase | null>(null)
-  const campiteByRegRef = useRef<Map<string, Campite>>(new Map())
-  const campitesByUserRef = useRef<Map<string, Campite[]>>(new Map())
+  const campiteByRegRef = useRef<Map<string, OfflineCampite>>(new Map())
+  const campitesByUserRef = useRef<Map<string, OfflineCampite[]>>(new Map())
 
-  const idbRequest = useCallback(<T,>(request: IDBRequest<T>) => {
+  const idbRequest = useCallback(<T>(request: IDBRequest<T>) => {
     return new Promise<T>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result)
       request.onerror = () => reject(request.error)
@@ -57,7 +58,7 @@ export function useCheckinCache() {
   }, [])
 
   const getAllFromStore = useCallback(
-    async <T,>(storeName: string): Promise<T[]> => {
+    async <T>(storeName: string): Promise<T[]> => {
       const db = await openDb()
       const tx = db.transaction(storeName, 'readonly')
       const store = tx.objectStore(storeName)
@@ -107,9 +108,9 @@ export function useCheckinCache() {
     [openDb],
   )
 
-  const buildMaps = useCallback((items: Campite[]) => {
-    const byReg = new Map<string, Campite>()
-    const byUser = new Map<string, Campite[]>()
+  const buildMaps = useCallback((items: OfflineCampite[]) => {
+    const byReg = new Map<string, OfflineCampite>()
+    const byUser = new Map<string, OfflineCampite[]>()
 
     items.forEach((c) => {
       if (c.registration_no) {
@@ -126,7 +127,12 @@ export function useCheckinCache() {
     campitesByUserRef.current = byUser
   }, [])
 
-  const updateMapsForItems = useCallback((items: Campite[]) => {
+  const resetMaps = useCallback(() => {
+    campiteByRegRef.current = new Map()
+    campitesByUserRef.current = new Map()
+  }, [])
+
+  const updateMapsForItems = useCallback((items: OfflineCampite[]) => {
     items.forEach((c) => {
       if (c.registration_no) {
         campiteByRegRef.current.set(normalizeReg(String(c.registration_no)), c)
@@ -141,7 +147,7 @@ export function useCheckinCache() {
   }, [])
 
   const hydrateFromDb = useCallback(async () => {
-    const items = await getAllFromStore<Campite>(CAMPITES_STORE)
+    const items = await getAllFromStore<OfflineCampite>(CAMPITES_STORE)
     buildMaps(items)
     setCachedCount(items.length)
     setCacheReady(items.length > 0)
@@ -151,14 +157,16 @@ export function useCheckinCache() {
   }, [buildMaps, getAllFromStore, getStoreCount])
 
   useEffect(() => {
-    openDb().then(hydrateFromDb).catch(() => {
-      setCacheReady(false)
-    })
+    openDb()
+      .then(hydrateFromDb)
+      .catch(() => {
+        setCacheReady(false)
+      })
   }, [hydrateFromDb, openDb])
 
-  const lookupFromCache = useCallback((code: string): Campite[] => {
+  const lookupFromCache = useCallback((code: string): OfflineCampite[] => {
     const isBulk = code.startsWith('BULK-')
-    const reg = normalizeReg(isBulk ? code.split('-')[1] ?? '' : code)
+    const reg = normalizeReg(isBulk ? (code.split('-')[1] ?? '') : code)
     const match = campiteByRegRef.current.get(reg)
     if (!match) return []
     if (!isBulk) return [match]
@@ -169,23 +177,22 @@ export function useCheckinCache() {
     setIsCaching(true)
 
     try {
-      const pageSize = 500
+      const pageSize = 1000
       let page = 1
-      const all: Campite[] = []
+      const all: OfflineCampite[] = []
 
       while (true) {
-        const filter = campId ? `[camp_id][equals]='${campId}'` : undefined
-        const res = await fetchClient.GET('/api/v1/campites/list', {
+        const res = await fetchClient.GET('/api/v1/campites/offline', {
           params: {
             query: {
               page,
               per_page: pageSize,
-              ...(filter ? { filter } : {}),
+              ...(campId ? { camp_id: campId } : {}),
             },
           },
         })
 
-        const rows = (res.data?.data ?? []) as Campite[]
+        const rows = res.data?.data?.data ?? []
         if (rows.length === 0) break
 
         all.push(...rows)
@@ -206,7 +213,11 @@ export function useCheckinCache() {
   }, [buildMaps, campId, clearStore, putMany])
 
   const queueCheckins = useCallback(
-    async (ids: string[], updatedCampites: Campite[], checkinAt: string) => {
+    async (
+      ids: string[],
+      updatedCampites: OfflineCampite[],
+      checkinAt: string,
+    ) => {
       await putMany(CAMPITES_STORE, updatedCampites)
       updateMapsForItems(updatedCampites)
 
@@ -245,16 +256,32 @@ export function useCheckinCache() {
     }
   }, [clearStore, getAllFromStore, getStoreCount])
 
+  const clearCache = useCallback(async () => {
+    setIsClearing(true)
+    try {
+      await clearStore(CAMPITES_STORE)
+      await clearStore(QUEUE_STORE)
+      resetMaps()
+      setCachedCount(0)
+      setQueueCount(0)
+      setCacheReady(false)
+    } finally {
+      setIsClearing(false)
+    }
+  }, [clearStore, resetMaps])
+
   return {
     cacheReady,
     cachedCount,
     queueCount,
     isCaching,
     isSyncing,
+    isClearing,
     campId,
     setCampId,
     startCaching,
     syncQueue,
+    clearCache,
     lookupFromCache,
     queueCheckins,
   }

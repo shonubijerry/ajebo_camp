@@ -496,6 +496,26 @@ export interface paths {
         patch: operations["patch_BulkUpdateCampitesEndpoint"];
         trace?: never;
     };
+    "/api/v1/campites/offline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Create campite
+         * @description Endpoint to create campite
+         */
+        get: operations["get_OfflineCampitesEndpoint"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/campites/export": {
         parameters: {
             query?: never;
@@ -4070,6 +4090,113 @@ export interface operations {
                         data: {
                             success: boolean;
                             count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: false;
+                        errors: {
+                            code: string;
+                            message: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Validation error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: false;
+                        errors: {
+                            code: string;
+                            message: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: false;
+                        errors: {
+                            code: string;
+                            message: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    get_OfflineCampitesEndpoint: {
+        parameters: {
+            query?: {
+                page?: number;
+                per_page?: number;
+                camp_id?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Operation successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: true;
+                        data: {
+                            data: {
+                                id: string;
+                                /** @example REG-2025-001 */
+                                registration_no?: string | null;
+                                /** @example user_456 */
+                                user_id: string;
+                                /** @example camp_123 */
+                                camp_id: string;
+                                /** @example John */
+                                firstname: string;
+                                /** @example Doe */
+                                lastname: string;
+                                /** @example +2348012345678 */
+                                phone: string;
+                                /** @example male */
+                                gender: string;
+                                /** @example 21-30 */
+                                age_group: string;
+                                /**
+                                 * @default regular
+                                 * @example regular
+                                 * @enum {string}
+                                 */
+                                type: "regular" | "premium";
+                                /**
+                                 * Format: date-time
+                                 * @example 2025-01-01T00:00:00Z
+                                 */
+                                checkin_at?: string | null;
+                            }[];
                         };
                     };
                 };
