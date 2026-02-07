@@ -10,7 +10,6 @@ import { Prisma } from '@ajebo_camp/database'
 import { generateQrCode, generateRegistrationNumber } from '../lib/generators'
 import { sendHtmlMail } from '../services/email.service'
 import { registrationSuccessTemplate } from '../templates/registration-success'
-import { success } from 'zod/v4'
 
 const campiteMeta = {
   collection: 'Campite' as const,
