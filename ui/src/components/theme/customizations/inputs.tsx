@@ -30,6 +30,14 @@ export const inputsCustomizations: Components<Theme> = {
         boxShadow: 'none',
         borderRadius: (theme.vars || theme).shape.borderRadius,
         textTransform: 'none',
+        '&.Mui-disabled': {
+          opacity: 1,
+          cursor: 'not-allowed',
+          color: (theme.vars || theme).palette.text.disabled,
+          backgroundColor: (theme.vars || theme).palette.action.disabledBackground,
+          border: `1px solid ${(theme.vars || theme).palette.action.disabledBackground}`,
+          boxShadow: 'none',
+        },
         variants: [
           {
             props: {
@@ -50,7 +58,7 @@ export const inputsCustomizations: Components<Theme> = {
           },
           {
             props: {
-              color: 'primary',
+              color: brand[500],
               variant: 'contained',
             },
             style: {
@@ -216,33 +224,6 @@ export const inputsCustomizations: Components<Theme> = {
             },
           },
         ],
-      }),
-      disabled: ({ theme }) => ({
-        opacity: 0.5,
-        cursor: 'not-allowed',
-        backgroundColor: gray[100],
-        color: gray[400],
-        border: `1px solid ${gray[200]}`,
-        boxShadow: 'none',
-        '&:hover': {
-          backgroundColor: gray[100],
-          borderColor: gray[200],
-        },
-        '&:active': {
-          backgroundColor: gray[100],
-        },
-        ...theme.applyStyles('dark', {
-          backgroundColor: gray[700],
-          color: gray[500],
-          border: `1px solid ${gray[600]}`,
-          '&:hover': {
-            backgroundColor: gray[700],
-            borderColor: gray[600],
-          },
-          '&:active': {
-            backgroundColor: gray[700],
-          },
-        }),
       }),
     },
   },

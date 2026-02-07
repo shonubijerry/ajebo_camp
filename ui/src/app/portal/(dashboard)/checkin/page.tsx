@@ -1,42 +1,23 @@
-'use client'
+"use client"
 
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import {
+  Alert,
   Box,
   Button,
-  Card,
   CircularProgress,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
-  TextField,
   Typography,
-  Alert,
-  Chip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Checkbox,
-  Paper,
 } from '@mui/material'
-import {
-  QrCodeScanner as QrScannerIcon,
-  Pause as PauseIcon,
-  PlayArrow as PlayIcon,
-  CheckCircle as CheckCircleIcon,
-} from '@mui/icons-material'
-import { IDetectedBarcode, Scanner, useDevices } from '@yudiel/react-qr-scanner'
-import { Campite } from '@/interfaces'
+import { useDevices } from '@yudiel/react-qr-scanner'
+import { Camp, Campite } from '@/interfaces'
 import { fetchClient } from '@/lib/api/client'
+import { OfflineControls } from './components/OfflineControls'
+import { ScannerControls } from './components/ScannerControls'
+import { CampitesTable } from './components/CampitesTable'
+import { CheckinConfirmDialog } from './components/CheckinConfirmDialog'
+import { useCheckinCache } from './hooks/useCheckinCache'
+import { useOnlineStatus } from './hooks/useOnlineStatus'
 
 export default function CheckinPage() {
   const [isPaused, setIsPaused] = useState(false)
@@ -44,6 +25,8 @@ export default function CheckinPage() {
   const [selectedCamera, setSelectedCamera] = useState<string>('')
   const [scannedCode, setScannedCode] = useState('')
   const [campites, setCampites] = useState<Campite[]>([])
+  const [camps, setCamps] = useState<Camp[]>([])
+  const [isLoadingCamps, setIsLoadingCamps] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -51,12 +34,81 @@ export default function CheckinPage() {
   const [checkInLoading, setCheckInLoading] = useState(false)
   const [cameraPermissionDenied, setCameraPermissionDenied] = useState(false)
   const devices = useDevices()
+  const isOnline = useOnlineStatus()
+  const nowIso = useMemo(() => new Date().toISOString(), [])
+
+  const {
+    cacheReady,
+    cachedCount,
+    queueCount,
+    isCaching,
+    isSyncing,
+    campId,
+    setCampId,
+    startCaching,
+    syncQueue,
+    lookupFromCache,
+    queueCheckins,
+  } = useCheckinCache()
+
+  React.useEffect(() => {
+    let isMounted = true
+
+    const loadCamps = async () => {
+      if (!isOnline) return
+      setIsLoadingCamps(true)
+      try {
+        const response = await fetchClient.GET('/api/v1/camps/list', {
+          params: {
+            query: {
+              page: 1,
+              per_page: 1000,
+              filter: `[end_date][gt]=${nowIso}`,
+            },
+          },
+        })
+        if (!isMounted) return
+        setCamps((response.data?.data ?? []) as Camp[])
+      } catch (err) {
+        if (!isMounted) return
+        console.error('Failed to load camps:', err)
+        setError('Failed to load active camps. Please try again.')
+      } finally {
+        if (isMounted) setIsLoadingCamps(false)
+      }
+    }
+
+    loadCamps()
+    return () => {
+      isMounted = false
+    }
+  }, [isOnline, nowIso])
+
+  const handleStartCaching = useCallback(async () => {
+    setError('')
+    try {
+      await startCaching()
+    } catch (err) {
+      console.error('Cache error:', err)
+      setError('Failed to cache campites for offline use.')
+    }
+  }, [startCaching])
+
+  const handleSyncQueue = useCallback(async () => {
+    setError('')
+    try {
+      await syncQueue()
+    } catch (err) {
+      console.error('Sync error:', err)
+      setError('Failed to sync check-ins. Please try again.')
+    }
+  }, [syncQueue])
 
   // Request camera permissions (mobile only)
   const requestCameraPermission = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { backgroundBlur: false },
+        video: true,
       })
       stream.getTracks().forEach((track) => track.stop())
       setCameraPermissionDenied(false)
@@ -71,8 +123,10 @@ export default function CheckinPage() {
     }
   }, [setCameraPermissionDenied, setError])
 
-  // Get available cameras on mount (mobile only)
+  // Get available cameras after cache is ready
   React.useEffect(() => {
+    if (!cacheReady) return
+
     const getCameras = async () => {
       try {
         const videoDevices = devices.filter(
@@ -92,7 +146,7 @@ export default function CheckinPage() {
     }
 
     getCameras()
-  }, [devices, requestCameraPermission])
+  }, [cacheReady, devices, requestCameraPermission])
 
   // Handle QR code scan
   const handleScan = async (result: string) => {
@@ -104,6 +158,25 @@ export default function CheckinPage() {
     setIsLoading(true)
 
     try {
+      if (cacheReady) {
+        const cached = lookupFromCache(result)
+        if (cached.length > 0) {
+          setCampites(cached)
+          const uncheckedIds = new Set(
+            cached.filter((c) => !c.checkin_at).map((c) => c.id),
+          )
+          setSelectedIds(uncheckedIds)
+          setIsLoading(false)
+          return
+        }
+
+        if (!isOnline) {
+          setError(`No campite found for: ${result}`)
+          setIsLoading(false)
+          return
+        }
+      }
+
       let registrationNumber = result
 
       // Check if it's a bulk code format
@@ -184,22 +257,32 @@ export default function CheckinPage() {
     setCheckInLoading(true)
     try {
       const idsArray = Array.from(selectedIds)
+      const now = new Date().toISOString()
+
+      if (cacheReady) {
+        const updated = campites.map((c) =>
+          selectedIds.has(c.id) ? { ...c, checkin_at: now } : c,
+        )
+        setCampites(updated)
+        await queueCheckins(idsArray, updated, now)
+        setCheckInDialogOpen(false)
+        setSelectedIds(new Set())
+        setError('')
+        return
+      }
 
       await fetchClient.PATCH('/api/v1/campites/bulk-update', {
         body: {
           ids: idsArray,
           data: {
-            checkin_at: new Date().toISOString(),
+            checkin_at: now,
           },
         },
       })
 
-      // Update local state
       setCampites(
         campites.map((c) =>
-          selectedIds.has(c.id)
-            ? { ...c, checkin_at: new Date().toISOString() }
-            : c,
+          selectedIds.has(c.id) ? { ...c, checkin_at: now } : c,
         ),
       )
       setCheckInDialogOpen(false)
@@ -242,7 +325,6 @@ export default function CheckinPage() {
 
   return (
     <Stack spacing={3}>
-      {/* Header */}
       <Box>
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
           Camp Check-In
@@ -252,139 +334,41 @@ export default function CheckinPage() {
         </Typography>
       </Box>
 
-      {/* Scanner Controls */}
-      <Card sx={{ p: 2 }}>
-        <Stack spacing={2}>
-          {/* Camera Selection - Mobile Only */}
-          {cameras.length > 1 && (
-            <FormControl fullWidth size="small">
-              <InputLabel>Camera</InputLabel>
-              <Select
-                value={selectedCamera}
-                label="Camera"
-                onChange={(e) => setSelectedCamera(e.target.value)}
-              >
-                {cameras.map((camera) => (
-                  <MenuItem key={camera.deviceId} value={camera.deviceId}>
-                    {camera.label || `Camera ${cameras.indexOf(camera) + 1}`}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
+      <OfflineControls
+        camps={camps}
+        isLoadingCamps={isLoadingCamps}
+        campId={campId}
+        onCampIdChange={setCampId}
+        onStartCaching={handleStartCaching}
+        onSync={handleSyncQueue}
+        isCaching={isCaching}
+        isSyncing={isSyncing}
+        cachedCount={cachedCount}
+        queueCount={queueCount}
+        cacheReady={cacheReady}
+        isOnline={isOnline}
+      />
 
-          {/* Scanner - Mobile Only */}
-          {selectedCamera && (
-            <Box
-              sx={{
-                position: 'relative',
-                borderRadius: 1,
-                overflow: 'hidden',
-                backgroundColor: '#000',
-                width: '100%',
-                maxWidth: '500px',
-                mx: 'auto',
-                aspectRatio: '1',
-              }}
-            >
-              <Scanner
-                onScan={(result) => {
-                  handleScan(result?.[0]?.rawValue || '')
-                }}
-                onError={(error) => {
-                  console.error('Scanner error:', error)
-                }}
-                constraints={{
-                  deviceId: selectedCamera,
-                  facingMode: 'environment',
-                  aspectRatio: 1,
-                  autoGainControl: true
-                }}
-                paused={isPaused}
-                styles={{
-                  container: {
-                    width: '100%',
-                    height: '100%',
-                  },
-                  video: {
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                  },
-                }}
-                components={{
-                  onOff: true, // Show camera on/off button
-                  torch: true, // Show torch/flashlight button (if supported)
-                  zoom: true, // Show zoom control (if supported)
-                  finder: true, // Show finder overlay
-                }}
-              />
-              {isPaused && (
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    inset: 0,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                  }}
-                >
-                  <Typography color="white" variant="h6">
-                    Scanner Paused
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-          )}
+      <ScannerControls
+        enabled={cacheReady}
+        cameras={cameras}
+        selectedCamera={selectedCamera}
+        onSelectCamera={setSelectedCamera}
+        isPaused={isPaused}
+        onTogglePause={() => setIsPaused((prev) => !prev)}
+        scannedCode={scannedCode}
+        onScannedCodeChange={setScannedCode}
+        onScan={handleScan}
+        onClear={() => {
+          setScannedCode('')
+          setCampites([])
+          setError('')
+        }}
+      />
 
-          {/* Controls - Mobile Only */}
-          {
-            <Stack direction="row" spacing={1}>
-              <Button
-                variant="outlined"
-                startIcon={isPaused ? <PlayIcon /> : <PauseIcon />}
-                onClick={() => setIsPaused(!isPaused)}
-                fullWidth
-              >
-                {isPaused ? 'Resume' : 'Pause'}
-              </Button>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  setScannedCode('')
-                  setCampites([])
-                  setError('')
-                }}
-                fullWidth
-              >
-                Clear
-              </Button>
-            </Stack>
-          }
-
-          {/* Manual Entry - Always Available */}
-          <TextField
-            label={'Or Enter registration number'}
-            value={scannedCode}
-            onChange={(e) => setScannedCode(e.target.value)}
-            size="small"
-            fullWidth
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') {
-                handleScan(`${scannedCode}`)
-              }
-            }}
-            placeholder="e.g., 12345678 or BULK-12345678"
-          />
-        </Stack>
-      </Card>
-
-      {/* Error Alert */}
       {error && <Alert severity="error">{error}</Alert>}
 
-      {/* Permission Denied Alert */}
-      {cameraPermissionDenied && (
+      {cameraPermissionDenied && cacheReady && (
         <Alert severity="warning">
           Camera permission is required to use the QR scanner. Please enable
           camera access in your browser settings and refresh the page.
@@ -399,211 +383,31 @@ export default function CheckinPage() {
         </Alert>
       )}
 
-      {/* Loading */}
       {isLoading && (
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <CircularProgress />
         </Box>
       )}
 
-      {/* Results */}
-      {campites.length > 0 && (
-        <Card>
-          <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Box>
-                <Typography variant="h6">
-                  {campites.length === 1
-                    ? 'Campite Found'
-                    : `${campites.length} Campites Found`}
-                </Typography>
-                {scannedCode.startsWith('BULK-') && (
-                  <Typography variant="caption" color="text.secondary">
-                    Bulk check-in for user group
-                  </Typography>
-                )}
-              </Box>
-              <Button
-                variant="contained"
-                startIcon={<CheckCircleIcon />}
-                disabled={selectedIds.size === 0 || checkInLoading}
-                onClick={() => setCheckInDialogOpen(true)}
-              >
-                {checkInLoading ? (
-                  <CircularProgress size={20} />
-                ) : (
-                  `Check In ${selectedIds.size > 0 ? `(${selectedIds.size})` : ''}`
-                )}
-              </Button>
-            </Stack>
-          </Box>
+      <CampitesTable
+        campites={campites}
+        scannedCode={scannedCode}
+        selectedIds={selectedIds}
+        checkInLoading={checkInLoading}
+        allUncheckedSelected={allUncheckedSelected}
+        uncheckedCount={uncheckedCount}
+        onSelectAll={handleSelectAll}
+        onToggle={handleToggle}
+        onOpenCheckIn={() => setCheckInDialogOpen(true)}
+      />
 
-          <TableContainer component={Paper} elevation={0}>
-            <Table sx={{ minWidth: 650 }} size="small">
-              <TableHead>
-                <TableRow sx={{ backgroundColor: 'action.hover' }}>
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      indeterminate={
-                        selectedIds.size > 0 && !allUncheckedSelected
-                      }
-                      checked={allUncheckedSelected}
-                      onChange={handleSelectAll}
-                      disabled={uncheckedCount === 0}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <strong>Name</strong>
-                  </TableCell>
-                  <TableCell>
-                    <strong>Reg #</strong>
-                  </TableCell>
-                  <TableCell>
-                    <strong>Phone</strong>
-                  </TableCell>
-                  <TableCell>
-                    <strong>Gender</strong>
-                  </TableCell>
-                  <TableCell>
-                    <strong>Age Group</strong>
-                  </TableCell>
-                  <TableCell>
-                    <strong>Type</strong>
-                  </TableCell>
-                  <TableCell>
-                    <strong>Status</strong>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {campites.map((campite) => {
-                  const isCheckedIn = !!campite.checkin_at
-                  const isSelected = selectedIds.has(campite.id)
-
-                  return (
-                    <TableRow
-                      key={campite.id}
-                      hover={!isCheckedIn}
-                      selected={isSelected}
-                      sx={{
-                        cursor: isCheckedIn ? 'default' : 'pointer',
-                        backgroundColor: isCheckedIn
-                          ? 'action.disabledBackground'
-                          : undefined,
-                        '&.Mui-selected': {
-                          backgroundColor: 'primary.light',
-                          '&:hover': {
-                            backgroundColor: 'primary.light',
-                          },
-                        },
-                      }}
-                      onClick={() => !isCheckedIn && handleToggle(campite.id)}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isSelected}
-                          disabled={isCheckedIn}
-                          onChange={() => handleToggle(campite.id)}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {campite.firstname} {campite.lastname}
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          variant="body2"
-                          sx={{ fontFamily: 'monospace', fontWeight: 500 }}
-                        >
-                          {campite.registration_no}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>{campite.phone}</TableCell>
-                      <TableCell>
-                        <Chip
-                          label={campite.gender}
-                          size="small"
-                          color={
-                            campite.gender === 'Male' ? 'primary' : 'secondary'
-                          }
-                          variant="outlined"
-                        />
-                      </TableCell>
-                      <TableCell>{campite.age_group}</TableCell>
-                      <TableCell>
-                        <Chip
-                          label={campite.type}
-                          size="small"
-                          variant="outlined"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {isCheckedIn ? (
-                          <Chip
-                            icon={<CheckCircleIcon />}
-                            label={`Checked in: ${new Date(campite.checkin_at as string).toLocaleString()}`}
-                            size="small"
-                            color="success"
-                          />
-                        ) : (
-                          <Chip
-                            label="Pending"
-                            size="small"
-                            color="warning"
-                            variant="outlined"
-                          />
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Card>
-      )}
-
-      {/* Check-In Dialog */}
-      <Dialog
+      <CheckinConfirmDialog
         open={checkInDialogOpen}
+        selectedCount={selectedIds.size}
         onClose={() => setCheckInDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Confirm Check-In</DialogTitle>
-        <DialogContent>
-          <Stack spacing={2} sx={{ mt: 1 }}>
-            <Typography>
-              Check in <strong>{selectedIds.size}</strong>{' '}
-              {selectedIds.size === 1 ? 'campite' : 'campites'}?
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              This action will mark the selected campites as checked in.
-            </Typography>
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setCheckInDialogOpen(false)}>Cancel</Button>
-          <Button
-            onClick={handleCheckIn}
-            variant="contained"
-            disabled={checkInLoading}
-            startIcon={
-              checkInLoading ? (
-                <CircularProgress size={20} />
-              ) : (
-                <CheckCircleIcon />
-              )
-            }
-          >
-            Check In
-          </Button>
-        </DialogActions>
-      </Dialog>
+        onConfirm={handleCheckIn}
+        isLoading={checkInLoading}
+      />
     </Stack>
   )
 }

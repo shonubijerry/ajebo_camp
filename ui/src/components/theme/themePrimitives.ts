@@ -156,6 +156,9 @@ export const colorSchemes = {
         primary: gray[800],
         secondary: gray[600],
         warning: orange[400],
+        disabled: gray[500],
+        disabledBackground: alpha(gray[500], 0.12),
+        disabledForeground: gray[500],
       },
       action: {
         hover: alpha(gray[200], 0.2),
@@ -206,6 +209,10 @@ export const colorSchemes = {
       text: {
         primary: 'hsl(0, 0%, 100%)',
         secondary: gray[400],
+        disabled: gray[600],
+        disabledBackground: alpha(gray[600], 0.12),
+        disabledForeground: gray[600],
+        warning: orange[400],
       },
       action: {
         hover: alpha(gray[600], 0.2),
