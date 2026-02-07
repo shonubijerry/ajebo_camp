@@ -7,7 +7,6 @@ import {
   Card,
   CircularProgress,
   FormControl,
-  Grid,
   InputLabel,
   MenuItem,
   Select,
@@ -20,8 +19,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  useMediaQuery,
-  useTheme,
   Table,
   TableBody,
   TableCell,
@@ -42,8 +39,6 @@ import { Campite } from '@/interfaces'
 import { fetchClient } from '@/lib/api/client'
 
 export default function CheckinPage() {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const [isPaused, setIsPaused] = useState(false)
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([])
   const [selectedCamera, setSelectedCamera] = useState<string>('')
@@ -59,8 +54,6 @@ export default function CheckinPage() {
 
   // Request camera permissions (mobile only)
   const requestCameraPermission = useCallback(async () => {
-    if (!isMobile) return false
-
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { backgroundBlur: false },
@@ -76,13 +69,10 @@ export default function CheckinPage() {
       )
       return false
     }
-  }, [isMobile, setCameraPermissionDenied, setError])
+  }, [setCameraPermissionDenied, setError])
 
   // Get available cameras on mount (mobile only)
   React.useEffect(() => {
-    if (!isMobile) return
-
-    console.log('devices', devices)
     const getCameras = async () => {
       try {
         const videoDevices = devices.filter(
@@ -102,7 +92,7 @@ export default function CheckinPage() {
     }
 
     getCameras()
-  }, [devices, isMobile, requestCameraPermission])
+  }, [devices, requestCameraPermission])
 
   // Handle QR code scan
   const handleScan = async (result: string) => {
@@ -265,16 +255,8 @@ export default function CheckinPage() {
       {/* Scanner Controls */}
       <Card sx={{ p: 2 }}>
         <Stack spacing={2}>
-          {/* Mobile Only Message */}
-          {!isMobile && (
-            <Alert severity="info">
-              QR code scanning is available on mobile devices only. Please use
-              manual entry below or access this page from a mobile device.
-            </Alert>
-          )}
-
           {/* Camera Selection - Mobile Only */}
-          {isMobile && cameras.length > 1 && (
+          {cameras.length > 1 && (
             <FormControl fullWidth size="small">
               <InputLabel>Camera</InputLabel>
               <Select
@@ -292,7 +274,7 @@ export default function CheckinPage() {
           )}
 
           {/* Scanner - Mobile Only */}
-          {isMobile && selectedCamera && (
+          {selectedCamera && (
             <Box
               sx={{
                 position: 'relative',
@@ -312,7 +294,12 @@ export default function CheckinPage() {
                 onError={(error) => {
                   console.error('Scanner error:', error)
                 }}
-                constraints={{ deviceId: selectedCamera }}
+                constraints={{
+                  deviceId: selectedCamera,
+                  facingMode: 'environment',
+                  aspectRatio: 1,
+                  autoGainControl: true
+                }}
                 paused={isPaused}
                 styles={{
                   container: {
@@ -352,7 +339,7 @@ export default function CheckinPage() {
           )}
 
           {/* Controls - Mobile Only */}
-          {isMobile && (
+          {
             <Stack direction="row" spacing={1}>
               <Button
                 variant="outlined"
@@ -374,15 +361,11 @@ export default function CheckinPage() {
                 Clear
               </Button>
             </Stack>
-          )}
+          }
 
           {/* Manual Entry - Always Available */}
           <TextField
-            label={
-              isMobile
-                ? 'Or enter registration number manually'
-                : 'Enter registration number'
-            }
+            label={'Or Enter registration number'}
             value={scannedCode}
             onChange={(e) => setScannedCode(e.target.value)}
             size="small"
