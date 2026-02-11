@@ -95,7 +95,7 @@ const defaultNavItems: NavItem[] = [
     label: 'Checkin',
     href: '/portal/checkin',
     icon: <QrCodeScanner />,
-    requiredPermissions: ['campite:view', 'campite:update'],
+    requiredPermissions: ['campite:view', 'campite:update', 'camp:update'],
   },
   {
     label: 'Profile',

@@ -41,6 +41,7 @@ export const rolePermissions: Record<Role, Permission[]> = {
     'campite:create',
     'campite:update',
     'district:view',
+    'district:create',
   ],
   staff: [
     'dashboard:view',
