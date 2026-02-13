@@ -6,8 +6,8 @@ import { paystackWebhook } from './webhooks/paystack'
 /**
  * Register webhook routes (no authentication required)
  */
-export const registerWebhookRoutes = (
-  app: ReturnType<typeof fromHono<Hono<AppBindings>>>,
-) => {
-  app.post('/webhooks/paystack', paystackWebhook)
-}
+const app = fromHono(new Hono<AppBindings>())
+
+app.post('/paystack', paystackWebhook)
+
+export default app

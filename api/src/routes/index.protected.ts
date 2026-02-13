@@ -55,58 +55,58 @@ import {
  * Register protected routes that require authentication
  * These routes are protected by the authMiddleware
  */
-export const registerProtectedRoutes = (
-  app: ReturnType<typeof fromHono<Hono<AppBindings>>>,
-) => {
-  // User routes
-  app.post('/users', CreateUserEndpoint)
-  app.get('/users/me', GetCurrentUserEndpoint)
-  app.get('/users/list', ListUsersEndpoint)
-  app.get('/users/:id', GetUserEndpoint)
-  app.patch('/users/:id', UpdateUserEndpoint)
-  app.delete('/users/:id', DeleteUserEndpoint)
+const app = fromHono(new Hono<AppBindings>())
 
-  // District routes
-  app.post('/districts', CreateDistrictEndpoint)
-  app.get('/districts/:id', GetDistrictEndpoint)
-  app.patch('/districts/:id', UpdateDistrictEndpoint)
-  app.delete('/districts/:id', DeleteDistrictEndpoint)
+// User routes
+app.post('/users', CreateUserEndpoint)
+app.get('/users/me', GetCurrentUserEndpoint)
+app.get('/users/list', ListUsersEndpoint)
+app.get('/users/:id', GetUserEndpoint)
+app.patch('/users/:id', UpdateUserEndpoint)
+app.delete('/users/:id', DeleteUserEndpoint)
 
-  // Entity routes
-  app.post('/entities', CreateEntityEndpoint)
-  app.get('/entities/list', ListEntitiesEndpoint)
-  app.get('/entities/:id', GetEntityEndpoint)
-  app.patch('/entities/:id', UpdateEntityEndpoint)
-  app.delete('/entities/:id', DeleteEntityEndpoint)
+// District routes
+app.post('/districts', CreateDistrictEndpoint)
+app.get('/districts/:id', GetDistrictEndpoint)
+app.patch('/districts/:id', UpdateDistrictEndpoint)
+app.delete('/districts/:id', DeleteDistrictEndpoint)
 
-  // Payment routes
-  app.get('/payments/list', ListPaymentsEndpoint)
-  app.get('/payments/:id', GetPaymentEndpoint)
+// Entity routes
+app.post('/entities', CreateEntityEndpoint)
+app.get('/entities/list', ListEntitiesEndpoint)
+app.get('/entities/:id', GetEntityEndpoint)
+app.patch('/entities/:id', UpdateEntityEndpoint)
+app.delete('/entities/:id', DeleteEntityEndpoint)
 
-  // Campite routes
-  app.post('/campites', CreateCampiteEndpoint)
-  app.post('/campites/bulk', BulkCreateCampitesEndpoint)
-  app.patch('/campites/bulk-update', BulkUpdateCampitesEndpoint)
-  app.get('/campites/offline', OfflineCampitesEndpoint)
-  app.get('/campites/export', ExportCampitesEndpoint)
-  app.get('/campites/list', ListCampitesEndpoint)
-  app.get('/campites/:id', GetCampiteEndpoint)
-  app.patch('/campites/:id', UpdateCampiteEndpoint)
-  app.delete('/campites/:id', DeleteCampiteEndpoint)
+// Payment routes
+app.get('/payments/list', ListPaymentsEndpoint)
+app.get('/payments/:id', GetPaymentEndpoint)
 
-  // Camp Allocation routes
-  app.post('/camp-allocations', CreateCampAllocationEndpoint)
-  app.get('/camp-allocations/list', ListCampAllocationsEndpoint)
-  app.get('/camp-allocations/:id', GetCampAllocationEndpoint)
-  app.patch('/camp-allocations/:id', UpdateCampAllocationEndpoint)
-  app.delete('/camp-allocations/:id', DeleteCampAllocationEndpoint)
+// Campite routes
+app.post('/campites', CreateCampiteEndpoint)
+app.post('/campites/bulk', BulkCreateCampitesEndpoint)
+app.patch('/campites/bulk-update', BulkUpdateCampitesEndpoint)
+app.get('/campites/offline', OfflineCampitesEndpoint)
+app.get('/campites/export', ExportCampitesEndpoint)
+app.get('/campites/list', ListCampitesEndpoint)
+app.get('/campites/:id', GetCampiteEndpoint)
+app.patch('/campites/:id', UpdateCampiteEndpoint)
+app.delete('/campites/:id', DeleteCampiteEndpoint)
 
-  // Camp routes
-  app.post('/camps', CreateCampEndpoint)
-  app.patch('/camps/:id', UpdateCampEndpoint)
-  app.delete('/camps/:id', DeleteCampEndpoint)
+// Camp Allocation routes
+app.post('/camp-allocations', CreateCampAllocationEndpoint)
+app.get('/camp-allocations/list', ListCampAllocationsEndpoint)
+app.get('/camp-allocations/:id', GetCampAllocationEndpoint)
+app.patch('/camp-allocations/:id', UpdateCampAllocationEndpoint)
+app.delete('/camp-allocations/:id', DeleteCampAllocationEndpoint)
 
-  // Analytics routes
-  app.get('/analytics/dashboard', GetDashboardAnalyticsEndpoint)
-  app.get('/analytics/detailed', GetDetailedAnalyticsEndpoint)
-}
+// Camp routes
+app.post('/camps', CreateCampEndpoint)
+app.patch('/camps/:id', UpdateCampEndpoint)
+app.delete('/camps/:id', DeleteCampEndpoint)
+
+// Analytics routes
+app.get('/analytics/dashboard', GetDashboardAnalyticsEndpoint)
+app.get('/analytics/detailed', GetDetailedAnalyticsEndpoint)
+
+export default app

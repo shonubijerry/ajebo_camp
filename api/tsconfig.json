@@ -7,7 +7,6 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "types": [
-      "./worker-configuration.d.ts",
       "@types/node"
     ],
     "noEmit": true,
@@ -17,6 +16,8 @@
     "strict": true
   },
   "include": [
-    "src"
+    "src",
+    "worker-configuration.d.ts",
+    "vitest.config.ts"
   ]
 }

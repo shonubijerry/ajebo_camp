@@ -3,6 +3,7 @@ import { prismaExtension } from './lib/prisma'
 
 export type Env = {
   ENVIRONMENT: 'production' | 'development'
+  WRANGLER_ENVIRONMENT: 'production' | 'development'
   DB: D1Database
   SENTRY_RELEASE: string
   DATABASE: Service<dbService>

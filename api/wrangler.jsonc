@@ -16,7 +16,7 @@
     "enabled": true
   },
   "vars": {
-    "ENVIRONMENT": "development"
+    "WRANGLER_ENVIRONMENT": "development"
   },
   "services": [
     {
@@ -42,7 +42,7 @@
       "name": "ajebo_camp_api_production",
       // "route": "https://api.ajebo.camp/*",
       "vars": {
-        "ENVIRONMENT": "production"
+        "WRANGLER_ENVIRONMENT": "production"
       },
       "services": [
         {

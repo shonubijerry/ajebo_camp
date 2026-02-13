@@ -12,20 +12,20 @@ import { GetMediaEndpoint } from './media'
 /**
  * Register public routes that don't require authentication
  */
-export const registerPublicRoutes = (
-  app: ReturnType<typeof fromHono<Hono<AppBindings>>>,
-) => {
-  // Auth routes
-  app.post('/auth/login', LoginEndpoint)
-  app.post('/auth/signup', SignupEndpoint)
-  app.post('/forgot', ForgotPassword)
-  app.post('/forgot/change-password/:code', ChangePasswordPublic)
+const app = fromHono(new Hono<AppBindings>())
 
-  // Public data access routes
-  app.get('/districts/list', ListDistrictsEndpoint)
-  app.get('/camps/list', ListCampsEndpoint)
-  app.get('/camps/:id', GetCampEndpoint)
+// Auth routes
+app.post('/auth/login', LoginEndpoint)
+app.post('/auth/signup', SignupEndpoint)
+app.post('/forgot', ForgotPassword)
+app.post('/forgot/change-password/:code', ChangePasswordPublic)
 
-  // Media serving (local dev)
-  app.get('/media/:key', GetMediaEndpoint)
-}
+// Public data access routes
+app.get('/districts/list', ListDistrictsEndpoint)
+app.get('/camps/list', ListCampsEndpoint)
+app.get('/camps/:id', GetCampEndpoint)
+
+// Media serving (local dev)
+app.get('/media/:key', GetMediaEndpoint)
+
+export default app
