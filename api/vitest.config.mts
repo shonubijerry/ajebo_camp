@@ -28,6 +28,13 @@ export default defineWorkersConfig({
           configPath: 'wrangler.jsonc',
         },
         miniflare: {
+          bindings: {
+            JWT_SECRET: 'test-jwt-secret',
+            SALT_ROUND: '10',
+            PAYSTACK_SECRET_KEY: 'test-paystack',
+            R2_PUBLIC_BASE_URL: '',
+            ENVIRONMENT: 'development',
+          },
           compatibilityFlags: [
             'experimental',
             'nodejs_compat',
