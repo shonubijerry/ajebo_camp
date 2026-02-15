@@ -51,6 +51,10 @@ jobs:
         working-directory: api
         run: npm run lint
 
+      - name: Run tests
+        working-directory: api
+        run: npm run test
+
       - name: Deploy API worker
         uses: cloudflare/wrangler-action@v3
         env:
