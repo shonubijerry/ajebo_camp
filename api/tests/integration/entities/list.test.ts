@@ -5,9 +5,12 @@ import { getAuthHeader } from '../../utils/auth'
 describe('GET /api/v1/entities/list', () => {
   it('returns list of entities', async () => {
     const auth = await getAuthHeader()
-    const response = await SELF.fetch('http://local.test/api/v1/entities/list', {
-      headers: { Authorization: auth },
-    })
+    const response = await SELF.fetch(
+      'http://local.test/api/v1/entities/list',
+      {
+        headers: { Authorization: auth },
+      },
+    )
     const body = await response.json<{ success: boolean; data: unknown[] }>()
 
     expect(response.status).toBe(200)

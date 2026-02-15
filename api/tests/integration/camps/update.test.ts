@@ -28,9 +28,9 @@ describe('PATCH /api/v1/camps/:id', () => {
   })
 
   it('uploads a new banner on update', async () => {
-    const originalEnvironment = env.ENVIRONMENT
-    env.ENVIRONMENT = 'development'
-    env.MEDIA_BUCKET.put = vi.fn().mockResolvedValue(undefined)
+    const spy = vi
+      .spyOn(env.MEDIA_BUCKET, 'put')
+      .mockResolvedValue(null as unknown as R2Object)
 
     const auth = await getAuthHeader()
     const formData = new FormData()
@@ -53,9 +53,7 @@ describe('PATCH /api/v1/camps/:id', () => {
     })
 
     expect(response.status).toBe(200)
-    expect(env.MEDIA_BUCKET.put).toHaveBeenCalled()
-
-    env.ENVIRONMENT = originalEnvironment
+    expect(spy).toHaveBeenCalled()
   })
 
   it('returns 400 for invalid update data', async () => {

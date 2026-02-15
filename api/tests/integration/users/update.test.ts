@@ -5,17 +5,14 @@ import { getAuthHeader } from '../../utils/auth'
 describe('PATCH /api/v1/users/:id', () => {
   it('updates a user', async () => {
     const auth = await getAuthHeader()
-    const response = await SELF.fetch(
-      'http://local.test/api/v1/users/user-1',
-      {
-        method: 'PATCH',
-        headers: {
-          Authorization: auth,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ firstname: 'Updated' }),
+    const response = await SELF.fetch('http://local.test/api/v1/users/user-1', {
+      method: 'PATCH',
+      headers: {
+        Authorization: auth,
+        'Content-Type': 'application/json',
       },
-    )
+      body: JSON.stringify({ firstname: 'Updated' }),
+    })
     const body = await response.json<{ success: boolean; data: unknown }>()
 
     expect(response.status).toBe(200)

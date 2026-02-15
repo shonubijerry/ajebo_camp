@@ -6,9 +6,7 @@ import { mockPrisma } from '../../utils/mockPrisma'
 
 describe('POST /api/v1/camp-allocations', () => {
   beforeEach(() => {
-    mockPrisma.camp_Allocation.create.mockResolvedValue(
-      fixtures.campAllocation,
-    )
+    mockPrisma.camp_Allocation.create.mockResolvedValue(fixtures.campAllocation)
   })
 
   it('creates a camp allocation', async () => {

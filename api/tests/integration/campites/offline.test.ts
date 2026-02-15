@@ -22,7 +22,7 @@ describe('GET /api/v1/campites/offline', () => {
       'http://local.test/api/v1/campites/offline?camp_id=camp-1',
       { headers: { Authorization: auth } },
     )
-    const body = await response.json<{ success: boolean; data: unknown }>();
+    const body = await response.json<{ success: boolean; data: unknown }>()
 
     expect(response.status).toBe(200)
     expect(body.success).toBe(true)
