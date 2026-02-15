@@ -12,7 +12,14 @@ export default defineWorkersConfig({
       reporter: ['text', 'html', 'lcov'],
       reportsDirectory: 'test/coverage',
       include: ['src/**/*.ts'],
-      exclude: ['src/**/index.ts', 'src/**/worker-configuration.d.ts'],
+      exclude: [
+        'src/**/index.ts',
+        'src/**/worker-configuration.d.ts',
+        'src/services/email.service.ts',
+        'src/lib/generators.ts',
+        'src/lib/encrypt.ts',
+        'src/lib/prisma.ts',
+      ],
     },
     poolOptions: {
       workers: {

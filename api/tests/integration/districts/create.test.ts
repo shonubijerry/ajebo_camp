@@ -25,4 +25,21 @@ describe('POST /api/v1/districts', () => {
     expect(body.success).toBe(true)
     expect(body.data).toBeDefined()
   })
+
+  it('normalizes district names on create', async () => {
+    const auth = await getAuthHeader()
+    const response = await SELF.fetch('http://local.test/api/v1/districts', {
+      method: 'POST',
+      headers: {
+        Authorization: auth,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name: 'yaba', zones: ['Zone A'] }),
+    })
+
+    expect(response.status).toBe(200)
+    expect(mockPrisma.district.create).toHaveBeenCalledWith({
+      data: { name: 'Yaba', zones: ['Zone A'] },
+    })
+  })
 })

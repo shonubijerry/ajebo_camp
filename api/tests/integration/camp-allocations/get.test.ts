@@ -23,4 +23,18 @@ describe('GET /api/v1/camp-allocations/:id', () => {
     expect(body.success).toBe(true)
     expect(body.data).toBeDefined()
   })
+
+  it('returns 404 when camp allocation is missing', async () => {
+    mockPrisma.camp_Allocation.findFirst.mockResolvedValueOnce(null)
+
+    const auth = await getAuthHeader()
+    const response = await SELF.fetch(
+      'http://local.test/api/v1/camp-allocations/missing',
+      { headers: { Authorization: auth } },
+    )
+    const body = await response.json<{ success: boolean }>()
+
+    expect(response.status).toBe(404)
+    expect(body.success).toBe(false)
+  })
 })

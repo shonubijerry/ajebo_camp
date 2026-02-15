@@ -24,4 +24,24 @@ describe('GET /api/v1/users/me', () => {
     expect(body.success).toBe(true)
     expect(body.data).toBeDefined()
   })
+
+  it('returns 500 when token lacks a subject', async () => {
+    const auth = await getAuthHeader({ sub: '' })
+    const response = await SELF.fetch('http://local.test/api/v1/users/me', {
+      headers: { Authorization: auth },
+    })
+
+    expect(response.status).toBe(500)
+  })
+
+  it('returns 500 when user cannot be found', async () => {
+    mockPrisma.user.findUnique.mockResolvedValueOnce(null)
+
+    const auth = await getAuthHeader()
+    const response = await SELF.fetch('http://local.test/api/v1/users/me', {
+      headers: { Authorization: auth },
+    })
+
+    expect(response.status).toBe(500)
+  })
 })

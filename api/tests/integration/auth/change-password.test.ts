@@ -22,4 +22,21 @@ describe('POST /api/v1/forgot/change-password/:code', () => {
     expect(response.status).toBe(200)
     expect(body.success).toBe(true)
   })
+
+  it('returns 404 when token is invalid', async () => {
+    mockPrisma.user.findFirst.mockResolvedValueOnce(null)
+
+    const response = await SELF.fetch(
+      'http://local.test/api/v1/forgot/change-password/bad-code',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: 'securePassword123' }),
+      },
+    )
+    const body = await response.json<{ success: boolean }>()
+
+    expect(response.status).toBe(404)
+    expect(body.success).toBe(false)
+  })
 })

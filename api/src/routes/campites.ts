@@ -100,7 +100,6 @@ export class ListCampitesEndpoint extends ListEndpoint<
 
   async action(c: AppContext) {
     const params = await this.getPagination()
-    console.log(params)
 
     // Scope regular users to their own campites
     if (c.user?.role === 'user') {

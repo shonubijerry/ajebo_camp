@@ -37,27 +37,30 @@ async function verifyPaystackSignature(
   secret: string,
 ): Promise<boolean> {
   const encoder = new TextEncoder()
+
+  // 1. Import the secret key
   const key = await crypto.subtle.importKey(
     'raw',
     encoder.encode(secret),
     { name: 'HMAC', hash: 'SHA-512' },
     false,
-    ['sign'],
+    ['verify', 'sign'], // Added 'verify' for direct comparison
   )
 
-  const signatureBuffer = await crypto.subtle.sign(
+  // 2. Convert the hex signature string back into a Uint8Array
+  // Paystack sends the signature as a hex string
+  const sigBytes = new Uint8Array(
+    signature.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16)),
+  )
+
+  // 3. Use crypto.subtle.verify for a constant-time check
+  // This protects against timing attacks.
+  return await crypto.subtle.verify(
     'HMAC',
     key,
+    sigBytes,
     encoder.encode(payload),
   )
-
-  const hashArray = Array.from(new Uint8Array(signatureBuffer))
-  const hash = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
-
-  console.log('Computed hash:', hash)
-  console.log('Received signature:', signature)
-
-  return hash === signature
 }
 
 /**

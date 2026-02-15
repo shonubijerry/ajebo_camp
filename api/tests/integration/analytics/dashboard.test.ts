@@ -1,5 +1,5 @@
 import { SELF } from 'cloudflare:test'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getAuthHeader } from '../../utils/auth'
 import { mockPrisma } from '../../utils/mockPrisma'
 
@@ -18,11 +18,51 @@ describe('GET /api/v1/analytics/dashboard', () => {
       { headers: { Authorization: auth } },
     )
     const body = await response.json<{
-      data: { total_campites: number; by_gender: unknown[]; by_age_group: unknown[] }
+      data: {
+        total_campites: number
+        by_gender: unknown[]
+        by_age_group: unknown[]
+      }
     }>()
 
     expect(response.status).toBe(200)
     expect(body.data).toBeDefined()
     expect(body.data.total_campites).toBe(1)
+  })
+
+  it('returns cached analytics when available', async () => {
+    const auth = await getAuthHeader()
+    const cachedBody = {
+      data: { total_campites: 5, by_gender: [], by_age_group: [] },
+    }
+    const cacheMatch = vi.spyOn(caches.default, 'match').mockResolvedValueOnce({
+      json: () => Promise.resolve(cachedBody),
+    } as Response)
+
+    const response = await SELF.fetch(
+      'http://local.test/api/v1/analytics/dashboard?cache=1',
+      { headers: { Authorization: auth } },
+    )
+    const body = await response.json<{
+      data: { total_campites: number }
+    }>()
+
+    expect(response.status).toBe(200)
+    expect(body.data.total_campites).toBe(5)
+
+    cacheMatch.mockRestore()
+  })
+
+  it('scopes dashboard analytics for regular users', async () => {
+    const auth = await getAuthHeader({ role: 'user', sub: 'user-1' })
+    const response = await SELF.fetch(
+      'http://local.test/api/v1/analytics/dashboard?scope=user',
+      { headers: { Authorization: auth } },
+    )
+
+    expect(response.status).toBe(200)
+    expect(mockPrisma.campite.count).toHaveBeenCalledWith({
+      where: { user_id: 'user-1' },
+    })
   })
 })
