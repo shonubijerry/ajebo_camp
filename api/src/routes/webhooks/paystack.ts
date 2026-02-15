@@ -54,6 +54,9 @@ async function verifyPaystackSignature(
   const hashArray = Array.from(new Uint8Array(signatureBuffer))
   const hash = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
 
+  console.log('Computed hash:', hash)
+  console.log('Received signature:', signature)
+
   return hash === signature
 }
 

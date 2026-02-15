@@ -6,7 +6,6 @@ import {
   CampDetailedAnalytics,
   CampDetailedAnalyticsSchema,
 } from '../schemas/stats'
-import { AuthenticatedUser } from '../middlewares/auth'
 import { AppContext } from '../types'
 
 // Time periods for filtering
@@ -100,7 +99,7 @@ export class GetDashboardAnalyticsEndpoint extends OpenAPIRoute {
     },
   }
 
-  async handle(c: AppContext & { user: AuthenticatedUser }) {
+  async handle(c: AppContext) {
     const cache = caches.default
     const cacheKey = new Request(`${c.req.url}?user_id=${c.user?.sub}`, {
       method: 'GET',

@@ -53,11 +53,11 @@ app.route('/', publicRoutes)
 // Register webhook routes (no authentication)
 app.route('/webhooks', webhookRoutes)
 
-// Apply authentication middleware for protected routes
-app.use(authMiddleware)
-
 // Register protected routes (require authentication)
-app.route('/', protectedRoutes)
+const protectedApp = fromHono(new Hono<AppBindings>())
+protectedApp.use(authMiddleware)
+protectedApp.route('/', protectedRoutes)
+app.route('/', protectedApp)
 
 baseApp.route('/api/v1', app) // Mount the main app on the base app
 baseApp.get('/', (c) => c.json({ status: 'ok' })) // Health check endpoint
