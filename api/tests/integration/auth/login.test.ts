@@ -84,7 +84,7 @@ describe('POST /api/v1/auth/login', () => {
 
   it('fails when salt round is missing', async () => {
     const originalSalt = env.SALT_ROUND
-    env.SALT_ROUND = ''
+    env.SALT_ROUND = undefined as unknown as string
 
     const response = await SELF.fetch('http://local.test/api/v1/auth/login', {
       method: 'POST',

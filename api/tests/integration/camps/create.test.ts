@@ -28,9 +28,9 @@ describe('POST /api/v1/camps', () => {
   })
 
   it('uploads a banner when provided', async () => {
-    const originalEnvironment = env.ENVIRONMENT
-    env.ENVIRONMENT = 'development'
-    env.MEDIA_BUCKET.put = vi.fn().mockResolvedValue(undefined)
+    const spy = vi
+      .spyOn(env.MEDIA_BUCKET, 'put')
+      .mockResolvedValue(null as unknown as R2Object)
 
     const auth = await getAuthHeader()
     const formData = new FormData()
@@ -53,17 +53,15 @@ describe('POST /api/v1/camps', () => {
     })
 
     expect(response.status).toBe(200)
-    expect(env.MEDIA_BUCKET.put).toHaveBeenCalled()
-
-    env.ENVIRONMENT = originalEnvironment
+    expect(spy).toHaveBeenCalled()
   })
 
   it('builds banner URLs in production environments', async () => {
-    const originalEnvironment = env.ENVIRONMENT
-    const originalBaseUrl = env.R2_PUBLIC_BASE_URL
-    env.ENVIRONMENT = 'production'
-    env.R2_PUBLIC_BASE_URL = 'https://media.example.com'
-    env.MEDIA_BUCKET.put = vi.fn().mockResolvedValue(undefined)
+    const originalEnv = env.WRANGLER_ENVIRONMENT
+    env.WRANGLER_ENVIRONMENT = 'production'
+    const spy = vi
+      .spyOn(env.MEDIA_BUCKET, 'put')
+      .mockResolvedValue(null as unknown as R2Object)
 
     const auth = await getAuthHeader()
     const formData = new FormData()
@@ -86,10 +84,9 @@ describe('POST /api/v1/camps', () => {
     })
 
     expect(response.status).toBe(200)
-    expect(env.MEDIA_BUCKET.put).toHaveBeenCalled()
+    expect(spy).toHaveBeenCalled()
 
-    env.ENVIRONMENT = originalEnvironment
-    env.R2_PUBLIC_BASE_URL = originalBaseUrl
+    env.WRANGLER_ENVIRONMENT = originalEnv
   })
 
   it('returns 400 for invalid camp data', async () => {
