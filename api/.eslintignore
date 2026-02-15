@@ -2,6 +2,5 @@ node_modules
 dist
 .github
 mypipe
-vite.config.ts
 worker-configuration.d.ts
 coverage

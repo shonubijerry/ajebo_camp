@@ -1,8 +1,12 @@
 import { defineWorkersConfig } from '@cloudflare/vitest-pool-workers/config'
 
 export default defineWorkersConfig({
+  esbuild: {
+    target: 'esnext',
+  },
   test: {
-    include: ['test/**/*.spec.ts'],
+    setupFiles: ['tests/vitest.setup.ts'],
+    include: ['tests/**/*.test.ts', 'tests/**/*.spec.ts'],
     coverage: {
       provider: 'istanbul',
       reporter: ['text', 'html', 'lcov'],
@@ -13,18 +17,21 @@ export default defineWorkersConfig({
     poolOptions: {
       workers: {
         singleWorker: true,
-        remoteBindings: false,
-        wrangler: { configPath: './wrangler.jsonc' },
+        wrangler: {
+          configPath: 'wrangler.jsonc',
+        },
         miniflare: {
+          compatibilityFlags: [
+            'experimental',
+            'nodejs_compat',
+            'enable_nodejs_tty_module',
+            'enable_nodejs_fs_module',
+            'enable_nodejs_http_modules',
+            'enable_nodejs_perf_hooks_module',
+          ],
           serviceBindings: {
             DATABASE: () => {
               throw new Error('Request to DATABASE binding not mocked')
-            },
-            MEDIA_BUCKET: () => {
-              throw new Error('Request to MEDIA_BUCKET binding not mocked')
-            },
-            DB: () => {
-              throw new Error('Request to DB binding not mocked')
             },
           },
         },

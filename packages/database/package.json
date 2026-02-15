@@ -8,7 +8,7 @@
     "deploy": "wrangler deploy",
     "dev": "npm run migration:apply && wrangler dev --port 6002 --persist-to .local_db",
     "start": "wrangler dev --persist-to .local_db",
-    "prisma:generate": "prisma generate",
+    "prisma:generate": "prisma generate --no-engine",
     "migration:create": "wrangler d1 migrations create ajebo-camp-dev-db $NAME",
     "migration:list": "wrangler d1 migrations list ajebo-camp-dev-db --local",
     "migration:apply": "echo y | wrangler d1 migrations apply ajebo-camp-dev-db --persist-to .local_db --local",
@@ -22,7 +22,7 @@
     "@cloudflare/vitest-pool-workers": "^0.7.5",
     "@cloudflare/workers-types": "^4.20250421.0",
     "dotenv": "^17.2.3",
-    "prisma": "^7.2.0",
+    "prisma": "7.2.0",
     "prisma-json-types-generator": "^4.0.0-beta.2",
     "typescript": "^5.5.2",
     "vitest": "~3.0.7",
@@ -31,7 +31,7 @@
   "dependencies": {
     "@hono/zod-openapi": "^0.9.10",
     "@prisma/adapter-d1": "^7.2.0",
-    "@prisma/client": "^7.2.0",
+    "@prisma/client": "7.2.0",
     "zod": "^4.3.6"
   }
 }
