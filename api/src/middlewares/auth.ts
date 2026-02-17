@@ -17,32 +17,15 @@ export const authMiddleware = async (
     )
   }
 
-  try {
-    if (!c.env.JWT_SECRET) {
-      return c.json(
-        {
-          success: false,
-          errors: [{ code: 5001, message: 'JWT secret not configured' }],
-        },
-        500,
-      )
-    }
+  const payload = (await verify(token, c.env.JWT_SECRET)) as NonNullable<
+    AppContext['user']
+  >
+  const permissions = getPermissionsForRole(payload.role)
 
-    const payload = (await verify(token, c.env.JWT_SECRET)) as NonNullable<
-      AppContext['user']
-    >
-    const permissions = getPermissionsForRole(payload.role)
-
-    c.user = {
-      ...payload,
-      permissions,
-    }
-    await next()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (err) {
-    return c.json(
-      { success: false, errors: [{ code: 4011, message: 'Invalid token' }] },
-      401,
-    )
+  c.user = {
+    ...payload,
+    permissions,
   }
+  await next()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 }

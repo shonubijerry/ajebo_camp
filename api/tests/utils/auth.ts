@@ -15,7 +15,7 @@ export const getAuthHeader = async (overrides: AuthPayloadOverrides = {}) => {
       role: 'admin',
       ...overrides,
     },
-    env.JWT_SECRET,
+    env.JWT_SECRET ?? 'test-secret',
   )
 
   return `Bearer ${token}`

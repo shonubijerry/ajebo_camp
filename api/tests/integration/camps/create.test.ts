@@ -14,6 +14,7 @@ describe('POST /api/v1/camps', () => {
     formData.set('fee', String(fixtures.campCreate.fee))
     formData.set('start_date', fixtures.campCreate.start_date)
     formData.set('end_date', fixtures.campCreate.end_date)
+    formData.set('highlights', JSON.stringify(fixtures.campCreate.highlights))
 
     const response = await SELF.fetch('http://local.test/api/v1/camps', {
       method: 'POST',

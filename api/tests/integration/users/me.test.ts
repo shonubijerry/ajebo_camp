@@ -13,6 +13,18 @@ describe('GET /api/v1/users/me', () => {
     })
   })
 
+  it('returns 401 when no authorization header is provided', async () => {
+    const response = await SELF.fetch('http://local.test/api/v1/users/me', {
+      headers: { Authorization: ' ' },
+    })
+    const body = await response.json<{ success: boolean; errors: unknown }>()
+
+    expect(response.status).toBe(401)
+
+    expect(body.success).toBe(false)
+    expect(body.errors).toBeDefined()
+  })
+
   it('returns current user', async () => {
     const auth = await getAuthHeader()
     const response = await SELF.fetch('http://local.test/api/v1/users/me', {
