@@ -9,7 +9,7 @@ export const prepareJsonUpsertQuery = ({
 }: UpdateJSONPayload) => {
   return `
         UPDATE ${table}
-        SET ${field} = json_set(${field}, '${keyPath}', '${String(value)}')
+        SET ${field} = json_set(${field}, '${keyPath}', '${String(value as unknown)}')
         WHERE ${where};
     `;
 };
